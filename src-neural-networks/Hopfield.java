@@ -1,14 +1,17 @@
-/**
- * Title:        <p>
- * Description:  <p>
- * Copyright:    Copyright (c) <p>
- * Company:      <p>
- * @author
- * @version 1.0
- */
-
 import java.util.*;
 
+/**
+ * Hopfield neural network
+ *
+ * <p/>
+ * Copyright 1998-2012 by Mark Watson. All rights reserved.
+ * <p/>
+ * This software is can be used under either of the following licenses:
+ * <p/>
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
+ * <p/>
+ */
 public class Hopfield {
 
     public Hopfield(int numInputs) {

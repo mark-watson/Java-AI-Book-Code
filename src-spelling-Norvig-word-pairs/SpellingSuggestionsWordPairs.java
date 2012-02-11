@@ -1,21 +1,15 @@
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.regex.Pattern;
 
-import com.knowledgebooks.nlp.util.Tokenizer;
-
+/**
+ * A spelling correct suggestion utility based on Peter Norvig's
+ * Python spelling program: http://norvig.com/spell-correct.html
+ *
+ * Note: this version uses word pairs (greatly increasing memory and processing requirements)
+ *
+ */
 public class SpellingSuggestionsWordPairs {
 
 	public SpellingSuggestionsWordPairs() throws FileNotFoundException {

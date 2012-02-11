@@ -1,8 +1,3 @@
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -18,19 +13,22 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.LockObtainFailedException;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Wrapper class for an embedded Lucene index to support.
  * 
  * <p/>
- * Copyright 2002-2008 by Mark Watson. All rights reserved.
+ * Copyright 2002-2012 by Mark Watson. All rights reserved.
  * <p/>
- * This software is not public domain. It can be legally
- * used under either of the following licenses:
+ * This software is can be used under either of the following licenses:
  * <p/>
- * 1. KnowledgeBooks.com Non Commercial Royality Free License<br/>
- * 2. KnowledgeBooks.com Commercial Use License
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
  * <p/>
- * see www.knowledgebooks.com for details
  */
 
 public class LuceneManager {

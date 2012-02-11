@@ -1,12 +1,3 @@
-/**
- * Title:        <p>
- * Description:  <p>
- * Copyright:    Copyright (c) <p>
- * Company:      <p>
- * @author
- * @version 1.0
- */
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

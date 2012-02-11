@@ -1,20 +1,10 @@
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * This is a web services client class for using the Open Calais web service
@@ -23,18 +13,13 @@ import java.util.Scanner;
  * be set in an environment variable of defined on the command line when starting
  * the JVM. This property is obtained using: <code>System.getProperty("OPEN_CALAIS_KEY")</code>
  * <p/>
- * Using Open Calais is optional since KB_bundle includes its own named entity
- * extractor in class {@link com.knowledgebooks.entity_extraction.Names}
+ * Copyright 2002-2012 by Mark Watson. All rights reserved.
  * <p/>
- * Copyright 2002-2008 by Mark Watson. All rights reserved.
+ * This software is can be used under either of the following licenses:
  * <p/>
- * This software is not public domain. It can be legally
- * used under either of the following licenses:
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
  * <p/>
- * 1. KnowledgeBooks.com Non Commercial Royality Free License<br/>
- * 2. KnowledgeBooks.com Commercial Use License
- * <p/>
- * see www.knowledgebooks.com for details
  */
 public class OpenCalaisClient {
     
@@ -111,9 +96,4 @@ public class OpenCalaisClient {
         	}
     }
 
-    /**
-     * 
-     */
-    public OpenCalaisClient() {
-    }
 }

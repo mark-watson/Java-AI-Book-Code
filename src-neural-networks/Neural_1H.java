@@ -1,14 +1,18 @@
-/**
- * Title:        Neural_1H<p>
- * Description:  A one hidden layer back propagtion neural network model<p>
- * Copyright:    Copyright (c) 2000 Mark Watson. Artistic Open Source License<p>
- * @author Mark Watson
- * @version 1.2
- */
-
 import java.util.*;
 import java.io.*;
 
+/**
+ * Back-propagation neural network with 1 hidden layer
+ *
+ * <p/>
+ * Copyright 1998-2012 by Mark Watson. All rights reserved.
+ * <p/>
+ * This software is can be used under either of the following licenses:
+ * <p/>
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
+ * <p/>
+ */
 class Neural_1H implements Serializable {
 
     protected int numInputs;

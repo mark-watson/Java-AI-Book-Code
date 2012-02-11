@@ -1,14 +1,4 @@
 
-/**
- * Title:        <p>
- * Description:  <p>
- * Copyright:    Copyright (c) <p>
- * Company:      <p>
- * @author
- * @version 1.0
- */
-
-
 public class Test_Hopfield {
     static float[] data [] = {
         {1, 1, 1, -1, -1, -1, -1, -1, -1, -1},

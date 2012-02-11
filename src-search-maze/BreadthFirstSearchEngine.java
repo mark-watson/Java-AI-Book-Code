@@ -1,14 +1,17 @@
-/**
- * Title:        BreadthFirstSearchEngine<p>
- * Description:  Performs a Breadth first search in a maze<p>
- * Copyright:    Copyright (c) Mark Watson, Released under Open Source Artistic License<p>
- * Company:      Mark Watson Associates<p>
- * @author Mark Watson
- * @version 1.0
- */
-
 import java.awt.Dimension;
 
+/**
+ * 2D Maze Search
+ *
+ * <p/>
+ * Copyright 1998-2012 by Mark Watson. All rights reserved.
+ * <p/>
+ * This software is can be used under either of the following licenses:
+ * <p/>
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
+ * <p/>
+ */
 public class BreadthFirstSearchEngine extends AbstractSearchEngine {
     public BreadthFirstSearchEngine(int width, int height) {
         super(width, height);

@@ -1,16 +1,4 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.QueryLanguage;
-import org.openrdf.query.TupleQuery;
-import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.*;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -23,12 +11,20 @@ import org.openrdf.rio.n3.N3Writer;
 import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.openrdf.sail.memory.MemoryStore;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Wrapper class for an embedded Sesame RDF data store. This class was derived
  * from the TrippleStoreSesameManager class in the commercial (but free for
  * non commercial use) product KB_bundle as descibed at http://knowledgebooks.com
  *
- * Copyright 2008 by Mark Watson. All rights reserved.
+ * Copyright 2008-2012 by Mark Watson. All rights reserved.
  * <p/>
  * This software is not public domain. It can be legally
  * used under either the LGPL version 3 or Apache 2 license.

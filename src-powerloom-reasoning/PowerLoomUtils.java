@@ -1,15 +1,22 @@
-// License your choice: LGPL, GPL, Mozilla, or Apache
+import edu.isi.powerloom.PLI;
+import edu.isi.powerloom.PlIterator;
 
-import edu.isi.powerloom.*;
-import edu.isi.powerloom.logic.*;
-import edu.isi.stella.Cons;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PowerLoomUtils {
+/**
+ * PowerLoom Java utilities
+ *
+ * <p/>
+ * Copyright 1998-2012 by Mark Watson. All rights reserved.
+ * <p/>
+ * This software is can be used under either of the following licenses:
+ * <p/>
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
+ * <p/>
+ */public class PowerLoomUtils {
 
     public PowerLoomUtils() {
         System.out.print("Initializing...");

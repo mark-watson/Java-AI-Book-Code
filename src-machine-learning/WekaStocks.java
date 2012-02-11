@@ -4,9 +4,20 @@ import weka.core.Instances;
 import weka.filters.unsupervised.attribute.Remove;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
+
+/**
+ * Stock analysis using Weka
+ *
+ * <p/>
+ * Copyright 2000-2012 by Mark Watson. All rights reserved.
+ * <p/>
+ * This software is can be used under either of the following licenses:
+ * <p/>
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
+ * <p/>
+ */
 
 public class WekaStocks {
 

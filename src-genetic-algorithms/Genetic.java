@@ -1,9 +1,17 @@
-// Genetic Algorithm Java classes
-//
-// Copyright 1996-2011, Mark Watson.  All rights reserved.
-
 import java.util.*;
 
+/**
+ * Genetic Algorithm Java classes
+ *
+ * <p/>
+ * Copyright 1996-2012 by Mark Watson. All rights reserved.
+ * <p/>
+ * This software is can be used under either of the following licenses:
+ * <p/>
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
+ * <p/>
+ */
 abstract public class Genetic {
 
 	protected int numGenesPerChromosome; // number of genes per chromosome

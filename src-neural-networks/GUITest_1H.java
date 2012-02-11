@@ -3,14 +3,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- * Title:        <p>
- * Description:  <p>
- * Copyright:    Copyright (c) <p>
- * Company:      <p>
- * @author
- * @version 1.0
- */
 
 public class GUITest_1H extends JFrame {
     static float[] in1 = {0.1f, 0.1f, 0.9f};

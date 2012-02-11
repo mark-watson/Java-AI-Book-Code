@@ -1,9 +1,23 @@
+import edu.smu.tspell.wordnet.Synset;
+import edu.smu.tspell.wordnet.WordNetDatabase;
+import edu.smu.tspell.wordnet.WordSense;
+import edu.smu.tspell.wordnet.impl.file.PropertyNames;
+
 import java.util.Arrays;
 import java.util.List;
 
-import edu.smu.tspell.wordnet.*;
-import edu.smu.tspell.wordnet.impl.file.PropertyNames;
-
+/**
+ * Use WordNet
+ *
+ * <p/>
+ * Copyright 2004-2012 by Mark Watson. All rights reserved.
+ * <p/>
+ * This software is can be used under either of the following licenses:
+ * <p/>
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
+ * <p/>
+ */
 public class WordNetTest {
 
 	public WordNetTest() {

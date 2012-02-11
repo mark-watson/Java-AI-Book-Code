@@ -1,16 +1,19 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.*;
-import java.awt.event.*;
-/**
- * Title:        MazeDepthFirstSearch<p>
- * Description:  Demo program for Java AI Programming<p>
- * Copyright:    Copyright (c) Mark Watson, Released under Open Source Artistic License<p>
- * Company:      Mark Watson Associates<p>
- * @author Mark Watson
- * @version 1.0
- */
+import java.awt.image.BufferedImage;
 
+/**
+ * 2D Maze Search: Performs a depth first search in a maze
+ *
+ * <p/>
+ * Copyright 1998-2012 by Mark Watson. All rights reserved.
+ * <p/>
+ * This software is can be used under either of the following licenses:
+ * <p/>
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
+ * <p/>
+ */
 public class MazeDepthFirstSearch extends javax.swing.JFrame {
     JPanel jPanel1 = new JPanel();
     DepthFirstSearchEngine currentSearchEngine = null;

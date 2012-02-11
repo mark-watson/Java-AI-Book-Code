@@ -2,6 +2,19 @@
 import java.util.*;
 import java.io.*;
 
+/**
+ * Markov learning and recall
+ *
+ * <p/>
+ * Copyright 2002-2012 by Mark Watson. All rights reserved.
+ * <p/>
+ * This software is can be used under either of the following licenses:
+ * <p/>
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
+ * <p/>
+ */
+
 public class Markov {
     static public void main(String[] args) {
         new Markov();

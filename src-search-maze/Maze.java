@@ -1,7 +1,7 @@
 import java.awt.Dimension;
 
 /**
- * Class Maze - private class for representing search space as a two-dimensional maze
+ * Class Maze - class for representing search space as a two-dimensional maze
  */
 public class Maze {
     public static short OBSTICLE = -1;
