@@ -1,0 +1,18 @@
+(defmodule "BUSINESS"
+  :documentation "Module for the Business demo example used in the PowerLoom Manual."
+  :includes ("PL-USER"))
+
+(in-module "BUSINESS")
+
+;; clear any info from previous runs:
+(clear-module "BUSINESS")
+(reset-features)
+
+;;; Concepts
+
+(defconcept company)
+(defconcept corporation (?c company))
+
+;;; Relation
+
+(defrelation company-name ((?c company) (?name STRING)))

@@ -1,0 +1,225 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Demo file that accompanies the business example in the manual.
+
+;;; Author: Robert M. MacGregor
+;;; Version: business.plm,v 1.4 2006/05/08 23:52:39 hans Exp
+
+
+;;; Using Modules
+
+(defmodule "BUSINESS"
+  :documentation "Module for the Business demo example used in the PowerLoom Manual."
+  :includes ("PL-USER"))
+
+(in-module "BUSINESS")
+
+;; clear any info from previous runs:
+(clear-module "BUSINESS")
+(reset-features)
+
+
+;;; Concepts
+
+(defconcept company)
+(defconcept corporation (?c company))
+
+(assert (company ACME-cleaners))
+(assert (corporation megasoft))
+
+(retrieve all ?x (company ?x))
+(retrieve all ?x (corporation ?x))
+
+
+;;; Relations
+
+(defrelation company-name ((?c company) (?name STRING)))
+
+(assert (company-name ACME-cleaners "ACME Cleaners, LTD"))
+(assert (company-name megasoft "MegaSoft, Inc."))
+
+(retrieve all (company-name ?x ?y))
+(retrieve all (?y ?x) (company-name ?x ?y))
+
+
+;;; Relation Hierarchies
+
+(defrelation fictitious-business-name ((?c company) (?name STRING))
+  :=> (company-name ?c ?name))
+
+(assert (fictitious-business-name megasoft "MegaSoft"))
+
+(retrieve all ?x (company-name megasoft ?x))
+
+
+;;; Functions
+
+(deffunction number-of-employees ((?c company)) :-> (?n INTEGER))
+
+(assert (= (number-of-employees ACME-cleaners) 8))
+(assert (= (number-of-employees megasoft) 10000))
+
+(retrieve all (and (company ?x) (< (number-of-employees ?x) 50)))
+
+(retrieve all (and (company ?x) 
+                   (exists ?n
+                     (and (number-of-employees ?x ?n)
+                          (< ?n 50)))))
+
+
+;;; Defined Concepts
+
+(defconcept small-company ((?c company))
+  :<=> (and (company ?c)
+            (< (number-of-employees ?c) 50)))
+
+(assert (and (company zz-productions)
+             (< (number-of-employees zz-productions) 20)))
+
+(retrieve all (small-company ?x))
+
+
+;;; Negation and Open and Closed-World Semantics
+
+(defconcept s-corporation ((?c corporation)))
+
+(ask (s-corporation zz-productions))
+(ask (not (s-corporation zz-productions)))
+
+(assert (not (s-corporation zz-productions)))
+(ask (s-corporation zz-productions))
+(ask (not (s-corporation zz-productions)))
+
+(ask (= (number-of-employees ACME-cleaners) 8))
+(ask (= (number-of-employees ACME-cleaners) 10))
+(ask (not (= (number-of-employees ACME-cleaners) 10)))
+
+(defrelation works-for (?p (?c company)))
+
+(assert (works-for shirly ACME-cleaners))
+(assert (works-for jerome zz-productions))
+
+(ask (not (works-for jerome megasoft)))
+
+(assert (closed works-for))
+(ask (not (works-for jerome megasoft)))
+
+(retract (closed works-for))
+(ask (not (works-for jerome megasoft)))
+
+(ask (fail (works-for jerome megasoft)))
+
+
+;;; Retraction
+
+(defconcept geographic-location)
+(defconcept country ((?l geographic-location)))
+(defconcept state ((?l geographic-location)))
+(defconcept city ((?l geographic-location)))
+
+(defrelation contains ((?l1 geographic-location) (?l2 geographic-location)))
+
+(assert (and 
+         (country united-states)
+         (geographic-location eastern-us) 
+         (contains united-states eastern-us)
+         (state georgia) (contains eastern-us georgia)
+         (city atlanta) (contains georgia atlanta)
+         (geographic-location southern-us) 
+         (contains united-states southern-us)
+         (state texas) (contains eastern-us texas)
+         (city dallas) (contains texas dallas)
+         (city austin) (contains texas austin)))
+
+(ask (contains eastern-us texas))
+
+(retract (contains eastern-us texas))
+(assert (contains southern-us texas))
+
+(ask (contains eastern-us texas))
+
+(assert (not (state texas)))
+(ask (not (state texas)))
+
+
+;;; Clipping of Values
+
+(deffunction headquarters ((?c company)) :-> (?city city))
+
+(defrelation headquartered-in ((?c company) (?city city))
+  :axioms (single-valued headquartered-in))
+
+(assert (= (headquarters zz-productions) atlanta))
+(retrieve all (= ?x (headquarters zz-productions)))
+
+(assert (= (headquarters zz-productions) dallas))
+(retrieve all (= ?x (headquarters zz-productions)))
+
+(assert (headquartered-in megasoft atlanta))
+(retrieve all (headquartered-in megasoft ?x))
+
+(assert (headquartered-in megasoft dallas))
+(retrieve all (headquartered-in megasoft ?x))
+
+
+;;; Rule-Based Inference
+
+(retrieve all (contains southern-us ?x))
+
+(defrule transitive-contains
+  (=> (and (contains ?l1 ?l2)
+           (contains ?l2 ?l3))
+      (contains ?l1 ?l3)))
+
+;;(defrule transitive-contains
+;;  (forall (?l1 ?l2 ?l3)
+;;    (=> (and (contains ?l1 ?l2)
+;;             (contains ?l2 ?l3))
+;;        (contains ?l1 ?l3))))
+
+(retrieve all (contains southern-us ?x))
+
+
+;;; Explanation
+
+(set-feature justifications)
+
+(ask (contains southern-us dallas))
+(why)
+
+(retrieve (contains southern-us ?x))
+(retrieve)
+(retrieve)
+(why)
+
+(retrieve ?name (exists (?city ?company)
+                  (and (contains southern-us ?city)
+                       (headquartered-in ?company ?city)
+                       (company-name ?company ?name))))
+(why)
+
+
+;;; Contexts and Modules
+
+(defmodule "ALTERNATE-BUSINESS"
+  :includes "BUSINESS")
+
+(in-module "ALTERNATE-BUSINESS")
+
+(assert (and (company web-phantoms)
+             (company-name web-phantoms "Web Phantoms, Inc.")))
+(retract (company-name megasoft "MegaSoft, Inc."))
+(assert (company-name megasoft "MegaZorch, Inc."))
+
+(in-module "BUSINESS")
+(retrieve all (company-name ?x ?y))
+
+(in-module "ALTERNATE-BUSINESS")
+(retrieve all (company-name ?x ?y))
+
+;;; not yet in the manual:
+(in-module "BUSINESS")
+
+(retrieve all (ist alternate-business (company-name ?x ?y)))
+(retrieve all (and (ist business (company-name ?x ?y))
+                   (fail (ist alternate-business (company-name ?x ?y)))))

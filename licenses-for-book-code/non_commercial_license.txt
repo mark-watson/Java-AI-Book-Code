@@ -1,0 +1,40 @@
+"Practical Artificial Intelligence Programming With Java" Book Code No-Commercial Use License
+
+Copyright 2008 by Mark Watson (www.markwatson.com)
+
+If you have down loaded the free PDF file for the book, then you can use the
+Book Example software written by Mark Watson under this "Book Code No-Commercial
+Use License".
+
+All copyright statements must be preserved in the book example source code.
+
+This license does not apply to third party open source and public domain libraries
+used in the book.
+
+1.Re-distribution of compiled code:
+
+You can distribute the compiled code under this license as part of any
+non-commercial software package that you write that adds significant
+functionality to the book code. Recipients of your software package
+also agree to the non-commercial use limitation.
+
+No distribution of source code is allowed. Refer users to my web site to
+download the source code.
+
+2.
+
+THE BOOK SOFTWARE WRITTEN BY MARK WATSON IS PROVIDED "AS IS."
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, MARK WATSON DOES NOT MAKE, AND HEREBY
+EXPRESSLY DISCLAIMS, ANY WARRANTIES, EXPRESS, IMPLIED, STATUTORY OR OTHERWISE, CONCERNING
+THE SOFTWARE OR ANY SUBJECT MATTER OF THIS LICENSE.  SPECIFICALLY, BUT WITHOUT LIMITING
+THE FOREGOING, LICENSOR MAKES NO EXPRESS OR IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE OR OTHERWISE, QUALITY, USEFULNESS, TITLE, OR NON-INFRINGEMENT.
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL LICENSOR BE LIABLE TO
+YOU OR ANY THIRD PARTY FOR ANY DAMAGES OR IN RESPECT OF ANY CLAIM UNDER ANY TORT, CONTRACT,
+STRICT LIABILITY, NEGLIGENCE OR OTHER THEORY FOR ANY DIRECT, INDIRECT, INCIDENTAL, CONSEQUENTIAL,
+PUNITIVE, SPECIAL OR EXEMPLARY DAMAGES, EVEN IF IT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGES, OR FOR ANY AMOUNTS IN EXCESS OF THE AMOUNT YOU PAID KNOWLEDGEBOOKS.COM FOR THIS LICENSE.
+
+YOU MUST PASS THIS ENTIRE LICENSE, INCLUDING SPECIFICALLY THIS DISCLAIMER AND LIMITATION OF
+LIABILITY, WHENEVER YOU DISTRIBUTE THE SOFTWARE.

@@ -1,0 +1,14 @@
+@prefix kb:  <http://knowledgebooks.com/ontology#> .
+@prefix kbplace:  <http://knowledgebooks.com/ontology/place#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+
+kb:containsCity rdfs:subPropertyOf kb:containsPlace .
+kb:containsCountry rdfs:subPropertyOf kb:containsPlace .
+kb:containsState rdfs:subPropertyOf kb:containsPlace .
+
+kb:containsPlace rdf:type owl:transitiveProperty .
+
+kbplace:UnitedStates kb:containsPlace kbplace:Illinois .
+kbplace:Illinois kb:containsPlace kbplace:Chicago .
