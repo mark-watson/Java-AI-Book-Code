@@ -1,21 +1,26 @@
 package com.knowledgebooks.nlp;
 
+import com.knowledgebooks.nlp.util.NoiseWords;
 import public_domain.Stemmer;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-
-import com.knowledgebooks.nlp.util.NoiseWords;
+import java.util.*;
 
 /**
  * This class stores stem count data for words in a document and provides
  * an API to compare the similarity between this document and another.
  * 
  * @author Mark Watson
+ *
+ * <p/>
+ * Copyright 1998-2012 by Mark Watson. All rights reserved.
+ * <p/>
+ * This software is can be used under either of the following licenses:
+ * <p/>
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
+ * <p/>
  *
  */
 public class ComparableDocument {

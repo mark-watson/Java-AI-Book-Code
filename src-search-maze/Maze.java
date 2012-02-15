@@ -1,7 +1,5 @@
-import java.awt.Dimension;
-
 /**
- * Class Maze - class for representing search space as a two-dimensional maze
+ * Class Maze - class for representing search space as a two-Locational maze
  */
 public class Maze {
     public static short OBSTICLE = -1;
@@ -9,8 +7,8 @@ public class Maze {
     public static short GOAL_LOC_VALUE = -3;
     private int width = 0;
     private int height = 0;
-    public Dimension startLoc = new Dimension();
-    public Dimension goalLoc  = new Dimension();
+    public Location startLoc = new Location();
+    public Location goalLoc  = new Location();
     /**
      * The maze (or search space) data is stored as a short integer rather than
      * as a boolean so that bread-first style searches can use the array to store
@@ -45,14 +43,14 @@ public class Maze {
         /**
          * Specify the starting location
          */
-         startLoc.width = 0;
-         startLoc.height = 0;
+         startLoc.x = 0;
+         startLoc.y = 0;
          setValue(0, 0, (short)0);
         /**
          * Specify the goal location
          */
-        goalLoc.width = width - 1;
-        goalLoc.height = height - 1;
+        goalLoc.x = width - 1;
+        goalLoc.y = height - 1;
         setValue(width - 1, height - 1, GOAL_LOC_VALUE);
     }
     synchronized public short getValue(int x, int y) { return maze[x+1][y+1]; }

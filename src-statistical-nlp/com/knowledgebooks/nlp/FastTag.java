@@ -14,6 +14,14 @@ import java.util.*;
  * <p/>
  * Copyright 2002-2007 by Mark Watson. All rights reserved.
  * <p/>
+ * <p/>
+ * Copyright 1998-2012 by Mark Watson. All rights reserved.
+ * <p/>
+ * This software is can be used under either of the following licenses:
+ * <p/>
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
+ * <p/>
  */
 public class FastTag {
 

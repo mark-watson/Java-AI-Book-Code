@@ -18,8 +18,13 @@ import java.util.List;
  * <p/>
  * Copyright 2002-2008 by Mark Watson. All rights reserved.
  * <p/>
- * This software is not public domain. It can be legally
- * used under the following license: LGPL version 3
+ * <p/>
+ * Copyright 1998-2012 by Mark Watson. All rights reserved.
+ * <p/>
+ * This software is can be used under either of the following licenses:
+ * <p/>
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
  * <p/>
  */
 public class ExtractNames {

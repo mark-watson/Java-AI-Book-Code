@@ -66,10 +66,10 @@ public class MazeDepthFirstSearch extends javax.swing.JFrame {
         }
         // redraw the path in black:
         g2.setColor(Color.black);
-        Dimension [] path = currentSearchEngine.getPath();
+        Location [] path = currentSearchEngine.getPath();
         for (int i=1; i< path.length; i++) {
-          int x = path[i].width;
-          int y = path[i].height;
+          int x = path[i].x;
+          int y = path[i].y;
           short val = maze.getValue(x,y);
           g2.drawString("" + val, 16 + x * 28, 19 + y * 29);
         }
@@ -78,7 +78,7 @@ public class MazeDepthFirstSearch extends javax.swing.JFrame {
     }
 
     public static void main(String[] args) {
-        MazeDepthFirstSearch mazeSearch1 = new MazeDepthFirstSearch();
+        new MazeDepthFirstSearch();
     }
 
     private void jbInit() throws Exception {

@@ -1,5 +1,3 @@
-import java.awt.Dimension;
-
 /**
  * 2D Maze Search
  *
@@ -23,8 +21,8 @@ public class BreadthFirstSearchEngine extends AbstractSearchEngine {
         int height = maze.getHeight();
         boolean alReadyVisitedFlag[][] = new boolean[width][height];
         //float distanceToNode[][] = new float[width][height];
-        Dimension predecessor[][] = new Dimension[width][height];
-        DimensionQueue queue = new DimensionQueue();
+        Location predecessor[][] = new Location[width][height];
+        LocationQueue queue = new LocationQueue();
 
         for (int i=0; i<width; i++) {
             for (int j=0; j<height; j++) {
@@ -34,19 +32,19 @@ public class BreadthFirstSearchEngine extends AbstractSearchEngine {
             }
         }
 
-        alReadyVisitedFlag[startLoc.width][startLoc.height] = true;
+        alReadyVisitedFlag[startLoc.x][startLoc.y] = true;
         //distanceToNode[startLoc.width][startLoc.height] = 0.0f;
         queue.addToBackOfQueue(startLoc);
         boolean success = false;
     outer:      
         while (queue.isEmpty() == false) {
-            Dimension head = queue.peekAtFrontOfQueue();
+            Location head = queue.peekAtFrontOfQueue();
             if (head == null) break; // ??
-            Dimension [] connected = getPossibleMoves(head);
+            Location [] connected = getPossibleMoves(head);
             for (int i=0; i<4; i++) {
                 if (connected[i] == null) break;
-                int w = connected[i].width;
-                int h = connected[i].height;
+                int w = connected[i].x;
+                int h = connected[i].y;
                 if (alReadyVisitedFlag[w][h] == false) {
                     //distanceToNode[w][h] = distanceToNode[w][h] + 1.0f;
                     alReadyVisitedFlag[w][h] = true;
@@ -65,22 +63,22 @@ public class BreadthFirstSearchEngine extends AbstractSearchEngine {
         if (success) {
             searchPath[maxDepth++] = goalLoc;
             for (int i=0; i<100; i++) {
-                searchPath[maxDepth] = predecessor[searchPath[maxDepth - 1].width][searchPath[maxDepth - 1].height];
+                searchPath[maxDepth] = predecessor[searchPath[maxDepth - 1].x][searchPath[maxDepth - 1].y];
                 maxDepth++;
                 if (equals(searchPath[maxDepth - 1], startLoc))  break;  // back to starting node
             }
         }
     }
-    protected class DimensionQueue {
-        public DimensionQueue(int num) {
-            queue = new Dimension[num];
+    protected class LocationQueue {
+        public LocationQueue(int num) {
+            queue = new Location[num];
             head = tail = 0;
             len = num;
         }
-        public DimensionQueue() {
+        public LocationQueue() {
             this(400);
         }
-        public void addToBackOfQueue(Dimension n) {
+        public void addToBackOfQueue(Location n) {
             queue[tail] = n;
             if (tail >= (len - 1)) {
                 tail = 0;
@@ -88,8 +86,8 @@ public class BreadthFirstSearchEngine extends AbstractSearchEngine {
                 tail++;
             }
         }
-        public Dimension removeFromFrontOfQueue() {
-            Dimension ret = queue[head];
+        public Location removeFromFrontOfQueue() {
+            Location ret = queue[head];
             if (head >= (len - 1)) {
                 head = 0;
             } else {
@@ -100,10 +98,10 @@ public class BreadthFirstSearchEngine extends AbstractSearchEngine {
         public boolean isEmpty() {
             return head == (tail + 1);
         }
-        public Dimension peekAtFrontOfQueue() {
+        public Location peekAtFrontOfQueue() {
             return queue[head];
         }       
-        private Dimension [] queue;
+        private Location [] queue;
         private int tail, head, len;
     }
 }

@@ -1,5 +1,3 @@
-import java.awt.Dimension;
-
 /**
  * 2D Maze Search
  *
@@ -20,20 +18,20 @@ public class AbstractSearchEngine {
     public Maze getMaze() { return maze; }
     protected Maze maze;
     /**
-     * We will use the Java type Dimension (fields width and height will
+     * We will use the Java type Location (fields width and height will
      * encode the coordinates in x and y directions) for the search path:
      */
-    protected Dimension [] searchPath = null;
+    protected Location [] searchPath = null;
     protected int pathCount;
     protected int maxDepth;
-    protected Dimension startLoc, goalLoc, currentLoc;
+    protected Location startLoc, goalLoc, currentLoc;
     protected boolean isSearching = true;
 
     protected void initSearch() {
         if (searchPath == null) {
-            searchPath = new Dimension[1000];
+            searchPath = new Location[1000];
             for (int i=0; i<1000; i++) {
-                searchPath[i] = new Dimension();
+                searchPath[i] = new Location();
             }
         }
         pathCount = 0;
@@ -43,34 +41,34 @@ public class AbstractSearchEngine {
         searchPath[pathCount++] = currentLoc;
     }
 
-    protected boolean equals(Dimension d1, Dimension d2) {
-        return d1.getWidth() == d2.getWidth() && d1.getHeight() == d2.getHeight();
+    protected boolean equals(Location d1, Location d2) {
+        return d1.x == d2.x && d1.y == d2.y;
     }
 
-    public Dimension [] getPath() {
-      Dimension [] ret = new Dimension[maxDepth];
+    public Location [] getPath() {
+      Location [] ret = new Location[maxDepth];
       for (int i=0; i<maxDepth; i++) {
         ret[i] = searchPath[i];
       }
       return ret;
     }
-    protected Dimension [] getPossibleMoves(Dimension loc) {
-        Dimension tempMoves [] = new Dimension[4];
+    protected Location [] getPossibleMoves(Location loc) {
+        Location tempMoves [] = new Location[4];
         tempMoves[0] = tempMoves[1] = tempMoves[2] = tempMoves[3] = null;
-        int x = loc.width;
-        int y = loc.height;
+        int x = loc.x;
+        int y = loc.y;
         int num = 0;
         if (maze.getValue(x - 1, y) == 0 || maze.getValue(x - 1, y) == Maze.GOAL_LOC_VALUE) {
-            tempMoves[num++] = new Dimension(x - 1, y);
+            tempMoves[num++] = new Location(x - 1, y);
         }
         if (maze.getValue(x + 1, y) == 0 || maze.getValue(x + 1, y) == Maze.GOAL_LOC_VALUE) {
-            tempMoves[num++] = new Dimension(x + 1, y);
+            tempMoves[num++] = new Location(x + 1, y);
         }
         if (maze.getValue(x, y - 1) == 0 || maze.getValue(x, y - 1) == Maze.GOAL_LOC_VALUE) {
-            tempMoves[num++] = new Dimension(x, y - 1);
+            tempMoves[num++] = new Location(x, y - 1);
         }
         if (maze.getValue(x, y + 1) == 0 || maze.getValue(x, y + 1) == Maze.GOAL_LOC_VALUE) {
-            tempMoves[num++] = new Dimension(x, y + 1);
+            tempMoves[num++] = new Location(x, y + 1);
         }
         return tempMoves;
     }

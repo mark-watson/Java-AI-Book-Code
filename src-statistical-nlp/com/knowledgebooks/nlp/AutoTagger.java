@@ -14,17 +14,15 @@ import com.knowledgebooks.nlp.util.NameValue;
  * Associate pre-trained classification categories (tags) with input text: assigns
  * categories for news story types, technology category types, social information
  * types, etc. to input text.
- * 
+ *
  * <p/>
- * Copyright 2002-2008 by Mark Watson. All rights reserved.
+ * Copyright 1998-2012 by Mark Watson. All rights reserved.
  * <p/>
- * This software is not public domain. It can be legally
- * used under either of the following licenses:
+ * This software is can be used under either of the following licenses:
  * <p/>
- * 1. KnowledgeBooks.com Non Commercial Royalty Free License<br/>
- * 2. KnowledgeBooks.com Commercial Use License
+ * 1. LGPL v3<br/>
+ * 2. Apache 2
  * <p/>
- * see www.knowledgebooks.com for details
  */
 public class AutoTagger {
     private static Hashtable<String, Hashtable<String, Float>> tagClasses;
