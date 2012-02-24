@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+
 
 /**
  * Chess game
@@ -15,6 +17,10 @@ import java.io.InputStreamReader;
  */
 
 public class Chess extends GameSearch {
+
+    // note: set the following to false if running in IntelliJ IDE: console does not display
+    // unicode characters. Usually, you want to set to true (at least try it).
+    static public boolean USE_UNICODE_CHARS = true; // set to true for graphics characters
 
     /**
      *  Notes:  PROGRAM false -1,  HUMAN true 1
@@ -109,20 +115,61 @@ public class Chess extends GameSearch {
         }
         System.out.println();
     }
+
     private String pp(int piece, int square_index) {
         if (piece == 0) return "   ";
-        String color;
-        if (piece < 0) color = "B"; else color = "W";
-        int p = piece; if (p < 0) p = -p;
-        switch (p) {
-        case 1: return " " + color + "P";
-        case 2: return " " + color + "N";
-        case 3: return " " + color + "B";
-        case 4: return " " + color + "R";
-        case 5: return " " + color + "Q";
-        case 9: return " " + color + "K";
+        if (USE_UNICODE_CHARS) {
+            switch (piece) {
+                case 1:
+                    return " \u2659 ";
+                case 2:
+                    return " \u2658 ";
+                case 3:
+                    return " \u2657 ";
+                case 4:
+                    return " \u2656 ";
+                case 5:
+                    return " \u2655 ";
+                case 9:
+                    return " \u2654 ";
+                case -1:
+                    return " \u265F ";
+                case -2:
+                    return " \u265E ";
+                case -3:
+                    return " \u265D ";
+                case -4:
+                    return " \u265C ";
+                case -5:
+                    return " \u265B ";
+                case -9:
+                    return " \u265A ";
+            }
+            return "error";
+
+
+        } else {
+            String color;
+            if (piece < 0) color = "B";
+            else color = "W";
+            int p = piece;
+            if (p < 0) p = -p;
+            switch (p) {
+                case 1:
+                    return " " + color + "P";
+                case 2:
+                    return " " + color + "N";
+                case 3:
+                    return " " + color + "B";
+                case 4:
+                    return " " + color + "R";
+                case 5:
+                    return " " + color + "Q";
+                case 9:
+                    return " " + color + "K";
+            }
+            return "error";
         }
-        return "error";
     }
 
     final public Position [] possibleMoves(Position p, boolean player) {
@@ -190,7 +237,28 @@ public class Chess extends GameSearch {
         return mm;
     }
 
-    static public void main(String [] args) {
+    static public void main(String [] args) throws UnsupportedEncodingException {
+        System.out.println("\u2654");
+            String unicodeMessage =
+                "\u2654 " + // white king
+                    "\u2655 " + // white queen
+                    "\u2656 " + // white rook
+                    "\u2657 " + // white bishop
+                    "\u2658 " + // white knight
+                    "\u2659 " + // white pawn
+                    "\n" +
+                    "\u265A " + // black queen
+                    "\u265B " + // black queen
+                    "\u265C " + // black rook
+                    "\u265D " + // black bishop
+                    "\u265E " + // black knight
+                    "\u265F " + // black pawn
+                    "\n" +
+                    "\u2610 " + "\u2612 " + "\u25A0 " + "\u25FC";  // trying for white and black squares
+        //System.out.println(unicodeMessage);
+        //    PrintStream out = new PrintStream (System.out, true , "UTF8" );
+        //    out.println(unicodeMessage);
+
         ChessPosition p = new ChessPosition();
         for (int i=0; i<120; i++) p.board[i] = initialBoard[i];
         Chess ttt = new Chess();
