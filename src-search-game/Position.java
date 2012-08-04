@@ -1,2 +1,0 @@
-abstract public class Position {
-}
