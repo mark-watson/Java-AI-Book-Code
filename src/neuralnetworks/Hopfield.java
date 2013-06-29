@@ -53,7 +53,7 @@ public class Hopfield {
                 if (deltaEnergy(i) > 0.0f) {
                     inputCells[i] = 1.0f;
                 } else {
-                    inputCells[i] = 0.0f;
+                    inputCells[i] = -1.0f;
                 }
             }
         }
@@ -61,7 +61,7 @@ public class Hopfield {
     }
 
     private float adjustInput(float x) {
-        if (x < 0.1f) return -1.0f;
+        if (x < 0.0f) return -1.0f;
         return 1.0f;
     }
 

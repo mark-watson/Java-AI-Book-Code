@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.1
+Created-By: 20.6-b01 (Sun Microsystems Inc.)
+
+Name: org/apache/hadoop
+Implementation-Title: Hadoop
+Implementation-Version: 1.1.2
+Implementation-Vendor: Apache
+

@@ -258,15 +258,9 @@ public class Chess extends GameSearch {
                     "\u265F " + // black pawn
                     "\n" +
                     "\u2610 " + "\u2612 " + "\u25A0 " + "\u25FC";  // trying for white and black squares
-<<<<<<< HEAD:src/search/game/Chess.java
         System.out.println(unicodeMessage);
             PrintStream out = new PrintStream (System.out, true , "UTF8" );
             out.println(unicodeMessage);
-=======
-        //System.out.println(unicodeMessage);
-        //    PrintStream out = new PrintStream (System.out, true , "UTF8" );
-        //    out.println(unicodeMessage);
->>>>>>> 495d95beea81d9738eb55f1535f51ddb2a12a29c:src-search-game/Chess.java
 
         ChessPosition p = new ChessPosition();
         for (int i=0; i<120; i++) p.board[i] = initialBoard[i];

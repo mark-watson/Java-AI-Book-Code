@@ -17,7 +17,7 @@ import java.util.List;
  * see www.knowledgebooks.com for details
  */
 public class ScoredList {
-    private List<String> strings = new ArrayList<String>();
+    public List<String> strings = new ArrayList<String>();
     private List<Integer> scores = new ArrayList<Integer>();
     private int max_to_keep = 9999999;
     public ScoredList(int max_to_keep) {

@@ -30,6 +30,8 @@ public class TestGenetic {
             genetic_experiment.evolve();
             if ((i%(NUM_CYCLES/5))==0 || i==(NUM_CYCLES-1)) {
                 System.out.println("Generation " + i);
+                genetic_experiment.calcFitness(); // suggested by Rick Hall
+                genetic_experiment.sort();        // suggested by Rick Hall
                 genetic_experiment.print();
             }
         }
