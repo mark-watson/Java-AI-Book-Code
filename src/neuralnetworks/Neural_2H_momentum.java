@@ -48,7 +48,7 @@ import java.io.*;
     public float TRAINING_RATE = 0.5f;
     private float alpha = 0f;  // momentum scaling term that is applied to last delta weight
     
-    Neural_2H_momentum(int num_in, int num_hidden1, int num_hidden2, int num_output,
+    public Neural_2H_momentum(int num_in, int num_hidden1, int num_hidden2, int num_output,
                        float alpha) {
         this.alpha = alpha;
         numInputs = num_in;
@@ -81,6 +81,12 @@ import java.io.*;
         outputTraining.add(outputs);
     }
 
+  /**
+   * Load a trained network from a serialized file
+   *
+   * @param serialized_file_name
+   * @return
+   */
     public static Neural_2H_momentum Factory(String serialized_file_name) {
         Neural_2H_momentum nn = null;
         try {
@@ -102,6 +108,11 @@ import java.io.*;
         return nn;
     }
 
+  /**
+   * Save a trained network to a serialized file for re-use without re-training
+   *
+   * @param file_name
+   */
     public void save(String file_name) {
         try {
             FileOutputStream ostream = new FileOutputStream(file_name);
