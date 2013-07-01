@@ -47,7 +47,12 @@ import java.io.*;
 
     public float TRAINING_RATE = 0.5f;
     private float alpha = 0f;  // momentum scaling term that is applied to last delta weight
-    
+
+    // use a reasonable default momentum term (alpha):
+    public Neural_2H_momentum(int num_in, int num_hidden1, int num_hidden2, int num_output) {
+        this(num_in, num_hidden1, num_hidden1, num_output, 0.6f);
+    }
+
     public Neural_2H_momentum(int num_in, int num_hidden1, int num_hidden2, int num_output,
                        float alpha) {
         this.alpha = alpha;
@@ -77,6 +82,8 @@ import java.io.*;
             System.out.println("addTrainingExample(): array size is wrong");
             return;
         }
+        //System.out.println("addTrainingExample(): inputs: " + Arrays.toString(inputs));
+        //System.out.println("addTrainingExample(): outputs: " + Arrays.toString(outputs));
         inputTraining.add(inputs);
         outputTraining.add(outputs);
     }
@@ -158,6 +165,7 @@ import java.io.*;
     }
 
     public float[] recall(float[] in) {
+        //System.out.println("recall(" + Arrays.toString(inputs) + ")");
         for (int i = 0; i < numInputs; i++) inputs[i] = in[i];
         forwardPass();
         float[] ret = new float[numOutputs];
