@@ -1,0 +1,435 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: basics.plm,v 1.12 2003/04/01 01:12:10 hans Exp
+
+;;; The Basics: simple definition, assertion, retrieval, and retraction.
+;;; ====================================================================
+
+;;; This demo file explains some fundamental PowerLoom commands and
+;;; concepts that will be referred to throughout the various example
+;;; demos.  It introduces name spaces, commands to define concepts and
+;;; relations in these name spaces, assertion and retraction as well
+;;; as basic query commands to inspect the content of a knowledge base.
+;;; This file is probably the best starting point to learn how to use
+;;; PowerLoom.  The best way to view this file is by calling `(demo)'
+;;; and selecting it from the menu of example demos.
+
+
+;; The `in-package' declaration is optional and will be ignored by PowerLoom.
+;; Its main purpose is to tell your Emacs-to-Lisp interface what package to
+;; use for this file (in case it cannot derive the same information from the
+;; mode line).
+
+(in-package "STELLA")
+
+
+;; Modules provide name spaces for concepts, functions, relations,
+;; regular instances, etc.  They also provide assertion spaces for
+;; logical assertions.  Modules are organized hierarchically.  Each
+;; module has a possibly empty set of parent or "included" modules,
+;; and a possibly empty set of "used" modules.  The only difference
+;; (currently) between "included" and "used" modules is that use-links
+;; are only followed one level deep (this allows circular dependencies
+;; where two modules can use each other).  Each module can see all the
+;; names, their associated objects and assertions of all its parent
+;; and used modules as well as of all of their parents, etc.  A module
+;; can also shadow inherited names and provide its own definitions for
+;; them.
+
+;; The default module for PowerLoom users is called `PL-USER'.  Each
+;; demo file uses its own module to avoid interference with other
+;; demos (all demo modules are organized as siblings which have
+;; `PL-USER' as their common parent module).  Similar to a Lisp
+;; package, a module has to be defined with `defmodule' first before
+;; it can be used.
+
+;; Below we define the module `BASICS' as a child of `PL-USER'.
+;; Module names use a syntax similar to Unix pathnames to express
+;; parent/child relationships.  The name `/PL-KERNEL/PL-USER/BASICS'
+;; identifies the module `BASICS' whose parent is `PL-USER' whose
+;; parent in turn is PL-KERNEL.  For modules with a single parent it
+;; suffices to use the qualified name to identify the parent of the
+;; new module:
+
+(defmodule "/PL-KERNEL/PL-USER/BASICS")
+
+;; The command above returned the generated module object as its
+;; result value.  Such objects are usually printed with a prefix that
+;; indicates the object's type followed by the name or some other
+;; description of the object.  For modules the prefix is `|MDL|'
+;; which is folled by the name of the module.
+
+;; Modules remember their definition options, and redefinitions with
+;; the same set of options are treated as no-ops.  Thus, the definition
+;; below simply returns the previously created module:
+
+(defmodule "/PL-KERNEL/PL-USER/BASICS")
+
+;; An alternative method for specifying parents is to use the
+;; `:includes' keyword (for multiple parents this is the only way to
+;; do so).  Below we redefine the `BASICS' module in this way:
+
+(defmodule "BASICS"
+  :includes ("PL-USER"))
+
+;; If a module name is unique in the current set of modules, it can be
+;; used by itself to identify a module instead of having to use a
+;; fully qualified pathname.  This is the reason why above we could
+;; simply write `PL-USER' to identify the parent module of the
+;; `BASICS' module.  Similarly, we could have used the following
+;; relative pathname to define the module:
+
+(defmodule "PL-USER/BASICS")
+
+;; Every PowerLoom file has to have exactly one `in-module'
+;; declaration.  All unqualified definitions and references (i.e.,
+;; those with names not qualified by a module pathname) will be
+;; processed with respect to that module.  The only command permitted
+;; before an `in-module' declaration is `defmodule'.
+
+(in-module "BASICS")
+
+;; First, we clear the module to remove any information accumulated
+;; from any previous runs.  The `clear-module' command eliminates
+;; all locally defined names, their associated objects and any assertions
+;; made about them:
+
+(clear-module "BASICS")
+
+;; We reset the PowerLoom features to their default settings to avoid
+;; interference with features set by the user or by other demos:
+
+(reset-features)
+
+;; `in-dialect' declares the logic dialect assumed for the parsing of
+;; logical expressions.  There can be multiple `in-dialect'
+;; specifications in a file.  The default logic dialect is `KIF'.
+
+(in-dialect KIF)
+
+;; `help' provides a simple on-line command documentation facility.
+;; For example, the following invocation provides help about the
+;; `assert' command:
+
+(help assert)
+
+;; Calling `help' without any arguments lists all available commands
+;; with a short description of each.  In Lisp, one can also get
+;; information about a command by looking up its documentation string,
+;; e.g., with the help of an Emacs-to-Lisp interface.
+
+(help)
+
+;; PowerLoom uses a first-order logic based on KIF as its primary
+;; representation and reasoning substrate.  KIF is the "Knowledge
+;; Interchange Format" - see
+;;
+;;     M.R. Genesereth, "Knowledge interchange format." In J. Allen,
+;;     R. Fikes, and E. Sandewall, editors, Proceedings of the 2nd
+;;     International Conference on Principles of Knowledge Representation
+;;     and Reasoning, pages 599-600, Morgan Kaufmann Publishers, 1991.
+
+;; PowerLoom also has various extensions beyond standard first-order
+;; logic such as type-level and limited second-order reasoning,
+;; selective closed-world reasoning, as well as some features such as
+;; a description classifier that are usually only found in description
+;; logics.
+
+;; With PowerLoom domains are modeled in terms of objects of different
+;; types and the relations that hold between them.  Additionally,
+;; rules such as "every parent has at least one child" can be used to
+;; express the semantic structure of the domain.  Such rules can in
+;; turn be exploited by the inference engine to derive various logical
+;; conclusions.
+
+;; Object types can be defined with the `defconcept' command.
+;; Concepts are defined with an optional variable list containing one
+;; variable.  Variables in PowerLoom all start with a question mark
+;; (?)  character.  That variable can be typed with another parent
+;; concept name, in which case the concept will be a subconcept of
+;; that parent.  Additional options are introduced by keyword/value
+;; pairs defining various things such as documentation, axioms etc.
+;; All keywords begin with a colon (:) character.  For example, the
+;; definition below defines the `Person' concept.  Once a concept has
+;; been defined, we can define instances or members such as `Fred'.
+;; Note that we will often use the terms `concept', `type' or `class'
+;; interchangably to mean the same thing.
+
+;; Similar to many other PowerLoom commands, `defconcept' returns the
+;; generated concept object which is printed with a `|c|' prefix
+;; followed by its name:
+
+(defconcept Person (?p)
+  :documentation "The class of human beings.")
+
+;; `assert' asserts the truth of a proposition.  The two assertions
+;; below state that `Fred' and `Joe' are instances of the concept
+;; `Person'.  Such type assertions also serve the purpose of
+;; introducing new individuals.  For example, since the constants
+;; `Fred' and `Joe' have not been mentioned before, two new logic
+;; objects with type `Person' will be created.  Subsequent references
+;; to `Fred' and `Joe' will be about these two logic objects.
+
+;; `assert' returns the proposition objects it created which are
+;; printed with a `|P|' prefix followed by a description of the
+;; proposition in the current logic dialect (KIF):
+
+(assert (Person Fred))
+(assert (Person Joe))
+
+;; PowerLoom relations are used to express relationships between
+;; objects, to specify properties of objects, their attributes, etc.
+;; Relations allow multiple values, whereas functions allow only
+;; single values.
+
+;; Relations are defined with PowerLoom's `defrelation' command.  For
+;; example, below we define the unary relation `happy' and the binary
+;; relation `likes' (higher arity relations are also possible).  Each
+;; element in the argument list following the relation name represents
+;; one of the relation argments (or a "role").  The number of such
+;; arguments determines the relation's arity.
+
+;; Such an argument can be specified either by a simple untyped KIF
+;; variable, or, as done below, using the KIF convention of a variable
+;; (denoted by a leading question mark) followed by a type indicating
+;; the domain of the particular argument.  (Variables become more
+;; useful when a definition is supplied.  Definitions are covered in
+;; another demo.)  For example, in the `likes' definition we indicate
+;; that both arguments are of type `Person'.  Relation definitions
+;; return the defined relation object which is printed with an `|r|'
+;; prefix followed by the relation name:
+
+(defrelation likes ((?p1 Person) (?p2 Person))
+  :documentation "True if ?p1 likes ?p2.")
+
+;; The relation `happy' is a unary relation.  Unary relations are
+;; similar to concepts, but are normally used to model more transient
+;; properties -- thus `Person' is a concept whereas `happy' is a unary
+;; relation.  Unary relations can also be thought of as boolean
+;; properties of instances.  They are either present or not.
+
+(defrelation happy ((?p Person))
+  :documentation "True if ?p is happy.")
+
+;; Note that concepts and unary relations are logically equivalent and
+;; have the same representation power.  However, they are treated and
+;; indexed differently by PowerLoom using the following heuristics:
+;; concepts are assumed to model the relatively few, fundamental
+;; types of an object that will persist throughout (most of) the
+;; lifetime of an object.  Unary relations or properties such as
+;; `happy', on the other hand, might change often and every object
+;; might have a potentially large number associated with it.
+
+;; Once a relation has been defined, we can assert specific instances
+;; of the relation.  For example, to assert that Joe likes Fred's we
+;; can use the following assertion:
+
+(assert (likes Joe Fred))
+
+;; To assert that Fred is happy we can do this:
+
+(assert (happy Fred))
+
+;; Once a PowerLoom knowledge base (KB) has been populated with some
+;; assertions we can use its query mechanism to access the content of
+;; the KB.  There are two principle ways of querying the KB:
+;;
+;;    (1) Asking true/false questions with the `ask' command.
+;;    (2) Retrieving instances that satisfy a particular predicate
+;;        with `retrieve'.
+;;
+;; `ask' takes a fully ground logical sentence as an argument and
+;; tries to determine its truth value relative to the current state of
+;; the KB.  For example, we can ask whether Fred is happy with the
+;; following query:
+
+(ask (happy Fred))
+
+;; Let's try to ask the same for Joe:
+
+(ask (happy Joe))
+
+;; The previous query returns UNKNOWN, since PowerLoom doesn't know if
+;; Joe is happy or not.  Nothing was asserted about Joe's happiness,
+;; and there are also no rules that would let us infer the answer.
+;; Unlike some other systems, if PowerLoom doesn't know a fact, it
+;; does not automatically conclude the fact is false.  This behavior
+;; is known as an "open world assumption", i.e., PowerLoom (by default)
+;; does not assume to have a complete model of the world or
+;; domain that is modeled.  (This is different from the closed world
+;; assumption commonly made by deductive databases or Prolog).
+
+;; The results of queries are NOT boolean values, since there are more
+;; than just TRUE or FALSE as possible outputs.
+;; Instead the return value is of type TRUTH-VALUE, with printing routines
+;; setup to print TRUE, FALSE, UNKNOWN, etc.  For use in programs, there are
+;; routines in the interface to test for these values.
+
+;; Let us explicitly assert that Joe is not happy:
+
+(assert (not (happy Joe)))
+
+;; Now the query will return FALSE:
+
+(ask (happy Joe))
+
+
+;; `retrieve' can be used to retrieve instances or tuples of instances
+;; for which a particular predicate is true.  `retrieve' takes a
+;; logical sentence with one or more free variables as an argument and
+;; tries to retrieve bindings for these variables for which the
+;; sentence is true in the KB.  We use the KIF question-mark syntax to
+;; indicate the retrieval variables.  An optional first argument
+;; indicates how many solutions should be generated.  The special
+;; symbol `all' indicates that we want all solutions.  For example,
+;; the list of all people can be retrieved with the following query:
+
+(retrieve all (Person ?x))
+
+;; Note, that the bindings found for the variable `?x' above are actual
+;; logic objects.  The default interactive print routine for query
+;; results is to show the explicit variable bindings on each line.
+;; The binding for `?x' prints as the name of the object, but the
+;; value is the actual object itself.
+
+
+;; Let us retrieve who Joe likes:
+
+(retrieve all (likes Joe ?x))
+
+;; `retrieve' can also take the list of retrieval variables as an
+;; optional argument.  In this case, it is important that they match
+;; the free variables in the query sentence.  This is useful if one
+;; wants to order the retrieval variables in a different way than they
+;; occur in the query sentence.  For example:
+
+(retrieve all (?y ?x) (likes ?x ?y))
+
+;; Retrieval variables can also be optionally typed, for example:
+
+(retrieve all ((?y Person) (?x Person)) (likes ?x ?y))
+
+;; The previous query is equivalent to the following (note that in
+;; this case the `Person' restrictions are redundant, since they
+;; simply mirror the domain restrictions of the `likes' relation):
+
+(retrieve all (and (Person ?y)
+                   (Person ?x)
+                   (likes ?x ?y)))
+
+;; If no argument is supplied for the number of desired solutions,
+;; only one solution is retrieved.  For example:
+
+(retrieve (Person ?x))
+
+;; The previous query is equivalent to this one:
+
+(retrieve 1 (Person ?x))
+
+;; Retrieving a limited number of solutions or just one at a time is
+;; useful if that is all that's needed, or if generating all solutions
+;; would take a very long time due to a large search space.  Since
+;; logical inference can be expensive, PowerLoom generates solutions
+;; lazily on demand and does not precompute the full answer set unless
+;; the user asked for all solutions.  This is different from standard
+;; database API's where a query usually returns a full result set that
+;; can then be iterated over.
+
+;; `retrieve' returns a query iterator (or enumerator) object that
+;; encodes all necessary state to continue the query and generate
+;; additional solutions.  The query results you see are generated by a
+;; special print function that displays the set of solutions
+;; accumulated so far in the query iterator.  The iterator generated
+;; by the most recent query is stored in an internal variable.
+;; Subsequent solutions to that query can then be generated by calling
+;; `retrieve' without any arguments (or by only supplying a number of
+;; desired new solutions).  For example:
+
+(retrieve)
+
+;; Since we have already found all solutions to this query, the next
+;; call to `retrieve' cannot generate any new ones.  This is indicated
+;; by a slightly different message that shows that PowerLoom cannot
+;; generate any additional solutions:
+
+(retrieve 1)
+
+;; PowerLoom relations defined by `defrelation' are by default
+;; multi-valued.  For example, there might be multiple people that Joe
+;; likes which could be modeled via multiple `(likes Joe ...)'
+;; assertions.  Often it is also useful to model something as a
+;; single-valued relation where for each set of input arguments there
+;; is at most one possible value.  Examples are somebody's biological
+;; mother, attributes such as somebody's current age or height, etc.
+;; One way to do this in PowerLoom is to define such a relation as a
+;; function via the `deffunction' command.  `deffunction' is similar
+;; to `defrelation' with the exception of the functional output
+;; argument which is separated from the remaining arguments via the
+;; :-> keyword.  Functions can be defined using the specialized syntax
+;; shown below, or by using a form like defrelation.  If not using the
+;; specialized form with the result arrow (:->), then the last
+;; variable is the range.  For example, to define an `age' function we
+;; can do the following (`Integer' is a built-in concept defined in
+;; PowerLoom's kernel KB):
+
+(deffunction age ((?p Person)) :-> (?a Integer)
+  :documentation "?a is ?p's age in years.")
+
+;; The following idiom can be used to assert a function value:
+
+(assert (= (age Fred) 35))
+
+;; The assertion language for functions also allows one to use the
+;; syntax for relations as well.  The previous assertion could also
+;; have been specified as
+
+(assert (age Fred 35))
+
+;; Asserting the same value again has no additional effect on PowerLoom.
+;; either form creates the same internal representation through a process
+;; called `normalization'.
+
+;; Now we can use `ask' to see whether Fred has a particular age:
+
+(ask (= (age Fred) 35))
+
+;; Or we can use `retrieve' to find out what Fred's age is:
+
+(retrieve (= (age Fred) ?x))
+
+;; On Fred's next birthday, we might want to retract his previous age
+;; with help of the `retract' command:
+
+(retract (= (age Fred) 35))
+
+;; Now we can only retrieve the skolem constant representing the term
+;; `Fred's age', however, since it does not have a value associated
+;; with it the query iterator reports no solutions:
+
+(retrieve (= (age Fred) ?x))
+
+;; Let's make Fred one year older:
+
+(assert (= (age Fred) 36))
+
+(retrieve (= (age Fred) ?x))
+
+;; Note, that for single-valued functions such as `age' PowerLoom supports
+;; "clipping", i.e., we can change a value by simply asserting a new
+;; value without performing a retraction first.  The following assertion
+;; will replace Fred's current age with a new value:
+
+(assert (= (age Fred) 42))
+
+(retrieve (= (age Fred) ?x))
+
+;; The command `all-facts-of' can be used to lookup all propositions
+;; asserted about a logic constant with a particular name:
+
+(all-facts-of Fred)
+
+;; `retract-facts-of' can be used to retract all assertions about
+;; a particular logic constant:
+
+(retract-facts-of Fred)
+(all-facts-of Fred)

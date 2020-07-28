@@ -1,0 +1,19 @@
+# triples to add to a new repository:
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix kb: <http://knowledgebooks.com/> .
+@prefix person: <http://knowledgebooks.com/person/> .
+
+kb:mother rdfs:subPropertyOf kb:parent .
+kb:father rdfs:subPropertyOf kb:parent .
+
+person:ron kb:father person:anthony .
+
+# sample queries to demonstrate inferencing:
+
+SELECT DISTINCT ?s ?o
+WHERE { ?s kb:father ?o }
+
+SELECT DISTINCT ?s ?o
+WHERE { ?s kb:parent ?o }

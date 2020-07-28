@@ -1,0 +1,18 @@
+@prefix : <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix kb: <http://knowledgebooks.com/test#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    
+kb:Business a :Class;
+     :label "Business";
+     :subClassOf kb:Organization .
+
+kb:Customer a :Class;
+     :label "Customer";
+     :subClassOf kb:Business .
+
+kb:Organization a :Class;
+     :label "Organization" .
+
+kb:organizationName  a rdf:Property;
+     :domain kb:Organization;
+     :range <http://www.w3.org/2001/XMLSchema#stringstring> .

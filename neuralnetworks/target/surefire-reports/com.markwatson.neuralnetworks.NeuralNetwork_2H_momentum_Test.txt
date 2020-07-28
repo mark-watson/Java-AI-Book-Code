@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.markwatson.neuralnetworks.NeuralNetwork_2H_momentum_Test
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.097 sec

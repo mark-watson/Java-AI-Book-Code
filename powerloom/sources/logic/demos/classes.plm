@@ -1,0 +1,273 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: classes.plm,v 1.17 2003/03/28 21:11:32 hans Exp
+
+;;; Reasoning with primitive and defined concepts
+;;; =============================================
+
+;;; This file demonstrates some definition facilities for primitive
+;;; and non-primitive or defined concepts, and how such concepts can
+;;; be used in queries of various kinds.
+
+;;; The best way to view this file is by calling `(demo)' and
+;;; selecting it from the menu of example demos.  This demo assumes
+;;; familiarity with some basic PowerLoom concepts which are described
+;;; in the introductory demo (#1 on the demo menu).
+
+
+;; Standard demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "PL-USER/CONCEPTS")
+
+(in-module "CONCEPTS")
+
+(clear-module "CONCEPTS")
+(reset-features)
+
+(in-dialect KIF)
+
+
+;; We start by defining the concept `Person' with the already familiar
+;; `happy' relation and `age' function:
+
+(defconcept Person
+  :documentation "The class of human beings.")
+(defrelation happy ((?p Person)))
+(deffunction age ((?p Person)) :-> (?age Integer))
+
+;; Next we define a primitive subconcept of `Person'.  It is called
+;; "primitive", since it is not fully defined in terms of other
+;; concepts and relations, hence, there are some characteristics of
+;; its members that are left implicit or primitive and are not further
+;; explained in the knowledge base.  The superconcepts of `Warfighter'
+;; are listed following the concept name (with a syntax similar to
+;; subclassing a CLOS class in Common Lisp):
+
+(defconcept Warfighter (Person)
+  :documentation "People involved in military operations.")
+
+;; The concept definition above is really only a shorthand that
+;; expands into the following logically equivalent definition and
+;; assertions (which we repeat here for exposition):
+
+;; First, we define the concept term:
+
+(defconcept Warfighter)
+
+;; Second, we assert the subconcept relationship via a `subset-of' assertion
+;; (which PowerLoom interprets as a universally quantified rule):
+
+(assert (subset-of Warfighter Person))
+
+;; Finally, we attach a documentation string via a `documentation'
+;; assertion.  Note that the :documentation keyword used before is
+;; not anything special built into the `defconcept' command, rather it
+;; is a keyword axiom syntax where the name of the keyword is
+;; interpreted to be the name of a binary relation, the first argument
+;; is left implicit and taken to be the name of the defined entity and
+;; the second argument is the supplied value, thus, it gets expanded
+;; into the following assertion:
+
+(assert (documentation Warfighter "People involved in military operations."))
+
+;; This also demonstrates that concepts and relations can participate
+;; as arguments to assertions just like any "ordinary" instance.  A
+;; query like the following can then be used to lookup the documentation
+;; of a term:
+
+(retrieve (documentation Warfighter ?doc))
+
+;; Now let's define armed services and some particular service instances:
+
+(defconcept Armed-Service
+  :documentation "The class of armed services, for example, the US Navy.")
+
+(assert (Armed-Service US-Army))
+(assert (Armed-Service US-Navy))
+(assert (Armed-Service US-Airforce))
+
+;; Next we define a `service' function that maps warfighters to the
+;; branch of military service they operate in.  Function inputs are
+;; defined via optionally typed KIF variables such as the variable
+;; `?p' below.  Such variables can be listed simply by themselves or
+;; as a list where the second element is interpreted as the variable
+;; type.  In the definition `?p's type is `Warfighter' which is taken
+;; to be the domain of the function.  There could be more than one
+;; input argument, since PowerLoom allows n-ary functions and
+;; relations.  The function output is its last argument which is again
+;; given as an optionally typed KIF variable separated via the :->
+;; keyword.  Below, the variable `?s' is typed as `Armed-Service'
+;; which defines the range of the function.  Similar to concepts and
+;; relations, functions can have keyword axioms such as :documentation:
+
+(deffunction service ((?p Warfighter)) :-> (?s Armed-Service)
+  :documentation "The armed service to which a warfighter belongs.")
+
+;; Again, the `deffunction' syntax is a shorthand that expands into
+;; the following logically equivalent definition and assertions:
+
+(deffunction service (?p) :-> ?s)
+(assert (nth-domain service 0 Warfighter))
+(assert (nth-domain service 1 Armed-Service))
+(assert (documentation service
+                       "The armed service to which a warfighter belongs."))
+
+;; Functions can also be specified just like relations without the
+;; special :-> keyword, for example, the following is yet another
+;; equivalent definition:
+
+(deffunction service ((?p Warfighter) (?s Armed-Service))
+  :documentation "The armed service to which a warfighter belongs.")
+
+;; The function `friends' maps a person to its set of friends:
+
+(deffunction friends ((?p Person)) :-> (?f SET)
+  :documentation "The set of friends ?f of some person ?p.")
+
+;; Next we define a non-primitive (or defined) subconcept of `Person'
+;; called `Civilian'.  This is done by providing a bi-directional,
+;; if-and-only-if implication between the concept and a defining
+;; logical expression.  In this case civilians are defined as people
+;; who are not warfighters.  This time the list of superconcepts is
+;; preceded by a class variable `?p' which is needed so it can be
+;; referenced in the defining expression.  In primitive concept
+;; definitions such as the ones above such variables can be ommitted.
+;; Note, that since the definition is if-and-only-if, every person who
+;; is not a warfighter is a civilian and vice versa.
+
+(defconcept Civilian (?p Person)
+  :documentation "People who are not warfighters."
+  :<=> (and (Person ?p)
+            (not (Warfighter ?p))))
+
+;; The definition is a shorthand for the following logically equivalent
+;; definition and assertions:
+
+(defconcept Civilian)
+(assert (subset-of Civilian Person))
+(assert (documentation Civilian "People who are not warfighters."))
+
+;; The defining bi-directional implication rule is translated by
+;; PowerLoom into three equivalent regular implications:
+
+(assert
+  (forall (?p)
+    (<=> (Civilian ?p)
+         (and (Person ?p)
+              (not (Warfighter ?p))))))
+
+;; A note to Loom users: PowerLoom does not distinguish between
+;; definitional and non-definitional parts of a concept or relation
+;; definition.  Any rule implying a concept or relation will be
+;; considered by the inference engine and classifier, regardless of
+;; whether it was part of the definition or asserted somewhere else
+;; outside.
+
+;; Let us define two more specialized classes of warfighters for
+;; particular service branches:
+
+(defconcept Army-Person (?p Warfighter)
+  :<=> (and (Warfighter ?p)
+            (= (service ?p) US-Army)))
+
+(defconcept Navy-Person (?p Warfighter)
+  :<=> (and (Warfighter ?p)
+            (= (service ?p) US-Navy)))
+
+;; Some instances of the concepts defined above:
+
+(assert (Warfighter Buck))
+(assert (= (service Buck) US-Army))
+
+(assert (Person John))
+
+;; We can use the built-in `member-of' relation to express set membership:
+
+(assert (member-of Buck (friends John)))
+(assert (member-of John (friends Buck)))
+
+(assert (Person Judy))
+
+;; Since so far we only know that Judy is a person, the following two
+;; queries cannot derive any definitive answers:
+
+(ask (Warfighter Judy))
+(ask (Civilian Judy))
+
+;; So, let us assert that Judy is a member of the US-Navy:
+
+(assert (Warfighter Judy))
+(assert (= (service Judy) US-Navy))
+
+;; Now we can successfully determine that she is a Navy-Person:
+
+(ask (Navy-Person Judy))
+
+;; The next query returns UNKNOWN, since (currently) PowerLoom does
+;; not simultaneously try to answer a query and its negation with the
+;; same effort (only "obvious" falsities are picked up):
+
+(ask (Civilian Judy))
+
+;; However, if we ask the negated question explicitly, we get the
+;; expected result:
+
+(ask (not (Civilian Judy)))
+
+;; The same works in the opposite direction:
+
+(assert (Civilian Blimpy))
+(ask (Civilian Blimpy))
+
+;; Note, that this query does find the negated answer, since it has
+;; already been derived by forward inference:
+
+(ask (Warfighter Blimpy))
+(ask (not (Warfighter Blimpy)))
+
+;; Yet another warfighter:
+
+(assert (Warfighter Fred))
+(assert (= (service Fred) US-Airforce))
+
+;; Now, let us retrieve various sets of instances:
+
+(retrieve all (Person ?p))
+(retrieve all (Warfighter ?w))
+(retrieve all (and (Person ?p) (not (Civilian ?p))))
+(retrieve all (and (Person ?p) (not (Warfighter ?p))))
+
+;; Retrieval of instances of defined classes:
+
+(retrieve all (Civilian ?p))
+(retrieve all (Army-Person ?w))
+(retrieve all (Navy-Person ?w))
+
+;; Let us retrieve everybody who is either in the US-Navy or US-Airforce:
+
+(retrieve all (and (Warfighter ?w)
+                   (or (= (service ?w) US-Navy)
+                       (= (service ?w) US-Airforce))))
+
+;; Alternatively, this can be done like this:
+
+(retrieve all (and (Warfighter ?w)
+                   (member-of (service ?w) (setof US-Navy US-Airforce))))
+
+;; Retrieve all people and their friends:
+
+(retrieve all (and (Person ?p)
+                   (Person ?f)
+                   (member-of ?f (friends ?p))))
+
+;; Retrieve all armed services with some members who have friends:
+
+(retrieve all
+          (and (Armed-Service ?s)
+               (exists (?p ?w)
+                 (and (Person ?p)
+                      (Warfighter ?w)
+                      (member-of ?p (friends ?w))
+                      (= (service ?w) ?s)))))

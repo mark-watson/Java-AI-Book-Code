@@ -1,0 +1,147 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: inconsistent-value.plm,v 1.2 2011/04/19 23:44:17 tar Exp
+
+;;; Testing Clashes and Inconsistency
+;;; =================================
+
+(in-package "STELLA")
+
+(in-module "PL-USER")
+
+(defmodule "PL-USER/CLASHES")
+(defmodule "PL-USER/CLASHES/TEST")
+(in-module "CLASHES")
+
+(set-feature :justifications)
+
+;; Setup a set of classes and inference rules that will
+;; be used to generate clashes and inconsistent results.
+(defconcept a)
+(defconcept b)
+(defconcept c)
+(defconcept d)
+;; The function is used to allow inference of its domain (A)
+;; for assertions that then feed into inconsistent/clash results.
+(deffunction f ((?x A) (?y integer)))
+
+;; Rules for generating clashing answers.
+;; A & B =>  D
+;; A & C => ~D
+(assert (=> (and (a ?x) (b ?x)) (d ?x)))
+(assert (=> (and (a ?x) (c ?x)) (not (d ?x))))
+
+;; Relations instead of classes so that we can test forward
+;; inference of results and forward explanation.
+(defrelation x (?x))
+(defrelation y (?x))
+(defrelation z (?x))
+(assert (=>> (and (x ?x) (y ?x)) (z ?x)))
+
+
+(in-module "TEST")
+(clear-module test)
+
+;; Forward inference explanation.  Explaining inference that
+;; comes from forward rule invocation.
+(assert (and (x jack) (y jack)))
+(ask (z jack))
+(why)
+
+#|
+;; Direct asserted clash, can only be currently explained
+;; using program code calls.
+(assert (and (a fred) (a barney)))
+(assert (not (a barney)))
+
+;; This happens in forward-chaining, so ASK won't find the
+;; clash, but asking for inconsistent propositions will work.
+(consify (all-inconsistent-propositions *module* true))
+(explain-proposition (first cl:*) NULL 8 STANDARD-OUTPUT)
+
+;; Inference versus assertion
+(assert (f bob 8))
+(assert (not (a bob)))
+
+(ask (a bob)) 
+; => UNKNOWN?  Should this be INCONSISTENT?  We don't propagate it yet.
+(consify (all-inconsistent-propositions *module* true))
+(explain-proposition (first cl:*) NULL 8 STANDARD-OUTPUT)
+
+;; Assertion versus inference
+(assert (not (a ted)))
+(assert (f ted 8))
+(process-definitions)
+(consify (all-inconsistent-propositions *module* true))
+
+;; Inference vs. assertion.
+(assert (and (x bill) (y bill)))
+(assert (not (z bill)))
+(run-forward-rules test :force)
+;; NOTE: This results in a list where the first two items are not clashing
+;;       in the top-context, but in an inference cache.  So this must be
+;;       properly viewed only inside the (best-inference-cache *module*)
+(eval (within-context (best-inference-cache *module*)
+        (print (consify (all-inconsistent-propositions *module* true)))))
+|#
+
+;; Inference both ways, case #1
+;; This illustrates the difference between simple and :four-valued?
+;; ask queries.  The different cases just use different mechanisms
+;; for 
+(assert (b jim))
+(assert (c jim))
+(assert (f jim 10))
+(ask (d jim))
+(ask (d jim) :four-valued? true)
+(why)
+
+;; Inference both ways case #2
+(assert (and (a alice) (b alice) (c alice)))
+(ask (d alice) :four-valued? true)
+
+;; Inference both ways case #3
+(assert (and (b carol) (c carol)))
+(assert (a carol))
+(ask (d carol) :four-valued? true)
+
+;; Inference both ways case #4
+(assert (a betty))
+(assert (b betty))
+(assert (c betty))
+(ask (d betty) :four-valued? true)
+
+#|
+;; Clash in values, inconsistent interval cache
+;; Forward chaining clash which is only available
+;; for inspection using programmatic means.
+(assert (> (f bill) 3))
+(assert (< (f bill) 2))
+(ask (f bill 2))
+;; (cl:describe (%exception (first *clash-exceptions*)))
+;;(inspect (first *clash-exceptions*))
+;;
+;; Note that CLASH-EXCEPTION has the information about the interval
+;; clash but doesn't identify the proposition that is at fault.
+;; Adding that would need a bit more digging, although the skolem in
+;; question could be readily identified from the clash data structure.
+
+|#
+
+;; Closed world failure testing.
+(defrelation wife (?x ?y))
+(assert (wife fred wilma))
+(assert (wife barney betty))
+
+;; Testing FAIL operator and its negation.
+
+(ask (wife fred wilma))
+(ask (fail (wife fred betty)))
+(ask (not (fail (wife fred betty))))
+
+(ask (wife fred wilma) :four-valued? TRUE)
+(ask (fail (wife fred betty)) :four-valued? TRUE)
+(ask (not (fail (wife fred betty))) :four-valued? TRUE)
+
+
+(unset-feature :justifications)

@@ -1,0 +1,79 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: meta-relations.plm,v 1.1 2000/07/15 02:33:42 hans Exp
+
+;;; Using meta-properties and relations
+;;; ===================================
+
+
+;; Demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "PL-USER/META-RELATIONS")
+
+(in-module "META-RELATIONS")
+
+(clear-module "META-RELATIONS")
+
+
+;;; Reflexive and symmetric relations:
+
+(defrelation foo (?x ?y))
+(assert (reflexive foo))
+(ask (foo a a))
+(ask (irreflexive foo))
+(ask (not (irreflexive foo)))
+(assert (foo a b))
+(ask (foo b a))
+(assert (symmetric foo))
+(ask (foo b a))
+(ask (commutative foo))
+(ask (antisymmetric foo))
+(ask (not (antisymmetric foo)))
+
+;;; Irreflexive and antisymmetric relations:
+
+(defrelation foo2 (?x ?y))
+(assert (irreflexive foo2))
+(ask (foo2 a a))
+(ask (not (foo2 a a)))
+(assert (antisymmetric foo2))
+(assert (foo2 a b))
+(ask (foo2 b a))
+(ask (not (foo2 b a)))
+
+;;; Transitive relations:
+
+(defrelation foo3 (?x ?y))
+(assert (foo3 a b))
+(assert (foo3 b c))
+(ask (foo3 a c))
+(assert (transitive foo3))
+(ask (foo3 a c))
+
+;; This doesn't quite work yet, due to some forward chaining deficiencies:
+(defrelation foo4 (?x ?y))
+(assert (foo4 a b))
+(ask (foo4 b a))
+(assert (commutative foo4))
+;; this should return true:
+(ask (foo4 b a))
+;; this shouldn't need to be asserted:
+(assert (binary-relation foo4))
+;; this should return true:
+(ask (foo4 b a))
+;; after we ask for symmetry we get the desired result:
+(ask (symmetric foo4))
+(ask (foo4 b a))
+
+;;; Inverse relations:
+
+(defrelation parent (?x ?y))
+(defrelation child (?x ?y)
+  :axioms (inverse child parent))
+
+;; works, but it doesn't if we unsuccessfully ask before we have the inverse
+;;    specification, then assert it and ask again:
+(assert (parent fred father))
+(ask (child father fred))

@@ -1,0 +1,214 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: steamroller.plm,v 1.2 1999/07/17 00:15:09 hans Exp
+
+;;; Schubert's Steamroller
+;;; ======================
+
+;;; This file gives a PowerLoom solution to Schubert's Steamroller problem.
+
+;;; The best way to view this file is by calling `(demo)' and
+;;; selecting it from the menu of example demos.  This demo assumes
+;;; familiarity with some basic PowerLoom concepts which are described
+;;; in the introductory demo (#1 on the demo menu) and other demos
+;;; preceding this one.
+
+;;; The PowerLoom formulation of this popular benchmark for automated
+;;; reasoning systems was inspired by the SNePSLOG formulation due to
+;;; Carlos Pinto-Ferreira (currently at the Technical University of
+;;; Lisbon, Portugal).
+
+;;; Problem definition (taken from M.E. Stickel: Automated Deduction by 
+;;; Theory Resolution, Proc. of IJCAI 85, p.1184-85):
+;;;
+;;; + Wolves, foxes, birds, caterpillars and snails are animals.
+;;; + There are some of each of them.
+;;; + There are some grains.
+;;; + Grains are plants.
+;;; + Every animal either likes to eat all plants or all animals
+;;;   much smaller than itself that like to eat some plants.
+;;; + Caterpillars and snails are much smaller than birds, which
+;;;   are much smaller than foxes, which in turn are much smaller
+;;;   than wolves.
+;;; + Wolves do not like to eat foxes or grains.
+;;; + Birds like to eat caterpillars but not snails.
+;;; + Caterpillars and snails like to eat some plants.
+;;;
+;;; Therefore:
+;;;
+;;; + There is an animal that likes to eat a grain-eating animal.
+
+
+;; Demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "/PL-KERNEL/PL-USER/STEAMROLLER")
+
+(in-module "/PL-KERNEL/PL-USER/STEAMROLLER")
+
+(clear-module "/PL-KERNEL/PL-USER/STEAMROLLER")
+
+(in-dialect :KIF)
+
+
+;;; Wolves, foxes, birds, caterpillars and snails are animals.
+
+(defconcept LIVING-THING (THING) :abstract? TRUE)
+(defconcept ANIMAL (LIVING-THING))
+
+(defconcept WOLF (ANIMAL))
+(defconcept FOX (ANIMAL))
+(defconcept BIRD (ANIMAL))
+(defconcept CATERPILLAR (ANIMAL))
+(defconcept SNAIL (ANIMAL))
+
+;;; There are some of each of them.
+
+;(assert (exists ?w (Wolf ?w)))
+;(assert (exists ?f (Fox ?f)))
+;(assert (exists ?b (Bird ?b)))
+;(assert (exists ?c (Caterpillar ?c)))
+;(assert (exists ?s (Snail ?s)))
+
+;; We hand-skolemize to get better skolem names:
+(assert (Wolf w1))
+(assert (Fox f1))
+(assert (Bird b1))
+(assert (Caterpillar c1))
+(assert (Snail s1))
+
+;;; Grains are plants.
+
+(defconcept PLANT (LIVING-THING))
+(defconcept GRAIN (PLANT))
+
+;;; There are some grains.
+
+;(assert (exists ?g (Grain ?g)))
+
+(assert (Grain g1))
+
+;;; Necessary relations:
+
+(defrelation Eats ((?x Animal) (?y Living-Thing)))
+(defrelation Muchsmaller ((?x Animal) (?y Animal)))
+
+;;; Every animal either likes to eat all plants or all animals
+;;; much smaller than itself that like to eat some plants.
+
+#|
+;; THIS STILL BREAKS DURING NORMALIZATION OF SATELLITES:
+(assert
+ (forall ((?a1 Animal))
+         (or (forall ((?p1 Plant)) (Eats ?a1 ?p1))
+             (forall ((?a2 Animal))
+                     (=> (and (muchsmaller ?a2 ?a1)
+                              (exists (?p2 PLANT) (Eats ?a2 ?p2)))
+                         (Eats ?a1 ?a2))))))
+|#
+
+;; The rules below are the four possible simple-head rules that
+;;    can be derived from the above rule after converting it to
+;;    clause form (not inverting for variable type propositions).
+;; Until our normalizer can handle this, we need to invert by hand:
+
+(defrule Eats-Rule-1
+    (forall ((?a1 Animal) (?p1 Plant) (?a2 Animal) (?p2 Plant))
+      (=> (and (not (Eats ?a1 ?p1))
+               (Muchsmaller ?a2 ?a1)
+               (Eats ?a2 ?p2))
+          (Eats ?a1 ?a2))))
+
+(defrule Eats-Rule-2
+    (forall ((?a1 Animal) (?p1 Plant) (?a2 Animal) (?p2 Plant))
+      (=> (and (not (Eats ?a1 ?a2))
+               (Muchsmaller ?a2 ?a1)
+               (Eats ?a2 ?p1))
+          (Eats ?a1 ?p2))))
+
+(defrule Eats-Rule-3
+    (forall ((?a1 Animal) (?p1 Plant) (?a2 Animal) (?p2 Plant))
+      (=> (and (not (Eats ?a1 ?p1))
+               (Muchsmaller ?a2 ?a1)
+               (not (Eats ?a1 ?a2)))
+          (not (Eats ?a2 ?p2)))))
+
+;; For completeness, this fourth inversion is included here, even though
+;;    it is not necessary to derive the conclusion.  Fortunately, including
+;;    it does not seem to cause any decrease in performance.
+(defrule Muchsmaller-Rule
+    (forall ((?a1 Animal) (?p1 Plant) (?a2 Animal) (?p2 Plant))
+      (=> (and (not (Eats ?a1 ?p1))
+               (Eats ?a2 ?p2)
+               (not (Eats ?a1 ?a2)))
+          (not (Muchsmaller ?a2 ?a1)))))
+
+;;; Caterpillars and snails are much smaller than birds, which are much 
+;;; smaller than foxes, which in turn are much smaller than wolves.
+
+;; NOTE: We don't need the transitivity of `Muchsmaller'.
+(assert (forall ((?a1 Caterpillar) (?a2 Bird)) (Muchsmaller ?a1 ?a2)))
+(assert (forall ((?a1 Snail) (?a2 Bird)) (Muchsmaller ?a1 ?a2)))
+(assert (forall ((?a1 Bird) (?a2 Fox)) (Muchsmaller ?a1 ?a2)))
+(assert (forall ((?a1 Fox) (?a2 Wolf)) (Muchsmaller ?a1 ?a2)))
+
+;;; Wolves do not like to eat foxes or grains.
+
+(assert (forall ((?a1 Wolf) (?a2 Fox)) (not (Eats ?a1 ?a2))))
+(assert (forall ((?a1 Wolf) (?a2 Grain)) (not (Eats ?a1 ?a2))))
+
+;;; Birds like to eat caterpillars but not snails.
+
+(assert (forall ((?a1 Bird) (?a2 Caterpillar)) (Eats ?a1 ?a2)))
+(assert (forall ((?a1 Bird) (?a2 Snail)) (not (Eats ?a1 ?a2))))
+
+;;; Caterpillars and snails like to eat some plants.
+
+#|
+(assert (forall (?a Caterpillar) (exists (?p Plant) (Eats ?a ?p))))
+(assert (forall (?a Snail) (exists (?p Plant) (Eats ?a ?p))))
+|#
+
+;; The representation scheme below uses explicit skolem functions
+;;    which for this problem is more efficient, since it doesn't
+;;    increase the size of the plant class extension:
+
+(deffunction caterpillarfood ((?x Caterpillar)) :-> ?y
+  :type Plant :total? TRUE)
+
+(deffunction snailfood ((?x Snail)) :-> ?y
+  :type Plant :total? TRUE)
+
+(assert (forall (?a Caterpillar) (Eats ?a (caterpillarfood ?a))))
+(assert (forall (?s Snail) (Eats ?s (snailfood ?s))))
+
+;;; Run forward inference:
+
+(propagate-constraints)
+
+;;; Therefore: There is an animal that likes to eat a grain-eating animal.
+
+(ask (exists ((?a1 Animal) (?a2 Animal) (?p Grain))
+       (and (Eats ?a2 ?p)
+            (Eats ?a1 ?a2))))
+
+;; For the curious: Who eats what grain-eating animal?
+
+(retrieve ((?a1 Animal) (?a2 Animal) (?p Grain))
+          (and (Eats ?a2 ?p)
+               (Eats ?a1 ?a2)))
+
+;; Test efficiency of different conjunct ordering:
+(ask (exists ((?a1 Animal) (?a2 Animal) (?p Grain))
+       (and (Eats ?a1 ?a2)
+            (Eats ?a2 ?p))))
+
+;; A good test for the caching mechanism:
+(retrieve all ((?a1 Animal) (?a2 Animal) (?p Grain))
+          (and (Eats ?a2 ?p)
+               (Eats ?a1 ?a2)))
+
+;; Who eats who? (note that the transitivity of `Muchsmaller' is not modeled)
+(retrieve all ((?a1 Animal) (?a2 Animal))
+          (Eats ?a1 ?a2))

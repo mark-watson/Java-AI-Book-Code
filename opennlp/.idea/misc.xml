@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="HaskellBuildOptions">
+    <cabalPath>$USER_HOME$/.local/bin/cabal</cabalPath>
+    <stackPath>$USER_HOME$/bin/stack</stackPath>
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_3" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="ScalaSbtSettings">
+    <option name="customVMPath" />
+    <option name="maximumHeapSize" value="1268" />
+    <option name="vmParameters" value="-XX:MaxPermSize=420M" />
+  </component>
+</project>

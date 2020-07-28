@@ -1,14 +1,16 @@
-# Code examples for the 4th edition of "Practical Artificial Intelligence Programming with Java"
+# Code for the 2020 edition of "Practical Artificial Intelligence With Java"
 
-All code examples can be used either under the LGPL version 3 license or the Apache 2 license.
+The previous edition was released in 2013. The new 2020 edition is largely a rewrite of older material with the addition of new material. The 2020 edition was published July 28, 2020 and this repository was updated to remove all old code and add new and modified examples. See below for information on getting the old code and the PDF for the 2013 edition.
 
-You can buy a copy of the "Practical Artificial Intelligence Programming with Java" (includes PDF, Kindle, and iPad/iPhone formats)
-at  https://leanpub.com/javaai   for a minimum price of $3 (recommended price is $6). I get most of the proceeds from sales - this will
-help fund future writing projects!
+[Leanpub Link for latest edition](https://leanpub.com/javaai)
 
-Please note that as I update the book with corrections and updated material that you can have Leanpub.com
-automatically notify you when free updates are available.
+This book is a combination of
 
-## Donate on Patreon to support all of my projects
+- new coverage of deep learning
+- new material: creating and using knowledge graphs
+- examples from my discontinued book "Power Java": anomaly detection, linked data, using DBPedia, OpenNLP, and web scraping
+- examples from the original editions of this book: genetic algorithms and search algorithms 
+- a few examples updated from my discontinued book "Practical Semantic Web and Linked Data Applications, Java Edition"
 
-[https://www.patreon.com/markwatson](https://www.patreon.com/markwatson) by donating $1/month
+You can find the older code for the 2013 4th edition here: [https://github.com/mark-watson/Java-AI-Book-Code_4th_edition](https://github.com/mark-watson/Java-AI-Book-Code_4th_edition)
+

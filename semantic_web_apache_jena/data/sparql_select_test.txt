@@ -1,0 +1,83 @@
+@prefix kb: <http://knowledgebooks.com/> .
+
+kb:oak_creek_flooding kb:storyType kb:disaster ;
+	kb:summary "Oak Creek flooded last week affecting 5 businesses" ;
+	kb:title "Oak Creek Flood" .
+
+kb:bear_mountain_fire kb:storyType kb:disaster ;
+	kb:summary "The fire on Bear Mountain was caused by lightning" ;
+	kb:title "Bear Mountain Fire" .
+
+kb:trout_season kb:storyType kb:sports , kb:recreation ;
+    kb:summary "Fishing was good the first day of trout season" ;
+    kb:title "Trout Season Starts" .
+
+kb:jc_basketball kb:storyType kb:sports ;
+    kb:summary "Local JC Basketball team lost by 12 points last night" ;
+    kb:title "Local JC Lost Last Night" .
+
+
+
+PREFIX kb:<http://knowledgebooks.com/>
+SELECT DISTINCT ?article_uri1 ?article_uri2 ?predicate1 ?predicate2
+WHERE {
+    ?article_uri1 ?predicate1 ?same_object .
+    ?article_uri2 ?predicate2 ?same_object .
+    FILTER (sameTerm(?predicate1, ?predicate2) && !sameTerm(?article_uri1, ?article_uri2)) .
+}
+
+
+PREFIX kb:<http://knowledgebooks.com/>
+SELECT DISTINCT ?article_uri1 ?article_uri2 ?predicate1 ?predicate2
+WHERE {
+    ?article_uri1 ?predicate1 "Trout Season Starts" .
+    ?article_uri2 ?predicate2 "Trout Season Starts" .
+    FILTER (!sameTerm(?article_uri1, ?article_uri2)) .
+}
+
+PREFIX kb:<http://knowledgebooks.com/>
+SELECT DISTINCT ?article_uri1 ?article_uri2 ?predicate1 ?predicate2
+WHERE {
+    ?article_uri1 ?predicate1 ?o1 .
+    ?article_uri2 ?predicate2 ?o2 .
+    FILTER (!sameTerm(?article_uri1, ?article_uri2) && sameTerm(?predicate1, ?predicate2)) .
+    FILTER regex(?o1, "Season") .
+    FILTER regex(?o2, "Season") .
+}
+
+PREFIX kb:<http://knowledgebooks.com/>
+SELECT ?article_uri ?title ?summary
+WHERE {
+  { ?article_uri kb:storyType kb:sports } UNION { ?article_uri kb:storyType kb:recreation } .
+  ?article_uri kb:title ?title .
+  ?article_uri kb:summary ?summary .
+}
+
+PREFIX kb:<http://knowledgebooks.com/>
+SELECT DISTINCT ?article_uri ?title ?summary
+WHERE {
+  { ?article_uri kb:storyType kb:sports } UNION { ?article_uri kb:storyType kb:recreation } .
+  ?article_uri kb:title ?title .
+  ?article_uri kb:summary ?summary .
+}
+
+
+# new triple, without a summary:
+kb:jc_bowling kb:storyType kb:sports ;
+    kb:title "JC Bowling Team to Open Season" .
+
+PREFIX kb:<http://knowledgebooks.com/>
+SELECT DISTINCT ?title ?summary
+WHERE { ?article_uri kb:title  ?title .
+        OPTIONAL { ?article_uri kb:summary ?summary }
+}
+
+PREFIX kb:<http://knowledgebooks.com/>
+SELECT DISTINCT ?title ?summary ?page_count
+WHERE { ?article_uri kb:title  ?title .
+        OPTIONAL { ?article_uri kb:summary ?summary } .
+        OPTIONAL { ?article_uri kb:page_count ?page_count . FILTER (?page_count > 1) } .
+}
+
+
+

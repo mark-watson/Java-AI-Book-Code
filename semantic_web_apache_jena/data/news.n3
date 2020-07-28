@@ -1,0 +1,37 @@
+@prefix kb:  <http://knowledgebooks.com/ontology#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+kb:containsCity rdfs:subPropertyOf kb:containsPlace .
+
+kb:containsCountry rdfs:subPropertyOf kb:containsPlace .
+
+kb:containsState rdfs:subPropertyOf kb:containsPlace .
+
+<http://news.yahoo.com/s/nm/20080616/ts_nm/usa_flooding_dc_16/> kb:containsCity "Burlington" , "Denver" , "St. Paul" , "Chicago" , "Quincy" , "CHICAGO" , "Iowa City" ;
+	kb:containsRegion "U.S. Midwest" , "Midwest" ;
+	kb:containsCountry "United States" , "Japan" ;
+	kb:containsState "Minnesota" , "Illinois" , "Mississippi" , "Iowa" ;
+	kb:containsOrganization "National Guard" , "U.S. Department of Agriculture" , "White House" , "Chicago Board of Trade" , "Department of Transportation" ;
+	kb:containsPerson "Dena Gray-Fisher" , "Donald Miller" , "Glenn Hollander" , "Rich Feltes" , "George W. Bush" ;
+	kb:containsIndustryTerm "food inflation" , "food" , "finance ministers" , "oil" .
+
+<http://news.yahoo.com/s/nm/20080616/ts_nm/usa_politics_dc_2/> kb:containsCity "Washington" , "FLINT" , "Baghdad" , "Arlington" , "Flint" ;
+	kb:containsCountry "United States" , "Afghanistan" , "Iraq" ;
+	kb:containsState "Illinois" , "Virginia" , "Arizona" , "Michigan" ;
+	kb:containsOrganization "White House" , "Obama administration" , "Iraqi government" ;
+	kb:containsPerson "David Petraeus" , "John McCain" , "Hoshiyar Zebari" , "Barack Obama" , "George W. Bush" , "Carly Fiorina" ;
+	kb:containsIndustryTerm "oil prices" .
+
+<http://news.yahoo.com/s/nm/20080616/ts_nm/worldleaders_trust_dc_1/> kb:containsCity "WASHINGTON" ;
+	kb:containsCountry "United States" , "Pakistan" , "Islamic Republic of Iran" ;
+	kb:containsState "Maryland" ;
+	kb:containsOrganization "University of Maryland" , "United Nations" ;
+	kb:containsPerson "Ban Ki-moon" , "Gordon Brown" , "Hu Jintao" , "George W. Bush" , "Pervez Musharraf" , "Vladimir Putin" , "Steven Kull" , "Mahmoud Ahmadinejad" .
+
+<http://news.yahoo.com/s/nm/20080616/bs_nm/global_economy_dc_4/> kb:containsCity "Sao Paulo" , "Kuala Lumpur" ;
+	kb:containsRegion "Midwest" ;
+	kb:containsCountry "United States" , "Britain" , "Saudi Arabia" , "Spain" , "Italy" , "India" , "France" , "Canada" , "Russia" , "Germany" , "China" , "Japan" , "South Korea" ;
+	kb:containsOrganization "Federal Reserve Bank" , "European Union" , "European Central Bank" , "European Commission" ;
+	kb:containsPerson "Lee Myung-bak" , "Rajat Nag" , "Luiz Inacio Lula da Silva" , "Jeffrey Lacker" ;
+	kb:containsCompany "Development Bank Managing" , "Reuters" , "Richmond Federal Reserve Bank" ;
+	kb:containsIndustryTerm "central bank" , "food" , "energy costs" , "finance ministers" , "crude oil prices" , "oil prices" , "oil shock" , "food prices" , "Finance ministers" , "Oil prices" , "oil" .

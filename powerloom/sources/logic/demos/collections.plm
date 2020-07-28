@@ -1,0 +1,144 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: collections.plm,v 1.11 2003/03/31 23:18:19 hans Exp
+
+;;; Reasoning with collections
+;;; ==========================
+
+;;; This file demonstrates some facilities for defining concepts via
+;;; enumerated collections and how to reason with them.
+
+;;; The best way to view this file is by calling `(demo)' and
+;;; selecting it from the menu of example demos.  This demo assumes
+;;; familiarity with some basic PowerLoom concepts which are described
+;;; in the introductory demo (#1 on the demo menu) and other demos
+;;; preceding this one.
+
+
+;; Standard demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "PL-USER/COLLECTIONS")
+
+(in-module "COLLECTIONS")
+
+(clear-module "COLLECTIONS")
+(reset-features)
+
+(in-dialect KIF)
+
+
+;; Let's start by defining a concept `Color'.  The idiom below
+;; defines the concept in terms of an enumerated set using the
+;; built-in `setof' function.  `setof' takes an arbitrary number
+;; of arguments and generates a term representing the enumerated
+;; set.  
+
+(defconcept Color (?c)
+  :<=> (member-of ?c (setof red orange yellow green blue purple)))
+
+;; Again, the :<=> syntax is nothing special and just a syntactic shortcut
+;; for specifying an equivalence between a concept (or relation) and
+;; a defining logical expression.  Any concept or relation definition
+;; of the form
+;;
+;;    (def... <name> (<var>+) :<=> <sentence ... <var> ...>)
+;;
+;; is simply interpreted as the following two-step definition:
+;;
+;;    (def... <name> (<var>+))
+;;    (forall (<var>+)
+;;       (<=> (<name> <var>+)
+;;            <sentence ... <var> ...>))
+;;
+;; The definition above is therefore equivalent to the following:
+
+(defconcept Color)
+
+(assert
+  (forall (?c)
+    (<=> (Color ?c)
+         (member-of ?c (setof red orange yellow green blue purple)))))
+
+;; Next we define two subconcepts (or subsets) of `Color':
+
+(defconcept Primary-Color (?c Color)
+  :<=> (member-of ?c (setof red yellow blue)))
+
+(defconcept Alliance-Color (?c Color)
+  :<=> (member-of ?c (setof red blue)))
+
+;; Above we explicitly specified `Color' as a superconcept of the two
+;; subsets (via the variable type).  However, even without that
+;; PowerLoom can determine the subset relationship by using a
+;; subsumption test (at the expense of some extra CPU cycles).  For
+;; example:
+
+(defconcept Traffic-Light-Color (?c)
+  :<=> (member-of ?c (setof red orange green)))
+
+(ask (subset-of Traffic-Light-Color Color))
+
+;; Now let's run some queries:
+
+(ask (Color green))
+
+;; Retrieving various sets of colors:
+
+(retrieve all (Color ?x))
+(retrieve all (and (Color ?x) (= ?x green)))
+(retrieve all (Primary-Color ?x))
+
+;; Since `Primary-Color' was defined via an explicit enumeration of
+;; its members, PowerLoom can determine that it is a closed
+;; collection, i.e., for any color it can determine whether it is a
+;; member of the set (or concept) or not.  This is different from the
+;; usual open-world assumption where non-membership is often simply
+;; unknown.  For example:
+
+(ask (not (Primary-Color orange)))
+(ask (not (member-of orange primary-color)))
+
+;; Retrieve the relative complement of `Primary-Color'.  Here it is
+;; important to specify `Color' as a restriction, since PowerLoom will
+;; not attempt to generate the infinite set of things that are not
+;; `Primary-Color's:
+
+(retrieve all (and (Color ?x)
+                   (not (Primary-Color ?x))))
+
+;; Simple membership tests:
+
+(ask (member-of blue (setof blue yellow)))
+(ask (member-of green (setof blue yellow)))
+(ask (not (member-of blue (setof blue yellow))))
+(ask (not (member-of green (setof blue yellow))))
+
+;; Simple subset tests:
+
+(ask (subset-of (setof blue yellow) (setof blue yellow purple)))
+(ask (subset-of Alliance-Color Primary-Color))
+
+;; More subset-of tests that mainly demonstrate various syntactic
+;; variations for specifying the set of primary colors:
+
+(ask (subset-of (setof red blue) Primary-Color))
+(ask (subset-of (setof red blue) (setofall ?x (Primary-Color ?x))))
+(ask (subset-of (setof red blue) (setofall (?x Primary-Color))))
+(ask (subset-of (setof red blue) (setofall (?x Primary-Color) TRUE)))
+
+;; Subset-of tests involving complements:
+
+(ask (subset-of (setofall (?x Color) (not (Primary-Color ?x))) Color))
+(ask (subset-of (setofall (?x Color) (not (Primary-Color ?x)))
+                (setofall (?x Color) (not (Alliance-Color ?x)))))
+
+;; Non-subset-of tests:
+
+(ask (not (subset-of Alliance-Color Primary-Color)))
+(ask (not (subset-of Primary-Color Alliance-Color)))
+(ask (not (subset-of (setofall (?x Color) (not (Primary-Color ?x)))
+                     (setofall (?x Color) (not (Alliance-Color ?x))))))
+(ask (not (subset-of (setofall (?x Color) (not (Alliance-Color ?x)))
+                     (setofall (?x Color) (not (Primary-Color ?x))))))

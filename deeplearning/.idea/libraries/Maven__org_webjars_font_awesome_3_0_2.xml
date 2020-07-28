@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.webjars:font-awesome:3.0.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/font-awesome/3.0.2/font-awesome-3.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/font-awesome/3.0.2/font-awesome-3.0.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/font-awesome/3.0.2/font-awesome-3.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

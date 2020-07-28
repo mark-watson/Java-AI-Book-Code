@@ -1,9 +1,0 @@
-./. John/NNP chased/VB the/DT dog/NN down/RP the/DT street/NN ./. I/PRP saw/VB John/NNP dog/VB Mary/NNP and/CC later/RB Mary/NNP throw/VB the/DT ball/NN to/TO 
-John/NNP on/IN the/DT street/NN ./. John/NNP saw/VB a/DT dog/NN and/CC cat/NN ./. The/DT dog/NN chased/VB the/DT 
-cat/NN ./. John/NNP had/VB to/TO leave/VB on/IN time/NN ./. Mary/NNP stayed/VB and/CC played/VB with/IN the/DT cat/NN ./. 
-The/DT cat/NN chased/VBN Mary/NNP ./. Mary/NNP chased/VB the/DT cat/NN ./. Mary/NNP threw/VB the/DT ball/NN at/IN the/DT cat/NN ./. 
-The/DT cat/NN ran/VB away/RB ./. Mary/NNP played/VB with/IN the/DT dog/NN ./. I/PRP saw/VB John/NNP bank/VB the/DT airplane/NN ./. 
-Mary/NNP went/VB to/TO the/DT river/NN bank/NN ./. Mary/NNP is/VBZ tired/JJ so/RB she/PRP is/VBZ taking/VBG a/DT leave/NN of/IN absense/NN ./. 
-John/NNP saw/VB the/DT dog/NN ball/VB the/DT cat/NN ./. Mary/NNP borrowed/VB a/DT saw/NN from/IN John/NNP ./. That/DT was/VB a/DT good/JJ throw/NN ./. 
-John/NNP saw/VB the/DT dog/NN throw/VB the/DT cat/NN and/CC the/DT dog/NN leave/VB ./. Mary/NNP tired/VB the/DT cat/NN ./.
-John/NNP went/VB to/TO the/DT bank/NN to/TO get/VB money/NN ./.

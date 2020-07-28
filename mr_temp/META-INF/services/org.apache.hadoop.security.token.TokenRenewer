@@ -1,7 +1,0 @@
-org.apache.hadoop.hdfs.DFSClient$Renewer
-org.apache.hadoop.mapred.JobClient$Renewer
-org.apache.hadoop.hdfs.security.token.block.BlockTokenIdentifier$Renewer
-org.apache.hadoop.mapreduce.security.token.JobTokenIdentifier$Renewer
-org.apache.hadoop.hdfs.HftpFileSystem$TokenManager
-org.apache.hadoop.hdfs.HsftpFileSystem$TokenManager
-org.apache.hadoop.hdfs.web.WebHdfsFileSystem$DtRenewer

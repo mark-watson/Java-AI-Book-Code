@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6fc404d7-284b-4cf3-8ee7-42c783e496ee" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../kgn/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kgn/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../kgn/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kgn/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../kgn/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kgn/src/main/java/com/knowledgegraphnavigator/ConsoleUserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/../kgn/src/main/java/com/knowledgegraphnavigator/ConsoleUserInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kgn/src/main/java/com/knowledgegraphnavigator/KGN.java" beforeDir="false" afterPath="$PROJECT_DIR$/../kgn/src/main/java/com/knowledgegraphnavigator/KGN.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kgn/src/test/java/com/knowledgegraphnavigator/KgnTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../kgn/src/test/java/com/knowledgegraphnavigator/KgnTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/markwatson/ner_dbpedia/NerMaps.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/markwatson/ner_dbpedia/NerMaps.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1e36DkVoBickecGk68x0b5VOqYX" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/pom.xml" />
+    <property name="settings.editor.selected.configurable" value="preferences.general" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <module />
+      <method />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="TestNG" default="true" selected="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TextToDbpediaUrisTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="nerdbpedia" />
+      <option name="PACKAGE_NAME" value="com.markwatson.ner_dbpedia" />
+      <option name="MAIN_CLASS_NAME" value="com.markwatson.ner_dbpedia.TextToDbpediaUrisTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.TextToDbpediaUrisTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6fc404d7-284b-4cf3-8ee7-42c783e496ee" name="Default Changelist" comment="" />
+      <created>1593549613624</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1593549613624</updated>
+      <workItem from="1593549615741" duration="1662000" />
+      <workItem from="1593617623344" duration="58000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1073" height="280" key="GridCell.Tab.0.bottom" timestamp="1593610441454">
+      <screen x="43" y="25" width="1237" height="775" />
+    </state>
+    <state width="1073" height="280" key="GridCell.Tab.0.bottom/43.25.1237.775@43.25.1237.775" timestamp="1593610441454" />
+    <state width="1001" height="288" key="GridCell.Tab.0.bottom/44.25.1236.775@44.25.1236.775" timestamp="1593546760621" />
+    <state width="1660" height="311" key="GridCell.Tab.0.bottom/441.1177.1280.775/56.25.1992.1127@56.25.1992.1127" timestamp="1593551298891" />
+    <state width="1073" height="280" key="GridCell.Tab.0.center" timestamp="1593610441453">
+      <screen x="43" y="25" width="1237" height="775" />
+    </state>
+    <state width="1073" height="280" key="GridCell.Tab.0.center/43.25.1237.775@43.25.1237.775" timestamp="1593610441453" />
+    <state width="1001" height="288" key="GridCell.Tab.0.center/44.25.1236.775@44.25.1236.775" timestamp="1593546760620" />
+    <state width="1660" height="311" key="GridCell.Tab.0.center/441.1177.1280.775/56.25.1992.1127@56.25.1992.1127" timestamp="1593551298889" />
+    <state width="1073" height="280" key="GridCell.Tab.0.left" timestamp="1593610441452">
+      <screen x="43" y="25" width="1237" height="775" />
+    </state>
+    <state width="1073" height="280" key="GridCell.Tab.0.left/43.25.1237.775@43.25.1237.775" timestamp="1593610441452" />
+    <state width="1001" height="288" key="GridCell.Tab.0.left/44.25.1236.775@44.25.1236.775" timestamp="1593546760619" />
+    <state width="1660" height="311" key="GridCell.Tab.0.left/441.1177.1280.775/56.25.1992.1127@56.25.1992.1127" timestamp="1593551298888" />
+    <state width="1073" height="280" key="GridCell.Tab.0.right" timestamp="1593610441453">
+      <screen x="43" y="25" width="1237" height="775" />
+    </state>
+    <state width="1073" height="280" key="GridCell.Tab.0.right/43.25.1237.775@43.25.1237.775" timestamp="1593610441453" />
+    <state width="1001" height="288" key="GridCell.Tab.0.right/44.25.1236.775@44.25.1236.775" timestamp="1593546760621" />
+    <state width="1660" height="311" key="GridCell.Tab.0.right/441.1177.1280.775/56.25.1992.1127@56.25.1992.1127" timestamp="1593551298890" />
+  </component>
+</project>

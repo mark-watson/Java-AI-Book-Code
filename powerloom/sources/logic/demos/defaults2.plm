@@ -1,0 +1,72 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: defaults2.plm,v 1.1 2000/07/15 02:33:38 hans Exp
+
+;;; More reasoning with default information
+;;; =======================================
+
+
+;; Demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "/PL-KERNEL/PL-USER/DEFAULTS2")
+
+(in-module "DEFAULTS2")
+
+(clear-module "DEFAULTS2")
+(reset-features)
+
+(in-dialect :KIF)
+
+
+;;; Colored Animals:
+
+(defconcept Animal (?x))
+(defrelation flies ((?x Animal)))
+
+(defconcept Bird (?x Animal))
+(presume (forall (?x) (=> (Bird ?x) (flies ?x))))
+
+(defconcept Penguin (?x Bird)
+  :=> (not (flies ?x)))
+
+(defconcept Color (?x))
+(defrelation color-of ((?x Animal) (?c Color)))
+
+(assert (Color brown))
+(assert (Color grey))
+
+;; Usually, animals are brown:
+(presume (forall (?x) (<<= (color-of ?x brown) (Animal ?x))))
+
+;; By default, flying animals are grey:
+(presume (forall (?x) (<<= (color-of ?x grey) (flies ?x))))
+
+;; Some animals:
+(assert (Animal Fido))
+(assert (Bird Tweety))
+(assert (Penguin Opus))
+
+;;; VARIOUS PROBLEMS:
+;;; - if we define the above rules with a plain =>, then the forward chainer
+;;;   screws us up, since it does not try shallow disproofs on antecedents
+;;; - besides that, `try-scan-propositions-proof' and probably other atomic
+;;;   strategies too have to be fixed in a way similar to `has-shallow-disproof?'
+;;;   to properly set `holds-by-default?', so that the logic in
+;;;   `continue-current-or-next-strategy' can do the right thing if there was
+;;;   a conflict.
+;;; - `defrule' should take an argument so we can generate a default rule
+;;;   (maybe we can already do that with `~>').
+;;; - all these problems can be worked around with explicit exceptions, i.e.,
+;;;   by adding the exception as a negated antecedent (or are exceptions in the
+;;;   way CycL uses them something different than that?).  That should also
+;;;   be described in a demo.  By using a defrule syntax we can redefine the
+;;;   relevant rules appropriately and try again.
+;;; - The lack of specificity overrides poses a problem when we want to model
+;;;   default values (e.g., speed) that changes on subclasses.
+
+;; What are their colors:
+(retrieve all (?x ?y) (and (Animal ?x) (color-of ?x ?y)))
+;; Ask a second time to make sure forward inference hasn't screwed us up:
+(retrieve all (?x ?y) (and (Animal ?x) (color-of ?x ?y)))

@@ -1,0 +1,1722 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: TEST; Base: 10. -*-
+
+;;;        Module:   AIRCRAFT
+;;; Derived from Loom Context AIRCRAFT
+;;; Last Saved On:    09/27/96 11:34:20
+;;;    Written By:    
+
+
+(defmodule "PL-KERNEL/PL-USER/AIRCRAFT-KB"
+  :documentation "Information in this module is derived from publicly available
+sources, principally the United States Air Force and Navy Fact Sheets.
+Images are from the US Air Force, US Navy and other on-line sources."
+  :shadow (length))
+
+(in-module "AIRCRAFT-KB")
+
+(clear-module "AIRCRAFT-KB")
+
+(in-dialect :KIF)
+
+(defconcept Active-Guidance-Type (?g)
+  :<=> (member-of ?g (setof SEMI-ACTIVE-RADAR-HOMING
+			 ACTIVE-RADAR-HOMING
+			 SEMI-ACTIVE-LASER-HOMING)))
+(defconcept Passive-Guidance-Type (?g)
+  :<=> (member-of ?g (setof INERTIAL 
+			 GPS
+			 IR-HOMING 
+			 IMAGING-IR 
+			 ELECTRO-OPTICAL 
+			 TV 
+			 ANTI-RADIATION
+			 HOME-ON-JAM)))
+
+
+(defrelation Attacked-By ((?t CLASS) (?w WEAPON)))
+
+(defrelation Stores ((?w AIRCRAFT) (?t PHYSICAL-ENTITY)))
+(defrelation Carried-By ((?t PHYSICAL-ENTITY) (?w AIRCRAFT))
+  :inverse stores)
+
+(defrelation Aa-Ordnance ((?a AIRCRAFT) (?o PHYSICAL-ENTITY))
+  :<<=>> (and (Ordnance ?a ?o) (Aa-Weapon ?o)))
+
+(defrelation Ag-Ordnance ((?a AIRCRAFT) (?o PHYSICAL-ENTITY))
+  :<<=>> (and (Ordnance ?a ?o) (Ag-Weapon ?o)))
+
+(defrelation Bombs ((?a AIRCRAFT) (?o PHYSICAL-ENTITY))
+  :<<=>> (and (Ordnance ?a ?o) (BOMB ?o)))
+
+(defrelation Drop-Tank ((?a AIRCRAFT) (?o PHYSICAL-ENTITY))
+  :<<=>> (and (Stores ?a ?o) (FUEL-TANK ?o)))
+
+(deffunction Caliber ((?g GUN)) :-> (?n NUMBER))
+(deffunction Ceiling ((?g Flying-Object)) :-> (?n INTEGER))
+(deffunction Cost ((?e Physical-Entity)) :-> (?n INTEGER))
+(deffunction Crew-Roles ((?v Vehicle)) :-> (?c COLLECTION))
+(deffunction Crew-Size ((?v Vehicle)) :-> (?c INTEGER))
+(deffunction Designation ((?e Entity)) :-> (?d STRING))
+(deffunction Engine-Count ((?v Vehicle)) :-> (?n INTEGER))
+
+(defrelation Engine-Type ((?v Vehicle) (?e Engine)))
+(defrelation Engine-Used-By ((?e ENGINE) (?v VEHICLE))
+  :inverse engine-type)
+
+(defconcept Width-relation ((?r RELATION)))
+(deffunction Diameter ((?e ENTITY)) :-> (?n NUMBER))
+(assert (width-relation diameter))
+
+(deffunction Fleet-Size ((?o AIR-ORGANIZATION) (?a AIRCRAFT)) :-> (?n INTEGER))
+
+(deffunction Fuel-Capacity ((?o Physical-Entity)) :-> (?n INTEGER))
+(assert (forall ((?a PHYSICAL-ENTITY) (?i INTEGER))
+	  (=> (Fuel-Capacity ?a ?i)
+	      (or (Vehicle ?a) (Fuel-Tank ?a)))))
+
+(defrelation Guidance ((?w weapon) (?g guidance-type)))
+
+(defrelation Guns ((?a AIRCRAFT) (?o PHYSICAL-ENTITY))
+  :<<=>> (and (Ordnance ?a ?o) (GUN ?a)))
+
+(deffunction Height ((?e PHYSICAL-ENTITY)) :-> (?n NUMBER))
+(deffunction Horsepower ((?e PROPELLER-ENGINE)) :-> (?n INTEGER))
+(deffunction In-Service ((?e PHYSICAL-ENTITY)) :-> (?n INTEGER))
+(deffunction Landing-Distance ((?e FLYING-OBJECT)) :-> (?n NUMBER))
+(deffunction Length ((?e PHYSICAL-ENTITY)) :-> (?n NUMBER))
+
+(defrelation Made-By ((?e ENTITY) (?m MANUFACTURER)))
+(defrelation Manufactures ((?m MANUFACTURER) (?e ENTITY))
+  :inverse Made-By)
+
+(deffunction Landing-Distance ((?e FLYING-OBJECT)) :-> (?n NUMBER))
+(deffunction Max-Range ((?e Vehicle)) :-> (?n INTEGER))
+(deffunction Max-Speed ((?e Vehicle)) :-> (?n INTEGER))
+(deffunction Max-Mach ((?e Vehicle)) :-> (?n NUMBER))
+(deffunction Max-Weight ((?e Physical-Entity)) :-> (?n INTEGER))
+(deffunction Min-Range ((?e Weapon)) :-> (?n INTEGER))
+
+(defrelation Missiles ((?a AIRCRAFT) (?o PHYSICAL-ENTITY))
+  :<<=>> (and (Ordnance ?a ?o) (MISSILE ?o)))
+
+(defrelation Has-Mission ((?v vehicle) (?m MISSION)))
+
+(defrelation Name ((?e Entity) (?s STRING)))
+
+(deffunction Normal-Range ((?e Vehicle)) :-> (?n INTEGER))
+
+;; ****
+#|
+(defrelation Number-Of-Ac
+  :domain Aircraft
+  :range Integer
+  :is (:satisfies (?X ?Y) (Sum
+                           (:Collect ?Z (:Exists ?W (Fleet-Size ?W ?X ?Z))) ?Y))
+  :characteristics (:single-valued :read-only))
+|#
+;; ****
+
+(defrelation Ordnance ((?a AIRCRAFT) (?o PHYSICAL-ENTITY))
+  :<<=>> (and (Stores ?a ?o) (Weapon ?o)))
+
+(deffunction Passenger-Capacity ((?e Vehicle)) :-> (?n INTEGER))
+(deffunction Payload ((?e Vehicle)) :-> (?n INTEGER))
+
+(defrelation Pods ((?a AIRCRAFT) (?o PHYSICAL-ENTITY))
+  :<<=>> (and (Stores ?a ?o) (Pod ?o)))
+(defrelation Rockets ((?a AIRCRAFT) (?o PHYSICAL-ENTITY))
+  :<<=>> (and (Ordnance ?a ?o) (Rocket ?o)))
+
+(deffunction Shaft-Horsepower ((?e ENGINE)) :-> (?n INTEGER))
+
+(deffunction Take-Off-Distance ((?e Vehicle)) :-> (?n INTEGER))
+(defrelation Target-Type ((?w WEAPON) (?c CLASS))
+  :axioms (inverse Target-Type Attacked-By))
+
+(deffunction Thrust ((?e Jet-Engine)) :-> (?n INTEGER))
+(deffunction Warhead ((?e Weapon)) :-> (?n INTEGER))
+(assert (forall ((?w WEAPON) (?i INTEGER))
+	  (=> (warhead ?w ?i) (payload ?w ?i))))
+(defrelation Warhead-Type ((?w WEAPON) (?e ENTITY)))
+
+(deffunction WIDTH ((?e PHYSICAL-ENTITY)) :-> (?n NUMBER))
+(assert (width-relation width))
+(deffunction WINGSPAN ((?e FLYING-OBJECT)) :-> (?n NUMBER))
+(assert (width-relation wingspan))
+
+(defconcept Active-Jammer ((?p ECM-POD)))
+(defconcept Afterburning-Engine ((?e JET-ENGINE)))
+
+;;; *************
+
+(defconcept AA-Weapon ((?w WEAPON))
+  :<=> (and (weapon ?w) (or (target-type ?w Flying-Object)
+			    (target-type ?w Aircraft))))
+(defconcept AG-Weapon ((?w WEAPON))
+  :<<=>> (and (weapon ?w) (target-type ?w Ground-unit)))
+#| ;; Maybe this would be better
+(defconcept AA-Weapon ((?w WEAPON))
+  :<=> (and (weapon ?w) 
+	    (exists (?t)
+	      (and (target-type ?w ?t)
+		   (or (subset-of ?t flying-object)
+		       (subset-of ?t aircraft))))))
+(defconcept AA-Weapon ((?w WEAPON))
+  :<=> (and (weapon ?w) 
+	    (exists (?t)
+	      (and (target-type ?w ?t)
+		   (subset-of ?t ground-unit)))))
+|#
+
+
+(defconcept Air-Organization ((?o ORGANIZATION))
+  :documentation "An Organization that owns/controls aircraft")
+(defconcept Air-Superiority ((?x combat-mission)))
+(assert (Combat-Mission Air-Superiority))
+
+(defconcept Aircraft ((?v VEHICLE))
+  :=> (and (Vehicle ?v) (Flying-Object ?v)))
+(defconcept Fixed-Wing-Aircraft ((?a AIRCRAFT))
+  :synonym Airplane)
+(defconcept Rotary-Wing-Aircraft ((?a aircraft))
+  :synonym Helicopter)
+(assert (disjoint Fixed-Wing-Aircraft Rotary-Wing-Aircraft))
+
+(deffunction Rotor-Diameter ((?e HELICOPTER)) :-> (?n NUMBER))
+(assert (width-relation rotor-diameter))
+
+(defconcept Heavier-Than-Air-Craft ((?a aircraft))
+  :documentation "Heavier than air craft can be defined as having total weight is greater than air displacement.")
+(defconcept Lighter-Than-Air-Craft ((?a aircraft))
+  :documentation "An aircraft is lighter than air iff its total weight is less than its air displacement.")
+(assert (disjoint Lighter-Than-Air-Craft Heavier-Than-Air-Craft))
+
+
+(defconcept Aircraft-Manufacturer ((?m Manufacturer))
+  :<=> (and (Manufacturer ?m)
+	    (exists (?a)
+	      (and (manufactures ?m ?a)
+		   (aircraft ?a)))))
+
+(defconcept All-Weather ((?t TECHNOLOGY)))
+(defconcept Barrage-Jammer ((?p ECM-POD)))
+(defconcept Bomb ((?w WEAPON)))
+(defconcept Cannon ((?g GUN)))
+
+(defconcept CAS ((?x combat-mission))
+  :synonym Close-Air-Support)
+(assert (Combat-Mission CAS))
+
+(defconcept Chaff-Pod ((?p ECM-POD)))
+
+(defconcept Combat-Aircraft ((?a Aircraft))
+  :<=> (and (Aircraft ?a)
+	    (exists (?m)
+	      (and (has-mission ?a ?m)
+		   (combat-mission ?m)))))
+(defconcept Combat-Mission ((?m MISSION)))
+(assert (Combat-Mission Combat-Mission))
+
+(defconcept Command ((?m Non-Combat-Mission)))
+(assert (Non-Combat-Mission Command))
+
+(defconcept Data-Link-Pod ((?p POD)))
+(defconcept Deceptive-Jammer ((?p ECM-POD)))
+(defconcept Diesel-Engine ((?e ENGINE)))
+(defconcept Drone ((?m Aircraft))
+  :<=> (and (Heavier-Than-Air-Craft ?m) (Unmanned-Aircraft ?m))
+  :documentation "A pilotless aircraft.")
+
+(defconcept Ecm-Pod ((?p POD)))
+(defconcept Electronic-Warfare ((?x combat-mission)))
+(assert (Combat-Mission Electronic-Warfare))
+(defconcept Engine ((?p Physical-Entity)))
+(defconcept Engine-Manufacturer ((?m Manufacturer))
+  :<=> (and (Manufacturer ?m)
+	    (exists (?a)
+	      (and (manufactures ?m ?a)
+		   (engine ?a)))))
+
+(defconcept Entity)
+(defconcept Evacuation ((?m Transporting)))
+(assert (Non-Combat-Mission Evacuation))
+(assert (Transporting Evacuation))
+(defconcept Fighter ((?a Airplane))
+  :<=> (and (Airplane ?a)
+	    (Has-Mission ?a Air-Superiority)
+	    (exists (?m)
+	      (and (has-mission ?a ?m)
+		   (combat-mission ?m)))))
+(defconcept Fighter-Bomber ((?a airplane))
+  :<=> (and (Fighter ?a) (Bomber ?a)))
+
+
+(defconcept Flare-Pod ((?p ECM-POD)))
+(defconcept Flying-Object ((?e Physical-Entity)))
+(defconcept Fuel-Tank ((?p Physical-Entity)))
+(defconcept Gas-Turbine-Engine ((?e Engine)))
+(defconcept Gasoline-Engine ((?e Engine)))
+(defconcept Glide-Bomb ((?b bomb))
+  :<=> (and (Bomb ?b)
+	    (Flying-Object ?b)
+	    (exists (?r) (max-range ?b ?r))))
+(defconcept Glider ((?a aircraft))
+  :documentation "An aircraft without engines that is supported by dynamic action of air against its surfaces"
+  :=> (and (Heavier-Than-Air-Craft ?a) (Unpowered-Vehicle ?a)))
+(defconcept Ground-Unit)
+
+(defconcept Guidance-Type (?g)
+    :<=> (or (Active-Guidance-Type ?g) (Passive-Guidance-Type ?g)))
+
+
+(defconcept Gun ((?w weapon)))
+
+(defconcept Helicopter-Manufacturer ((?m Manufacturer))
+  :<=> (and (Manufacturer ?m)
+	    (exists (?a)
+	      (and (manufactures ?m ?a)
+		   (helicopter ?a)))))
+
+(defconcept Hot-Air-Baloon ((?a Lighter-Than-Air-Craft)))
+(defrelation Hypersonic ((?o flying-object))
+  :<=> (and (Flying-Object ?o)
+	    (>= (Max-Mach ?o) 5.0)))
+
+(defconcept Hypersonic-Aircraft ((?a aircraft))
+  :<=> (and (Aircraft ?a) (Hypersonic ?a)))
+(defconcept Interception ((?x combat-mission)))
+(assert (Combat-Mission Interception))
+(defconcept Interdiction ((?x combat-mission)))
+(assert (Combat-Mission Interdiction))
+(defconcept Jet-Engine ((?e engine)))
+(defconcept Laser-Designator-Pod ((?p pod)))
+
+(defconcept Manufacturer ((?o Organization)))
+(defconcept Military-Organization ((?o Organization)))
+(defconcept Missile ((?w weapon))
+  :=> (and (Weapon ?w) (Flying-Object ?w)))
+(defconcept Missile-Manufacturer ((?m Manufacturer))
+  :<=> (and (Manufacturer ?m)
+	    (exists (?a)
+	      (and (manufactures ?m ?a)
+		   (missile ?a)))))
+(defconcept Mission)
+(defconcept Naval-Unit ((?p Physical-Entity)))
+(defconcept Navigation-Pod ((?p POD)))
+(defconcept Non-Combat-Mission ((?x mission)))
+(assert (Non-Combat-Mission Interdiction))
+
+(defconcept Organization ((?e Social-Entity)))
+(defconcept Physical-Entity ((?e Entity)))
+(defconcept Piloted-Aircraft ((?v aircraft))
+  :<=> (and (aircraft ?v) (manned-vehicle ?v)))
+(defconcept Manned-Vehicle ((?v vehicle))
+  :<=> (and (Vehicle ?v)
+	    (> (crew-size ?v) 0)))
+(defconcept Pod ((?p Physical-Entity)))
+(defconcept Powered-Vehicle ((?v vehicle))
+  :<=> (and (Vehicle ?v)
+	    (exists (?e) (engine-type ?v ?e))
+	    (> (Engine-Count ?v) 0)))
+(defconcept Private-Organization ((?o Organization)))
+(defconcept Propeller-Engine ((?e Engine)))
+(defconcept Reconnaissance ((?m Non-Combat-Mission)))
+(assert (Non-Combat-Mission Reconnaissance))
+
+(defconcept Rocket ((?w weapon))
+  :=> (and (Weapon ?w) (Flying-Object ?w)))
+
+
+(defconcept Rubber-Band-Engine ((?e ENGINE)))
+(defconcept SAR ((?x evacuation)))
+(assert (non-combat-mission sar))
+(assert (transporting sar))
+(defconcept SEAD ((?m combat-mission))
+  :synonym Suppression-Of-Enemy-Air-Defense)
+(assert (combat-mission SEAD))
+
+(defconcept Smart-Bomb ((?b bomb))
+  :<=> (and (Bomb ?b)
+	    (exists ?g (Guidance ?b ?g))))
+(defconcept Social-Entity ((?e Entity)))
+(defconcept Special-Operations ((?m combat-mission)))
+(assert (Combat-Mission Special-Operations))
+(defconcept Stealth-Technology ((?t technology)))
+(defconcept Steam-Engine ((?e engine)))
+(defconcept Strategic-Bombing ((?m Combat-Mission)))
+(assert (Combat-Mission Strategic-Bombing))
+(defconcept Strike ((?m Combat-Mission)))
+(assert (Combat-Mission Strike))
+(defrelation Supersonic ((?o flying-object))
+  :<=> (and (Flying-Object ?o)
+	    (or (>= (Max-Mach ?o) 1.0)
+		(>= (Max-Speed ?o) 750.0))))
+
+(defconcept Supersonic-Aircraft ((?a aircraft))
+  :<=> (and (Aircraft ?a) (Supersonic ?a)))
+(defconcept Surveillance ((?m Non-Combat-Mission)))
+(assert (Non-Combat-Mission Surveillance))
+(defconcept Swing-Wing ((?t technology)))
+(defconcept Technology)
+(defconcept Transporting ((?m Non-Combat-Mission)))
+(assert (Non-Combat-Mission Transporting))
+(defconcept Turbofan-Engine ((?e Jet-Engine)))
+(defconcept Turbojet-Engine ((?e Jet-Engine)))
+(defconcept Turboprop ((?a airplane))
+  :<=> (and (Airplane ?a)
+	    (exists (?e)
+	      (and (engine-type ?a ?e)
+		   (turboprop-engine ?e)))
+	    ;; BUG: THESE KILL THE INSTANCE CLASSIFIER, NOT SURE WHY.
+	    ;;(forall (?e) (=> (engine-type ?a ?e) (turboprop-engine ?e)))
+	    ;;(=> (engine-type ?a ?e) (turboprop-engine ?e))
+	    ))
+(defconcept Turboprop-Engine ((?e engine))
+  :<=> (and (Propeller-Engine ?e) (Jet-Engine ?e)))
+(defconcept Turboshaft-Engine ((?e jet-engine)))
+(defconcept Unmanned-Aircraft ((?a aircraft))
+  :<=> (and (aircraft ?a) (unmanned-vehicle ?a)))
+(defconcept unmanned-vehicle ((?v vehicle))
+  :<=> (and (Vehicle ?v)
+	    (= (Crew-Size ?v) 0)))
+(defconcept Unpowered-Vehicle ((?v vehicle))
+  :<=> (and (Vehicle ?v)
+	    (not (exists (?e) (engine-type ?v ?e)))
+	    (= (engine-count ?v) 0)))
+(defconcept Vehicle ((?e Physical-Entity)))
+(defconcept Combat-Vehicle ((?v vehicle)))
+(defconcept Weapon ((?e Physical-Entity)))
+
+(defconcept Attack-Aircraft ((?a airplane))
+  :<=> (and (Airplane ?a)
+	    (exists (?m) (and (has-mission ?a ?m) (combat-mission ?m)))
+	    ;;(:some Has-Mission (:one-of Sead))
+	    (has-mission ?a SEAD)))
+
+(defconcept Bomber ((?a airplane))
+  :<=> (and (Airplane ?a)
+	    (exists ?m (and (Has-Mission ?a ?m) (Combat-Mission ?m)))
+	    (exists ?m
+	      (and (has-mission ?a ?m)
+		   (member-of ?m (setof Strike Interdiction CAS SEAD
+				   Strategic-Bombing))))))
+
+(defconcept Transport ((?a aircraft))
+  :<=> (and (Airplane ?a)
+	    (exists (?m)
+	      (and (has-mission ?a ?m)
+		   (member-of ?m (setof Transporting Evacuation))))
+	    ))
+
+;; Should be equivalent to Transport
+(defconcept Transport2 ((?a aircraft))
+  :<=> (and (Airplane ?a)
+	    (or (has-mission ?a transporting)
+		(has-mission ?a evacuation))
+	    ))
+
+;;;; INSTANCES
+
+(defobject 20MM-VULCAN)
+(defobject 300G-TANK)
+(defobject 30MM-GAU)
+(defobject 600G-TANK)
+(defobject A-10
+    :documentation "The A-10 and OA-10 Thunderbolt IIs are the first
+Air Force aircraft specially designed for close air support of ground forces.  
+They are simple, effective and survivable twin-engine jet aircraft that can
+be used against all ground targets, including tanks and other armored vehicles.")
+(defobject A-6
+    :documentation "The A-6E is an all-weather, two-seat, subsonic, carrier-based
+attack aircraft.   The crew, sitting side by side,
+can see in all directions through a broad canopy. The aircraft is equipped
+with a micro-miniaturized digital computer, a solid state weapons release
+system, and a single integrated track and search radar. The Intruder is
+armed with laser-guided weapons and equipped with a chin turret containing a
+forward-looking infra-red (FLIR) system and laser designator and receiver.")
+(defobject AGM-130
+    :documentation "The AGM-130A is a powered air-to-surface missile 
+designed for high- and low-altitude strikes at standoff ranges against a
+variety of targets.  The AGM-130A is equipped with either a television or 
+an imaging infrared seeker and data link. The seeker provides the
+launch aircraft a visual presentation of the target as seen from the weapon. 
+During free flight this presentation is transmitted
+by a data-link system to the aircraft cockpit monitor.")
+(defobject AGM-62)
+(defobject AGM-65)
+(defobject AGM-84
+    :documentation "The AGM-84D Harpoon is an all-weather, over-the-horizon,
+anti-ship missile system.  The Harpoon's active radar guidance, warhead design,
+and low-level, sea-skimming cruise trajectory assure high survivability and
+effectiveness. The missile is capable of being launched from surface ships,
+submarines, or (without the booster) from aircraft."
+    :synonym harpoon)
+(defobject AGM-88
+    :documentation "The AGM-88 HARM (high-speed antiradiation missile) 
+is an air-to-surface tactical missile designed to seek and destroy
+enemy radar-equipped air defense systems. ")
+(defobject AIM-120
+    :documentation "The AIM-120 advanced medium-range air-to-air 
+missile (AMRAAM) is a new generation air-to-air missile. It has an
+all-weather, beyond-visual-range capability and is scheduled to be 
+operational beyond 2000."
+    :synonym AMRAAM)
+(defobject AIM-7M
+    :documentation "The AIM-7 Sparrow is a radar-guided, air-to-air 
+missile with a high-explosive warhead. The versatile Sparrow has
+all-weather, all-altitude operational capability and can attack 
+high-performance aircraft and missiles from any direction.")
+(defobject AIM-9M
+    :documentation "The AIM-9 Sidewinder is a supersonic, heat-seeking, 
+air-to-air missile carried by fighter aircraft. It has a high-explosive
+warhead and an active infrared guidance system.")
+(defobject ALLISON)
+(defobject ALQ-131)
+(defobject B-1
+    :documentation "The B-1B is a multi-role, long-range bomber, capable
+of flying intercontinental missions without refueling, then penetrating present
+and predicted sophisticated enemy defenses. It can perform a variety of missions,
+including that of a conventional weapons carrier for theater operations.")
+(defobject B-2
+    :documentation "The B-2 Spirit is a multi-role bomber capable of 
+delivering both conventional and nuclear munitions. A dramatic leap
+forward in technology, the bomber represents a major milestone in the U.S. 
+bomber modernization program. The B-2 brings massive firepower to bear, in
+a short time, anywhere on the globe through previously impenetrable defenses.")
+(defobject B-52
+    :documentation "Air Combat Command's B-52 is a long-range, heavy 
+bomber that can perform a variety of missions. It can carry nuclear or 
+conventional ordnance.  For more than 35 years B-52 Stratofortresses have 
+been the primary manned strategic bomber force for the United States.
+Updated with modern technology, the B-52 fleet will continue flying into 
+the 21st century.")
+(defobject BELL)
+(defobject BOEING)
+(defobject C-130
+    :documentation "The C-130 Hercules primarily performs the 
+intratheater portion of the airlift mission. The aircraft is capable of 
+operating from rough, dirt strips and is the prime transport for 
+paradropping troops and equipment into hostile areas.")
+(defobject C-141
+    :documentation "The C-141 Starlifter is the workhorse of the Air 
+Mobility Command. The Starlifter fulfills the vast spectrum of airlift
+requirements through its ability to airlift combat forces over long distances, 
+inject those forces and their equipment either by airland or airdrop, re-supply 
+employed forces, and extract the sick and wounded from the hostile area to 
+advanced medical facilities.")
+(defobject C-17
+    :documentation "The C-17 is capable of rapid strategic delivery of 
+troops and all types of cargo to main operating bases or directly to forward
+bases in the deployment area. The aircraft is also able to perform theater 
+airlift missions when required. The inherent flexibility and performance 
+characteristics of the C-17 force improves the ability of the total airlift 
+system to fulfill the worldwide air mobility requirements of the United States.")
+(defobject C-20
+    :documentation "The C-20 Gulfstream III is a twin-engine, turbofan 
+aircraft acquired to fill the airlift mission for high-ranking government
+and Defense Department officials.")
+(defobject C-21
+    :documentation "The C-21A provides cargo and passenger airlift 
+and can transport litters during medical evacuations.")
+(defobject C-22
+    :documentation "The C-22B, a Boeing 727-100, is the primary 
+medium-range aircraft used by the Air National Guard and National Guard
+Bureau to airlift personnel.")
+(defobject C-5
+    :documentation "The C-5 Galaxy is a heavy-cargo transport designed 
+to provide massive strategic airlift, for deployment and supply of combat and 
+support forces.  The C-5 can carry unusually large and heavy cargo for 
+intercontinental ranges at jet speeds. The plane can take off and land
+in relatively short distances and taxi on substandard surfaces during 
+emergency operations. ")
+(defobject C-9
+    :documentation "The C-9 is a twin-engine, T-tailed, medium-range, 
+swept-wing jet aircraft used primarily for Air Mobility Command's aeromedical 
+evacuation mission.  The Nightingale is a modified version of the McDonnell 
+Douglas Aircraft Corporation's DC-9. It is the only aircraft in the
+inventory specifically designed for the movement of litter and 
+ambulatory patients.")
+(defobject CANADIAN-AF)
+(defobject CF-18
+    :documentation "The CF-18 is a twin engine supersonic jet tactical fighter. The
+four CF-18 fighter squadrons (15 aircraft each) are assigned
+the air defence role in North America. They maintain limited
+air-to-surface capability to provide support to maritime
+operations, as well as support to land operations in defence of
+Canada.")
+(defobject E-3
+    :documentation "The E-3 Sentry is an airborne warning and control 
+system (AWACS) aircraft that provides all-weather surveillance, command, 
+control and communications needed by commanders of U.S. and NATO air defense 
+forces. As proven in Desert Storm, it is the premier air battle command and 
+control aircraft in the world today.")
+(defobject EF-111
+    :documentation "The EF-111A Raven is designed to provide electronic 
+countermeasures support for tactical air forces. The EF-111A can
+detect, sort, identify and nullify different enemy radars.  Jamming subsystem 
+receivers scan across frequency bands under computer or manual control. When
+threats are identified, appropriate countermeasures are initiated either 
+automatically by computer or with the electronic warfare officer's assistance.")
+(defobject F-101-GE-102)
+(defobject F-111
+    :documentation "The F-111 is a multipurpose tactical fighter bomber 
+capable of supersonic speeds. It can operate from tree-top level to
+altitudes above 60,000 feet.  The F-111 has variable-sweep wings that allow 
+the pilot to fly from slow approach speeds to supersonic velocity at sea level
+and more than twice the speed of sound at higher altitudes.  The F-111 
+can carry conventional as well as nuclear weapons.")
+(defobject F-117
+    :documentation "The F-117A Nighthawk is the world's first operational 
+aircraft designed to exploit low-observable stealth technology.")
+(defobject F-118-GE-100)
+(defobject F-15
+    :documentation "The F-15 Eagle is an all-weather, extremely 
+maneuverable, tactical fighter designed to gain and maintain air superiority 
+in aerial combat.")
+(defobject F-16
+    :documentation "The F-16 Fighting Falcon is a compact, multirole 
+fighter aircraft. It is highly maneuverable and has proven itself in air-to-air
+combat and air-to-surface attack. It provides a relatively low-cost, 
+high-performance weapon system for the air forces of the United States and 
+allied nations.")
+(defobject F100-PW-100)
+(defobject F110-GE-200)
+(defobject F117-PW-100)
+(defobject F404)
+(defobject FAIRCHILD-REPUBLIC)
+(defobject GARRETT)
+(defobject GE)
+(defobject GENERAL-DYNAMICS)
+(defobject GRUMMAN)
+(defobject GULFSTREAM)
+(defobject HH-1
+    :documentation "The HH-1H is a light-lift Air Force helicopter used 
+for distinguished visitor transport, and support of missile sites and ranges.  
+It is the single-engine version of the Huey helicopters first flown in 1956.")
+(defobject HH-3E
+    :documentation "The HH-3E, the Jolly Green Giant, is a twin-engine, 
+heavy-lift helicopter. It is used for search and recovery of personnel and 
+aerospace hardware in support of global air and space operations. 
+It is also used for combat and special operations. ")
+(defobject HUGHES)
+(defobject J52-P8B)
+(defobject JT8D-7)
+(defobject JT8D-9A)
+(defobject LEARJET)
+(defobject LOCKHEED-MARTIN)
+(defobject LYCOMING)
+(defobject MCDONNEL-DOUGLAS)
+(defobject MCDONNELL-DOUGLAS)
+(defobject MH-53J
+    :documentation "The MH-53J's mission is to perform low-level, 
+long-range, undetected penetration into denied areas, day or night, in
+adverse weather, for infiltration, exfiltration and resupply of special 
+operations forces.  The MH-53J heavy-lift helicopter is the largest and 
+most powerful helicopter in the Air Force inventory, and the most 
+technologically advanced helicopter in the world.")
+(defobject MK82)
+(defobject MK84)
+(defobject NAVAL-WEAPONS-CENTER)
+(defobject NORTHRUP)
+(defobject PRATT-and-WHITNEY)
+(defobject RAYTHEON)
+(defobject ROCKWELL)
+(defobject ROLLS-ROYCE)
+(defobject SIKORSKY)
+(defobject SPEY-MK511-8)
+(defobject T-53-L-13B)
+(defobject T56-A-15)
+(defobject T58-GE-5)
+(defobject T64-GE-100)
+(defobject TEXAS-INSTRUMENTS)
+(defobject TF-30-P-8109)
+(defobject TF-33-P-3\/103)
+(defobject TF33-P-7)
+(defobject TF33-PW-100A)
+(defobject TF34-GE-100)
+(defobject TF39-GE-1C)
+(defobject TFE-731-2-2B)
+(defobject US-ANG)
+(defobject US-NAVY)
+(defobject USAF)
+(defobject USAF-RESERVE)
+
+
+(assert (gun 20mm-vulcan))
+(assert (CALIBER 20MM-VULCAN 20))
+(assert (CARRIED-BY 20MM-VULCAN F-15))
+(assert (CARRIED-BY 20MM-VULCAN F-16))
+(assert (CARRIED-BY 20MM-VULCAN CF-18))
+(assert (CARRIED-BY 20MM-VULCAN F-111))
+(assert (NAME 20MM-VULCAN "Vulcan"))
+(assert (TARGET-TYPE 20MM-VULCAN AIRCRAFT))
+(assert (TARGET-TYPE 20MM-VULCAN GROUND-UNIT))
+(assert (FUEL-TANK 300G-TANK))
+(assert (CARRIED-BY 300G-TANK A-6))
+(assert (CARRIED-BY 300G-TANK F-16))
+(assert (FUEL-CAPACITY 300G-TANK 300))
+(assert (MAX-WEIGHT 300G-TANK 2000))
+(assert (GUN 30MM-GAU))
+(assert (CALIBER 30MM-GAU 30))
+(assert (CARRIED-BY 30MM-GAU A-10))
+(assert (TARGET-TYPE 30MM-GAU GROUND-UNIT))
+(assert (FUEL-TANK 600G-TANK))
+(assert (CARRIED-BY 600G-TANK F-15))
+(assert (CARRIED-BY 600G-TANK F-111))
+(assert (CARRIED-BY 600G-TANK A-10))
+(assert (FUEL-CAPACITY 600G-TANK 600))
+(assert (MAX-WEIGHT 600G-TANK 4000))
+(assert (FIXED-WING-AIRCRAFT A-10))
+(assert (CEILING A-10 1000))
+(assert (COST A-10 8800000))
+(assert (CREW-SIZE A-10 1))
+(assert (DESIGNATION A-10 "A-10A"))
+(assert (ENGINE-COUNT A-10 2))
+(assert (ENGINE-TYPE A-10 TF34-GE-100))
+(assert (HEIGHT A-10 14.7))
+(assert (IN-SERVICE A-10 1976))
+(assert (LENGTH A-10 53.4))
+(assert (MADE-BY A-10 FAIRCHILD-REPUBLIC))
+(assert (MAX-MACH A-10 0.56))
+(assert (MAX-RANGE A-10 288))
+(assert (MAX-SPEED A-10 420))
+(assert (MAX-WEIGHT A-10 51000))
+(assert (HAS-MISSION A-10 CAS))
+(assert (NAME A-10 "Thunderbolt II"))
+(assert (NAME A-10 "Warthog"))
+(assert (PAYLOAD A-10 16000))
+(assert (STORES A-10 AIM-9M))
+(assert (STORES A-10 AGM-65))
+(assert (STORES A-10 MK82))
+(assert (STORES A-10 MK84))
+(assert (STORES A-10 600G-TANK))
+(assert (STORES A-10 30MM-GAU))
+(assert (WINGSPAN A-10 57.5))
+(assert (ALL-WEATHER A-6))
+(assert (FIXED-WING-AIRCRAFT A-6))
+(assert (CEILING A-6 44600))
+(assert (COST A-6 22000000))
+(assert (CREW-SIZE A-6 2))
+(assert (DESIGNATION A-6 "A-6E"))
+(assert (ENGINE-COUNT A-6 2))
+(assert (ENGINE-TYPE A-6 J52-P8B))
+(assert (HEIGHT A-6 16.25))
+(assert (IN-SERVICE A-6 1963))
+(assert (LENGTH A-6 54.5))
+(assert (MADE-BY A-6 GRUMMAN))
+(assert (MAX-RANGE A-6 3100))
+(assert (MAX-SPEED A-6 648))
+(assert (MAX-WEIGHT A-6 60626))
+(assert (HAS-MISSION A-6 CAS))
+(assert (HAS-MISSION A-6 STRIKE))
+(assert (NAME A-6 "Intruder"))
+(assert (NORMAL-RANGE A-6 1077))
+(assert (PAYLOAD A-6 18000))
+(assert (STORES A-6 AIM-9M))
+(assert (STORES A-6 AGM-88))
+(assert (STORES A-6 AGM-84))
+(assert (STORES A-6 AGM-65))
+(assert (STORES A-6 AGM-62))
+(assert (STORES A-6 MK82))
+(assert (STORES A-6 MK84))
+(assert (STORES A-6 300G-TANK))
+(assert (WINGSPAN A-6 53))
+(assert (MISSILE AGM-130))
+(assert (CARRIED-BY AGM-130 F-111))
+(assert (CEILING AGM-130 30000))
+(assert (COST AGM-130 269000))
+(assert (DESIGNATION AGM-130 "AGM-130A"))
+(assert (DIAMETER AGM-130 1.5))
+(assert (GUIDANCE AGM-130 TV))
+(assert (GUIDANCE AGM-130 IMAGING-IR))
+(assert (IN-SERVICE AGM-130 1996))
+(assert (LENGTH AGM-130 12.9))
+(assert (MADE-BY AGM-130 ROCKWELL))
+(assert (MAX-WEIGHT AGM-130 2917))
+(assert (TARGET-TYPE AGM-130 GROUND-UNIT))
+(assert (WINGSPAN AGM-130 5))
+(assert (MISSILE AGM-62))
+(assert (CARRIED-BY AGM-62 A-6))
+(assert (DESIGNATION AGM-62 "AGM-62"))
+(assert (NAME AGM-62 "Walleye"))
+(assert (TARGET-TYPE AGM-62 GROUND-UNIT))
+(assert (MISSILE AGM-65))
+(assert (CARRIED-BY AGM-65 A-10))
+(assert (CARRIED-BY AGM-65 A-6))
+(assert (DESIGNATION AGM-65 "AGM-65"))
+(assert (GUIDANCE AGM-65 OPTICAL))
+(assert (GUIDANCE AGM-65 IR))
+(assert (NAME AGM-65 "Maverick"))
+(assert (TARGET-TYPE AGM-65 GROUND-UNIT))
+(assert (missile AGM-84))
+(assert (not (SUPERSONIC AGM-84)))
+(assert (CARRIED-BY AGM-84 CF-18))
+(assert (CARRIED-BY AGM-84 A-6))
+(assert (CARRIED-BY AGM-84 B-52))
+(assert (COST AGM-84 720000))
+(assert (DESIGNATION AGM-84 "AGM-84D"))
+(assert (DIAMETER AGM-84 1.1))
+(assert (GUIDANCE AGM-84 INERTIAL))
+(assert (GUIDANCE AGM-84 ACTIVE-RADAR-HOMING))
+(assert (IN-SERVICE AGM-84 1985))
+(assert (LENGTH AGM-84 12.6))
+(assert (MADE-BY AGM-84 MCDONNELL-DOUGLAS))
+(assert (MAX-RANGE AGM-84 60))
+(assert (MAX-WEIGHT AGM-84 1145))
+(assert (NAME AGM-84 "Harpoon"))
+(assert (TARGET-TYPE AGM-84 NAVAL-UNIT))
+(assert (WINGSPAN AGM-84 3))
+(assert (SUPERSONIC AGM-88))
+(assert (MISSILE AGM-88))
+(assert (CARRIED-BY AGM-88 F-16))
+(assert (CARRIED-BY AGM-88 A-6))
+(assert (COST AGM-88 284000))
+(assert (DESIGNATION AGM-88 "AGM-88"))
+(assert (DIAMETER AGM-88 0.9))
+(assert (GUIDANCE AGM-88 ANTI-RADIATION))
+(assert (IN-SERVICE AGM-88 1985))
+(assert (LENGTH AGM-88 13.7))
+(assert (MADE-BY AGM-88 TEXAS-INSTRUMENTS))
+(assert (MAX-RANGE AGM-88 80))
+(assert (MAX-SPEED AGM-88 760))
+(assert (MAX-WEIGHT AGM-88 800))
+(assert (NAME AGM-88 "HARM"))
+(assert (TARGET-TYPE AGM-88 GROUND-UNIT))
+(assert (WINGSPAN AGM-88 3.7))
+(assert (SUPERSONIC AIM-120))
+(assert (MISSILE AIM-120))
+(assert (CARRIED-BY AIM-120 F-15))
+(assert (CARRIED-BY AIM-120 F-16))
+(assert (COST AIM-120 386000))
+(assert (DESIGNATION AIM-120 "AIM-120A"))
+(assert (DIAMETER AIM-120 0.6))
+(assert (GUIDANCE AIM-120 ACTIVE-RADAR-HOMING))
+(assert (GUIDANCE AIM-120 INERTIAL))
+(assert (IN-SERVICE AIM-120 1991))
+(assert (LENGTH AIM-120 12))
+(assert (MADE-BY AIM-120 HUGHES))
+(assert (MADE-BY AIM-120 RAYTHEON))
+(assert (MAX-RANGE AIM-120 20))
+(assert (MAX-WEIGHT AIM-120 335))
+(assert (NAME AIM-120 "AMRAAM"))
+(assert (TARGET-TYPE AIM-120 AIRCRAFT))
+(assert (WINGSPAN AIM-120 1.7))
+(assert (SUPERSONIC AIM-7M))
+(assert (MISSILE AIM-7M))
+(assert (CARRIED-BY AIM-7M F-15))
+(assert (CARRIED-BY AIM-7M F-16))
+(assert (CARRIED-BY AIM-7M CF-18))
+(assert (COST AIM-7M 125000))
+(assert (DESIGNATION AIM-7M "AIM-7M"))
+(assert (DIAMETER AIM-7M 0.7))
+(assert (GUIDANCE AIM-7M SEMI-ACTIVE-RADAR-HOMING))
+(assert (IN-SERVICE AIM-7M 1982))
+(assert (LENGTH AIM-7M 12))
+(assert (MADE-BY AIM-7M RAYTHEON))
+(assert (MAX-WEIGHT AIM-7M 500))
+(assert (NAME AIM-7M "Sparrow"))
+(assert (TARGET-TYPE AIM-7M AIRCRAFT))
+(assert (WINGSPAN AIM-7M 3.3))
+(assert (SUPERSONIC AIM-9M))
+(assert (MISSILE AIM-9M))
+(assert (CARRIED-BY AIM-9M F-15))
+(assert (CARRIED-BY AIM-9M F-16))
+(assert (CARRIED-BY AIM-9M CF-18))
+(assert (CARRIED-BY AIM-9M F-117))
+(assert (CARRIED-BY AIM-9M A-10))
+(assert (CARRIED-BY AIM-9M A-6))
+(assert (COST AIM-9M 41300))
+(assert (DESIGNATION AIM-9M "AIM-9M"))
+(assert (DIAMETER AIM-9M 0.4))
+(assert (GUIDANCE AIM-9M IR-HOMING))
+(assert (IN-SERVICE AIM-9M 1983))
+(assert (LENGTH AIM-9M 9.4))
+(assert (MADE-BY AIM-9M NAVAL-WEAPONS-CENTER))
+(assert (MAX-RANGE AIM-9M 10))
+(assert (MAX-WEIGHT AIM-9M 190))
+(assert (NAME AIM-9M "Sidewinder"))
+(assert (TARGET-TYPE AIM-9M AIRCRAFT))
+(assert (WINGSPAN AIM-9M 2))
+(assert (MANUFACTURER ALLISON))
+(assert (MANUFACTURES ALLISON T56-A-15))
+(assert (ECM-POD ALQ-131))
+(assert (CARRIED-BY ALQ-131 F-16))
+(assert (DESIGNATION ALQ-131 "ALQ-131"))
+(assert (MAX-WEIGHT ALQ-131 600))
+(assert (SWING-WING B-1))
+(assert (FIXED-WING-AIRCRAFT B-1))
+(assert (CEILING B-1 30000))
+(assert (COST B-1 200000000))
+(assert (CREW-SIZE B-1 4))
+(assert (DESIGNATION B-1 "B-1B"))
+(assert (ENGINE-COUNT B-1 4))
+(assert (ENGINE-TYPE B-1 F-101-GE-102))
+(assert (HEIGHT B-1 34))
+(assert (IN-SERVICE B-1 1985))
+(assert (LENGTH B-1 147))
+(assert (MADE-BY B-1 ROCKWELL))
+(assert (MAX-MACH B-1 1.2))
+(assert (MAX-SPEED B-1 900))
+(assert (MAX-WEIGHT B-1 477000))
+(assert (HAS-MISSION B-1 STRATEGIC-BOMBING))
+(assert (NAME B-1 "Lancer"))
+(assert (PAYLOAD B-1 48000))
+(assert (WINGSPAN B-1 137))
+(assert (STEALTH-TECHNOLOGY B-2))
+(assert (FIXED-WING-AIRCRAFT B-2))
+(assert (CEILING B-2 50000))
+(assert (COST B-2 750000000))
+(assert (CREW-SIZE B-2 2))
+(assert (DESIGNATION B-2 "B-2"))
+(assert (ENGINE-COUNT B-2 4))
+(assert (ENGINE-TYPE B-2 F-118-GE-100))
+(assert (HEIGHT B-2 17))
+(assert (IN-SERVICE B-2 1993))
+(assert (LENGTH B-2 69))
+(assert (MADE-BY B-2 NORTHRUP))
+(assert (MAX-SPEED B-2 600))
+(assert (MAX-WEIGHT B-2 336500))
+(assert (HAS-MISSION B-2 STRATEGIC-BOMBING))
+(assert (NAME B-2 "Spirit"))
+(assert (PAYLOAD B-2 40000))
+(assert (WINGSPAN B-2 172))
+(assert (FIXED-WING-AIRCRAFT B-52))
+(assert (CEILING B-52 50000))
+(assert (COST B-52 64000000))
+(assert (CREW-SIZE B-52 5))
+(assert (DESIGNATION B-52 "B-52H"))
+(assert (ENGINE-COUNT B-52 8))
+(assert (ENGINE-TYPE B-52 TF-33-P-3\/103))
+(assert (HEIGHT B-52 40.8))
+(assert (IN-SERVICE B-52 1959))
+(assert (LENGTH B-52 159.4))
+(assert (MADE-BY B-52 BOEING))
+(assert (MAX-MACH B-52 0.86))
+(assert (MAX-RANGE B-52 8800))
+(assert (MAX-SPEED B-52 650))
+(assert (MAX-WEIGHT B-52 488000))
+(assert (HAS-MISSION B-52 STRATEGIC-BOMBING))
+(assert (NAME B-52 "BUFF"))
+(assert (NAME B-52 "Stratofortress"))
+(assert (PAYLOAD B-52 70000))
+(assert (STORES B-52 AGM-84))
+(assert (STORES B-52 MK82))
+(assert (STORES B-52 MK84))
+(assert (WINGSPAN B-52 185))
+(assert (MANUFACTURER BELL))
+(assert (MANUFACTURES BELL HH-1))
+(assert (MANUFACTURER BOEING))
+(assert (MANUFACTURES BOEING C-22))
+(assert (MANUFACTURES BOEING E-3))
+(assert (MANUFACTURES BOEING B-52))
+(assert (FIXED-WING-AIRCRAFT C-130))
+(assert (CEILING C-130 33000))
+(assert (COST C-130 22900000))
+(assert (CREW-SIZE C-130 5))
+(assert (DESIGNATION C-130 "C-130"))
+(assert (ENGINE-COUNT C-130 4))
+(assert (ENGINE-TYPE C-130 T56-A-15))
+(assert (HEIGHT C-130 38))
+(assert (IN-SERVICE C-130 1955))
+(assert (LENGTH C-130 98))
+(assert (MADE-BY C-130 LOCKHEED-MARTIN))
+(assert (MAX-MACH C-130 0.57))
+(assert (MAX-RANGE C-130 5200))
+(assert (MAX-SPEED C-130 374))
+(assert (MAX-WEIGHT C-130 155000))
+(assert (HAS-MISSION C-130 TRANSPORT))
+(assert (NAME C-130 "Hercules"))
+(assert (NORMAL-RANGE C-130 2500))
+(assert (PASSENGER-CAPACITY C-130 92))
+(assert (PAYLOAD C-130 100000))
+(assert (WINGSPAN C-130 133))
+(assert (FIXED-WING-AIRCRAFT C-141))
+(assert (CEILING C-141 41000))
+(assert (COST C-141 8100000))
+(assert (CREW-SIZE C-141 6))
+(assert (DESIGNATION C-141 "C-141B"))
+(assert (ENGINE-COUNT C-141 4))
+(assert (ENGINE-TYPE C-141 TF33-P-7))
+(assert (HEIGHT C-141 39))
+(assert (IN-SERVICE C-141 1964))
+(assert (LENGTH C-141 168))
+(assert (MADE-BY C-141 LOCKHEED-MARTIN))
+(assert (MAX-MACH C-141 0.66))
+(assert (MAX-RANGE C-141 2500))
+(assert (MAX-SPEED C-141 500))
+(assert (MAX-WEIGHT C-141 323100))
+(assert (HAS-MISSION C-141 TRANSPORT))
+(assert (NAME C-141 "Starlifter"))
+(assert (NORMAL-RANGE C-141 2500))
+(assert (WINGSPAN C-141 160))
+(assert (FIXED-WING-AIRCRAFT C-17))
+(assert (CEILING C-17 45000))
+(assert (CREW-SIZE C-17 3))
+(assert (DESIGNATION C-17 "C-17"))
+(assert (ENGINE-COUNT C-17 4))
+(assert (ENGINE-TYPE C-17 F117-PW-100))
+(assert (HEIGHT C-17 55))
+(assert (IN-SERVICE C-17 1993))
+(assert (LENGTH C-17 174))
+(assert (MADE-BY C-17 MCDONNEL-DOUGLAS))
+(assert (MAX-MACH C-17 0.77))
+(assert (MAX-RANGE C-17 5940))
+(assert (MAX-SPEED C-17 500))
+(assert (MAX-WEIGHT C-17 585000))
+(assert (HAS-MISSION C-17 TRANSPORT))
+(assert (NAME C-17 "Globemaster III"))
+(assert (PASSENGER-CAPACITY C-17 102))
+(assert (PAYLOAD C-17 170900))
+(assert (WINGSPAN C-17 171))
+(assert (FIXED-WING-AIRCRAFT C-20))
+(assert (COST C-20 22200000))
+(assert (CREW-SIZE C-20 5))
+(assert (DESIGNATION C-20 "C-20A"))
+(assert (ENGINE-COUNT C-20 2))
+(assert (ENGINE-TYPE C-20 SPEY-MK511-8))
+(assert (HEIGHT C-20 25))
+(assert (IN-SERVICE C-20 1983))
+(assert (LENGTH C-20 83))
+(assert (MADE-BY C-20 GULFSTREAM))
+(assert (MAX-RANGE C-20 4715))
+(assert (MAX-SPEED C-20 576))
+(assert (MAX-WEIGHT C-20 69700))
+(assert (HAS-MISSION C-20 TRANSPORT))
+(assert (NAME C-20 "Gulfstream III"))
+(assert (PASSENGER-CAPACITY C-20 14))
+(assert (WINGSPAN C-20 78))
+(assert (FIXED-WING-AIRCRAFT C-21))
+(assert (COST C-21 2800000))
+(assert (CREW-SIZE C-21 2))
+(assert (DESIGNATION C-21 "C-21A"))
+(assert (ENGINE-COUNT C-21 2))
+(assert (ENGINE-TYPE C-21 TFE-731-2-2B))
+(assert (HEIGHT C-21 12))
+(assert (IN-SERVICE C-21 1984))
+(assert (LENGTH C-21 49))
+(assert (MADE-BY C-21 LEARJET))
+(assert (MAX-MACH C-21 0.81))
+(assert (MAX-RANGE C-21 2306))
+(assert (MAX-SPEED C-21 530))
+(assert (MAX-WEIGHT C-21 18300))
+(assert (HAS-MISSION C-21 TRANSPORT))
+(assert (WINGSPAN C-21 40))
+(assert (FIXED-WING-AIRCRAFT C-22))
+(assert (CEILING C-22 34000))
+(assert (CREW-SIZE C-22 8))
+(assert (DESIGNATION C-22 "C-22B"))
+(assert (ENGINE-COUNT C-22 3))
+(assert (ENGINE-TYPE C-22 JT8D-7))
+(assert (HEIGHT C-22 34))
+(assert (IN-SERVICE C-22 1963))
+(assert (LENGTH C-22 133))
+(assert (MADE-BY C-22 BOEING))
+(assert (MAX-MACH C-22 0.82))
+(assert (MAX-RANGE C-22 2000))
+(assert (MAX-SPEED C-22 619))
+(assert (MAX-WEIGHT C-22 170000))
+(assert (HAS-MISSION C-22 TRANSPORT))
+(assert (PAYLOAD C-22 20000))
+(assert (WINGSPAN C-22 108))
+(assert (FIXED-WING-AIRCRAFT C-5))
+(assert (CEILING C-5 34000))
+(assert (COST C-5 167700000))
+(assert (CREW-SIZE C-5 6))
+(assert (DESIGNATION C-5 "C-5B"))
+(assert (ENGINE-COUNT C-5 4))
+(assert (ENGINE-TYPE C-5 TF39-GE-1C))
+(assert (HEIGHT C-5 65))
+(assert (IN-SERVICE C-5 1970))
+(assert (LENGTH C-5 248))
+(assert (MADE-BY C-5 LOCKHEED-MARTIN))
+(assert (MAX-MACH C-5 0.72))
+(assert (MAX-RANGE C-5 5940))
+(assert (MAX-SPEED C-5 541))
+(assert (MAX-WEIGHT C-5 840000))
+(assert (HAS-MISSION C-5 TRANSPORT))
+(assert (NAME C-5 "Galaxy"))
+(assert (PAYLOAD C-5 605000))
+(assert (WINGSPAN C-5 223))
+(assert (FIXED-WING-AIRCRAFT C-9))
+(assert (CEILING C-9 35000))
+(assert (COST C-9 17000000))
+(assert (CREW-SIZE C-9 8))
+(assert (DESIGNATION C-9 "C-9C"))
+(assert (ENGINE-COUNT C-9 2))
+(assert (ENGINE-TYPE C-9 JT8D-9A))
+(assert (HEIGHT C-9 27))
+(assert (IN-SERVICE C-9 1968))
+(assert (LENGTH C-9 119))
+(assert (MADE-BY C-9 MCDONNELL-DOUGLAS))
+(assert (MAX-MACH C-9 0.86))
+(assert (MAX-RANGE C-9 2000))
+(assert (MAX-SPEED C-9 565))
+(assert (MAX-WEIGHT C-9 108000))
+(assert (HAS-MISSION C-9 EVACUATION))
+(assert (NAME C-9 "Nightingale"))
+(assert (PASSENGER-CAPACITY C-9 44))
+(assert (WINGSPAN C-9 93))
+(assert (AIR-ORGANIZATION CANADIAN-AF))
+(assert (MILITARY-ORGANIZATION CANADIAN-AF))
+(assert (FIXED-WING-AIRCRAFT CF-18))
+(assert (CEILING CF-18 50000))
+(assert (CREW-SIZE CF-18 1))
+(assert (DESIGNATION CF-18 "CF-18C"))
+(assert (ENGINE-COUNT CF-18 2))
+(assert (ENGINE-TYPE CF-18 F404))
+(assert (HEIGHT CF-18 15.3))
+(assert (IN-SERVICE CF-18 1982))
+(assert (LENGTH CF-18 56))
+(assert (MADE-BY CF-18 MCDONNELL-DOUGLAS))
+(assert (MAX-MACH CF-18 1.8))
+(assert (MAX-RANGE CF-18 2272))
+(assert (MAX-WEIGHT CF-18 23000))
+(assert (HAS-MISSION CF-18 AIR-SUPERIORITY))
+(assert (HAS-MISSION CF-18 INTERCEPTION))
+(assert (HAS-MISSION CF-18 STRIKE))
+(assert (NAME CF-18 "Hornet"))
+(assert (STORES CF-18 AIM-9M))
+(assert (STORES CF-18 AIM-7M))
+(assert (STORES CF-18 AGM-84))
+(assert (STORES CF-18 MK82))
+(assert (STORES CF-18 MK84))
+(assert (STORES CF-18 20MM-VULCAN))
+(assert (WINGSPAN CF-18 40.4))
+(assert (FIXED-WING-AIRCRAFT E-3))
+(assert (CEILING E-3 29000))
+(assert (COST E-3 180000000))
+(assert (CREW-SIZE E-3 23))
+(assert (DESIGNATION E-3 "E-3"))
+(assert (ENGINE-COUNT E-3 4))
+(assert (ENGINE-TYPE E-3 TF33-PW-100A))
+(assert (HEIGHT E-3 41.4))
+(assert (IN-SERVICE E-3 1977))
+(assert (LENGTH E-3 145.5))
+(assert (MADE-BY E-3 BOEING))
+(assert (MAX-RANGE E-3 4000))
+(assert (MAX-WEIGHT E-3 347000))
+(assert (HAS-MISSION E-3 COMMAND))
+(assert (HAS-MISSION E-3 SURVEILLANCE))
+(assert (NAME E-3 "Sentry"))
+(assert (NAME E-3 "AWACS"))
+(assert (WINGSPAN E-3 131))
+(assert (FIXED-WING-AIRCRAFT EF-111))
+(assert (CEILING EF-111 50000))
+(assert (COST EF-111 35000000))
+(assert (CREW-SIZE EF-111 2))
+(assert (DESIGNATION EF-111 "EF-111A"))
+(assert (ENGINE-COUNT EF-111 2))
+(assert (ENGINE-TYPE EF-111 TF-30-P-8109))
+(assert (HEIGHT EF-111 20))
+(assert (IN-SERVICE EF-111 1981))
+(assert (LENGTH EF-111 76))
+(assert (MADE-BY EF-111 GRUMMAN))
+(assert (MAX-MACH EF-111 2.2))
+(assert (MAX-RANGE EF-111 2000))
+(assert (MAX-SPEED EF-111 1650))
+(assert (MAX-WEIGHT EF-111 89000))
+(assert (HAS-MISSION EF-111 ELECTRONIC-WARFARE))
+(assert (NAME EF-111 "Raven"))
+(assert (PAYLOAD EF-111 7000))
+(assert (WINGSPAN EF-111 63))
+(assert (AFTERBURNING-ENGINE F-101-GE-102))
+(assert (TURBOFAN-ENGINE F-101-GE-102))
+(assert (ENGINE-USED-BY F-101-GE-102 B-1))
+(assert (MADE-BY F-101-GE-102 GE))
+(assert (THRUST F-101-GE-102 30000))
+(assert (ALL-WEATHER F-111))
+(assert (FIXED-WING-AIRCRAFT F-111))
+(assert (CEILING F-111 60000))
+(assert (COST F-111 18000000))
+(assert (CREW-SIZE F-111 2))
+(assert (DESIGNATION F-111 "F-111F"))
+(assert (ENGINE-COUNT F-111 2))
+(assert (ENGINE-TYPE F-111 F100-PW-100))
+(assert (HEIGHT F-111 17.1))
+(assert (IN-SERVICE F-111 1967))
+(assert (LENGTH F-111 73.5))
+(assert (MADE-BY F-111 GENERAL-DYNAMICS))
+(assert (MAX-MACH F-111 2.5))
+(assert (MAX-RANGE F-111 3565))
+(assert (MAX-SPEED F-111 1850))
+(assert (MAX-WEIGHT F-111 100000))
+(assert (HAS-MISSION F-111 STRIKE))
+(assert (HAS-MISSION F-111 INTERDICTION))
+(assert (HAS-MISSION F-111 STRATEGIC-BOMBING))
+(assert (NAME F-111 "Aardvark"))
+(assert (PAYLOAD F-111 25000))
+(assert (STORES F-111 AGM-130))
+(assert (STORES F-111 MK82))
+(assert (STORES F-111 MK84))
+(assert (STORES F-111 600G-TANK))
+(assert (STORES F-111 20MM-VULCAN))
+(assert (WINGSPAN F-111 63))
+(assert (STEALTH-TECHNOLOGY F-117))
+(assert (FIXED-WING-AIRCRAFT F-117))
+(assert (COST F-117 45000000))
+(assert (CREW-SIZE F-117 1))
+(assert (DESIGNATION F-117 "F-117A"))
+(assert (ENGINE-COUNT F-117 2))
+(assert (ENGINE-TYPE F-117 F404))
+(assert (HEIGHT F-117 12.5))
+(assert (IN-SERVICE F-117 1982))
+(assert (LENGTH F-117 66))
+(assert (MADE-BY F-117 LOCKHEED-MARTIN))
+(assert (MAX-SPEED F-117 650))
+(assert (MAX-WEIGHT F-117 52500))
+(assert (HAS-MISSION F-117 STRIKE))
+(assert (HAS-MISSION F-117 INTERDICTION))
+(assert (NAME F-117 "Stealth Fighter"))
+(assert (NAME F-117 "Nighthawk"))
+(assert (STORES F-117 AIM-9M))
+(assert (STORES F-117 MK82))
+(assert (STORES F-117 MK84))
+(assert (WINGSPAN F-117 43.4))
+(assert (JET-ENGINE F-118-GE-100))
+(assert (ENGINE-USED-BY F-118-GE-100 B-2))
+(assert (MADE-BY F-118-GE-100 GE))
+(assert (THRUST F-118-GE-100 17300))
+(assert (ALL-WEATHER F-15))
+(assert (FIXED-WING-AIRCRAFT F-15))
+(assert (CEILING F-15 65000))
+(assert (COST F-15 15000000))
+(assert (CREW-SIZE F-15 1))
+(assert (DESIGNATION F-15 "F-15C"))
+(assert (ENGINE-COUNT F-15 2))
+(assert (ENGINE-TYPE F-15 F100-PW-100))
+(assert (HEIGHT F-15 19))
+(assert (IN-SERVICE F-15 1972))
+(assert (LENGTH F-15 64))
+(assert (MADE-BY F-15 MCDONNELL-DOUGLAS))
+(assert (MAX-MACH F-15 2.5))
+(assert (MAX-RANGE F-15 3450))
+(assert (MAX-SPEED F-15 1875))
+(assert (MAX-WEIGHT F-15 68000))
+(assert (HAS-MISSION F-15 AIR-SUPERIORITY))
+(assert (NAME F-15 "Eagle"))
+(assert (STORES F-15 AIM-9M))
+(assert (STORES F-15 AIM-7M))
+(assert (STORES F-15 AIM-120))
+(assert (STORES F-15 600G-TANK))
+(assert (STORES F-15 20MM-VULCAN))
+(assert (WINGSPAN F-15 42))
+(assert (FIXED-WING-AIRCRAFT F-16))
+(assert (CEILING F-16 50000))
+(assert (COST F-16 12800000))
+(assert (CREW-SIZE F-16 1))
+(assert (DESIGNATION F-16 "F-16C"))
+(assert (ENGINE-COUNT F-16 1))
+(assert (ENGINE-TYPE F-16 F110-GE-200))
+(assert (HEIGHT F-16 16))
+(assert (IN-SERVICE F-16 1979))
+(assert (LENGTH F-16 49))
+(assert (MADE-BY F-16 GENERAL-DYNAMICS))
+(assert (MAX-MACH F-16 2))
+(assert (MAX-RANGE F-16 2000))
+(assert (MAX-SPEED F-16 1500))
+(assert (MAX-WEIGHT F-16 37500))
+(assert (HAS-MISSION F-16 AIR-SUPERIORITY))
+(assert (HAS-MISSION F-16 CAS))
+(assert (HAS-MISSION F-16 STRIKE))
+(assert (HAS-MISSION F-16 INTERDICTION))
+(assert (NAME F-16 "Fighting Falcon"))
+(assert (STORES F-16 AIM-9M))
+(assert (STORES F-16 AIM-7M))
+(assert (STORES F-16 AIM-120))
+(assert (STORES F-16 AGM-88))
+(assert (STORES F-16 MK82))
+(assert (STORES F-16 MK84))
+(assert (STORES F-16 ALQ-131))
+(assert (STORES F-16 300G-TANK))
+(assert (STORES F-16 20MM-VULCAN))
+(assert (WINGSPAN F-16 33))
+(assert (AFTERBURNING-ENGINE F100-PW-100))
+(assert (TURBOFAN-ENGINE F100-PW-100))
+(assert (ENGINE-USED-BY F100-PW-100 F-15))
+(assert (ENGINE-USED-BY F100-PW-100 F-111))
+(assert (MADE-BY F100-PW-100 PRATT-and-WHITNEY))
+(assert (THRUST F100-PW-100 25000))
+(assert (AFTERBURNING-ENGINE F110-GE-200))
+(assert (TURBOFAN-ENGINE F110-GE-200))
+(assert (ENGINE-USED-BY F110-GE-200 F-16))
+(assert (MADE-BY F110-GE-200 GE))
+(assert (THRUST F110-GE-200 27000))
+(assert (TURBOFAN-ENGINE F117-PW-100))
+(assert (ENGINE-USED-BY F117-PW-100 C-17))
+(assert (MADE-BY F117-PW-100 PRATT-and-WHITNEY))
+(assert (THRUST F117-PW-100 40900))
+(assert (TURBOFAN-ENGINE F404))
+(assert (JET-ENGINE F404))
+(assert (AFTERBURNING-ENGINE F404))
+(assert (ENGINE-USED-BY F404 CF-18))
+(assert (ENGINE-USED-BY F404 F-117))
+(assert (MADE-BY F404 GE))
+(assert (THRUST F404 16040))
+(assert (MANUFACTURER FAIRCHILD-REPUBLIC))
+(assert (MANUFACTURES FAIRCHILD-REPUBLIC A-10))
+(assert (MANUFACTURER GARRETT))
+(assert (MANUFACTURES GARRETT TFE-731-2-2B))
+(assert (MANUFACTURER GE))
+(assert (MANUFACTURES GE TF39-GE-1C))
+(assert (MANUFACTURES GE F110-GE-200))
+(assert (MANUFACTURES GE F404))
+(assert (MANUFACTURES GE T58-GE-5))
+(assert (MANUFACTURES GE T64-GE-100))
+(assert (MANUFACTURES GE F-101-GE-102))
+(assert (MANUFACTURES GE F-118-GE-100))
+(assert (MANUFACTURES GE TF34-GE-100))
+(assert (MANUFACTURER GENERAL-DYNAMICS))
+(assert (MANUFACTURES GENERAL-DYNAMICS F-111))
+(assert (MANUFACTURES GENERAL-DYNAMICS F-16))
+(assert (MANUFACTURER GRUMMAN))
+(assert (MANUFACTURES GRUMMAN EF-111))
+(assert (MANUFACTURES GRUMMAN A-6))
+(assert (MANUFACTURES GULFSTREAM C-20))
+(assert (ROTARY-WING-AIRCRAFT HH-1))
+(assert (CEILING HH-1 15000))
+(assert (COST HH-1 1900000))
+(assert (CREW-SIZE HH-1 2))
+(assert (DESIGNATION HH-1 "HH-1H"))
+(assert (ENGINE-COUNT HH-1 1))
+(assert (ENGINE-TYPE HH-1 T-53-L-13B))
+(assert (HEIGHT HH-1 13))
+(assert (LENGTH HH-1 57))
+(assert (MADE-BY HH-1 BELL))
+(assert (MAX-RANGE HH-1 345))
+(assert (MAX-SPEED HH-1 133))
+(assert (MAX-WEIGHT HH-1 9500))
+(assert (HAS-MISSION HH-1 TRANSPORT))
+(assert (NAME HH-1 "Iroquois"))
+(assert (PASSENGER-CAPACITY HH-1 12))
+(assert (ROTOR-DIAMETER HH-1 48.4))
+(assert (WIDTH HH-1 9.5))
+(assert (ROTARY-WING-AIRCRAFT HH-3E))
+(assert (CEILING HH-3E 12000))
+(assert (COST HH-3E 5400000))
+(assert (CREW-SIZE HH-3E 4))
+(assert (DESIGNATION HH-3E "HH-3E"))
+(assert (ENGINE-COUNT HH-3E 2))
+(assert (ENGINE-TYPE HH-3E T58-GE-5))
+(assert (HEIGHT HH-3E 18))
+(assert (IN-SERVICE HH-3E 1966))
+(assert (LENGTH HH-3E 72))
+(assert (MADE-BY HH-3E SIKORSKY))
+(assert (MAX-RANGE HH-3E 600))
+(assert (MAX-SPEED HH-3E 164))
+(assert (MAX-WEIGHT HH-3E 22050))
+(assert (has-MISSION HH-3E SAR))
+(assert (has-MISSION HH-3E TRANSPORT))
+(assert (has-MISSION HH-3E SPECIAL-OPERATIONS))
+(assert (NAME HH-3E "Jolly Green Giant"))
+(assert (PASSENGER-CAPACITY HH-3E 25))
+(assert (PAYLOAD HH-3E 5000))
+(assert (ROTOR-DIAMETER HH-3E 62))
+(assert (MANUFACTURER HUGHES))
+(assert (MANUFACTURES HUGHES AIM-120))
+(assert (TURBOFAN-ENGINE J52-P8B))
+(assert (ENGINE-USED-BY J52-P8B A-6))
+(assert (MADE-BY J52-P8B PRATT-and-WHITNEY))
+(assert (THRUST J52-P8B 9300))
+(assert (TURBOFAN-ENGINE JT8D-7))
+(assert (ENGINE-USED-BY JT8D-7 C-22))
+(assert (MADE-BY JT8D-7 PRATT-and-WHITNEY))
+(assert (THRUST JT8D-7 14000))
+(assert (TURBOFAN-ENGINE JT8D-9A))
+(assert (ENGINE-USED-BY JT8D-9A C-9))
+(assert (MADE-BY JT8D-9A PRATT-and-WHITNEY))
+(assert (THRUST JT8D-9A 14500))
+(assert (MANUFACTURER LEARJET))
+(assert (MANUFACTURES LEARJET C-21))
+(assert (MANUFACTURER LOCKHEED-MARTIN))
+(assert (MANUFACTURES LOCKHEED-MARTIN C-130))
+(assert (MANUFACTURES LOCKHEED-MARTIN C-141))
+(assert (MANUFACTURES LOCKHEED-MARTIN C-5))
+(assert (MANUFACTURES LOCKHEED-MARTIN F-117))
+(assert (MANUFACTURER LYCOMING))
+(assert (MANUFACTURES LYCOMING T-53-L-13B))
+(assert (MANUFACTURES MCDONNEL-DOUGLAS C-17))
+(assert (MANUFACTURER MCDONNELL-DOUGLAS))
+(assert (MANUFACTURES MCDONNELL-DOUGLAS AGM-84))
+(assert (MANUFACTURES MCDONNELL-DOUGLAS C-9))
+(assert (MANUFACTURES MCDONNELL-DOUGLAS F-15))
+(assert (MANUFACTURES MCDONNELL-DOUGLAS CF-18))
+(assert (ROTARY-WING-AIRCRAFT MH-53J))
+(assert (CEILING MH-53J 16000))
+(assert (COST MH-53J 25000000))
+(assert (CREW-SIZE MH-53J 6))
+(assert (DESIGNATION MH-53J "MH-53J"))
+(assert (ENGINE-COUNT MH-53J 2))
+(assert (ENGINE-TYPE MH-53J T64-GE-100))
+(assert (HEIGHT MH-53J 25))
+(assert (IN-SERVICE MH-53J 1981))
+(assert (LENGTH MH-53J 92))
+(assert (MADE-BY MH-53J SIKORSKY))
+(assert (MAX-RANGE MH-53J 630))
+(assert (MAX-SPEED MH-53J 164))
+(assert (MAX-WEIGHT MH-53J 46000))
+(assert (HAS-MISSION MH-53J TRANSPORT))
+(assert (HAS-MISSION MH-53J SPECIAL-OPERATIONS))
+(assert (NAME MH-53J "Pave Low"))
+(assert (NAME MH-53J "Pave Low III"))
+(assert (PASSENGER-CAPACITY MH-53J 38))
+(assert (PAYLOAD MH-53J 20000))
+(assert (ROTOR-DIAMETER MH-53J 72))
+(assert (BOMB MK82))
+(assert (CARRIED-BY MK82 F-16))
+(assert (CARRIED-BY MK82 CF-18))
+(assert (CARRIED-BY MK82 F-111))
+(assert (CARRIED-BY MK82 A-10))
+(assert (CARRIED-BY MK82 A-6))
+(assert (CARRIED-BY MK82 B-52))
+(assert (CARRIED-BY MK82 F-117))
+(assert (DESIGNATION MK82 "MK-82"))
+(assert (MAX-WEIGHT MK82 500))
+(assert (NAME MK82 "500lb bomb"))
+(assert (TARGET-TYPE MK82 GROUND-UNIT))
+(assert (BOMB MK84))
+(assert (CARRIED-BY MK84 F-16))
+(assert (CARRIED-BY MK84 CF-18))
+(assert (CARRIED-BY MK84 F-111))
+(assert (CARRIED-BY MK84 A-10))
+(assert (CARRIED-BY MK84 A-6))
+(assert (CARRIED-BY MK84 B-52))
+(assert (CARRIED-BY MK84 F-117))
+(assert (DESIGNATION MK84 "MK-84"))
+(assert (MAX-WEIGHT MK84 2000))
+(assert (NAME MK84 "2000lb bomb"))
+(assert (TARGET-TYPE MK84 GROUND-UNIT))
+(assert (MANUFACTURER NAVAL-WEAPONS-CENTER))
+(assert (MILITARY-ORGANIZATION NAVAL-WEAPONS-CENTER))
+(assert (MANUFACTURES NAVAL-WEAPONS-CENTER AIM-9M))
+(assert (MANUFACTURER NORTHRUP))
+(assert (MANUFACTURES NORTHRUP B-2))
+(assert (MANUFACTURER PRATT-and-WHITNEY))
+(assert (MANUFACTURES PRATT-and-WHITNEY TF33-P-7))
+(assert (MANUFACTURES PRATT-and-WHITNEY JT8D-7))
+(assert (MANUFACTURES PRATT-and-WHITNEY JT8D-9A))
+(assert (MANUFACTURES PRATT-and-WHITNEY F100-PW-100))
+(assert (MANUFACTURES PRATT-and-WHITNEY TF-30-P-8109))
+(assert (MANUFACTURES PRATT-and-WHITNEY F117-PW-100))
+(assert (MANUFACTURES PRATT-and-WHITNEY TF33-PW-100A))
+(assert (MANUFACTURES PRATT-and-WHITNEY TF-33-P-3\/103))
+(assert (MANUFACTURES PRATT-and-WHITNEY J52-P8B))
+(assert (MANUFACTURER RAYTHEON))
+(assert (MANUFACTURES RAYTHEON AIM-7M))
+(assert (MANUFACTURES RAYTHEON AIM-120))
+(assert (MANUFACTURER ROCKWELL))
+(assert (MANUFACTURES ROCKWELL AGM-130))
+(assert (MANUFACTURES ROCKWELL B-1))
+(assert (MANUFACTURER ROLLS-ROYCE))
+(assert (MANUFACTURES ROLLS-ROYCE SPEY-MK511-8))
+(assert (MANUFACTURER SIKORSKY))
+(assert (MANUFACTURES SIKORSKY HH-3E))
+(assert (MANUFACTURES SIKORSKY MH-53J))
+(assert (TURBOFAN-ENGINE SPEY-MK511-8))
+(assert (ENGINE-USED-BY SPEY-MK511-8 C-20))
+(assert (MADE-BY SPEY-MK511-8 ROLLS-ROYCE))
+(assert (THRUST SPEY-MK511-8 11400))
+(assert (TURBOSHAFT-ENGINE T-53-L-13B))
+(assert (ENGINE-USED-BY T-53-L-13B HH-1))
+(assert (MADE-BY T-53-L-13B LYCOMING))
+(assert (SHAFT-HORSEPOWER T-53-L-13B 1400))
+(assert (TURBOPROP-ENGINE T56-A-15))
+(assert (ENGINE-USED-BY T56-A-15 C-130))
+(assert (HORSEPOWER T56-A-15 4300))
+(assert (MADE-BY T56-A-15 ALLISON))
+(assert (ENGINE T58-GE-5))
+(assert (ENGINE-USED-BY T58-GE-5 HH-3E))
+(assert (MADE-BY T58-GE-5 GE))
+(assert (THRUST T58-GE-5 1500))
+(assert (ENGINE T64-GE-100))
+(assert (ENGINE-USED-BY T64-GE-100 MH-53J))
+(assert (MADE-BY T64-GE-100 GE))
+(assert (SHAFT-HORSEPOWER T64-GE-100 4330))
+(assert (MANUFACTURER TEXAS-INSTRUMENTS))
+(assert (MANUFACTURES TEXAS-INSTRUMENTS AGM-88))
+(assert (AFTERBURNING-ENGINE TF-30-P-8109))
+(assert (TURBOFAN-ENGINE TF-30-P-8109))
+(assert (ENGINE-USED-BY TF-30-P-8109 EF-111))
+(assert (MADE-BY TF-30-P-8109 PRATT-and-WHITNEY))
+(assert (THRUST TF-30-P-8109 21000))
+(assert (TURBOFAN-ENGINE TF-33-P-3\/103))
+(assert (ENGINE-USED-BY TF-33-P-3\/103 B-52))
+(assert (MADE-BY TF-33-P-3\/103 PRATT-and-WHITNEY))
+(assert (THRUST TF-33-P-3\/103 17000))
+(assert (TURBOFAN-ENGINE TF33-P-7))
+(assert (ENGINE-USED-BY TF33-P-7 C-141))
+(assert (MADE-BY TF33-P-7 PRATT-and-WHITNEY))
+(assert (THRUST TF33-P-7 20250))
+(assert (TURBOFAN-ENGINE TF33-PW-100A))
+(assert (ENGINE-USED-BY TF33-PW-100A E-3))
+(assert (MADE-BY TF33-PW-100A PRATT-and-WHITNEY))
+(assert (THRUST TF33-PW-100A 21000))
+(assert (TURBOFAN-ENGINE TF34-GE-100))
+(assert (ENGINE-USED-BY TF34-GE-100 A-10))
+(assert (MADE-BY TF34-GE-100 GE))
+(assert (THRUST TF34-GE-100 9065))
+(assert (TURBOFAN-ENGINE TF39-GE-1C))
+(assert (ENGINE-USED-BY TF39-GE-1C C-5))
+(assert (MADE-BY TF39-GE-1C GE))
+(assert (THRUST TF39-GE-1C 41000))
+(assert (TURBOFAN-ENGINE TFE-731-2-2B))
+(assert (ENGINE-USED-BY TFE-731-2-2B C-21))
+(assert (MADE-BY TFE-731-2-2B GARRETT))
+(assert (THRUST TFE-731-2-2B 3500))
+(assert (AIR-ORGANIZATION US-ANG))
+(assert (MILITARY-ORGANIZATION US-ANG))
+(assert (AIR-ORGANIZATION US-NAVY))
+(assert (MILITARY-ORGANIZATION US-NAVY))
+(assert (AIR-ORGANIZATION USAF))
+(assert (MILITARY-ORGANIZATION USAF))
+(assert (AIR-ORGANIZATION USAF-RESERVE))
+(assert (MILITARY-ORGANIZATION USAF-RESERVE))
+
+
+(assert (COMBAT-MISSION AIR-SUPERIORITY))
+(assert (COMBAT-MISSION CLOSE-AIR-SUPPORT))
+(assert (MISSION COMBAT-MISSION))
+(assert (NON-COMBAT-MISSION COMMAND))
+(assert (COMBAT-MISSION ELECTRONIC-WARFARE))
+(assert (TRANSPORTING EVACUATION))
+(assert (NON-COMBAT-MISSION EVACUATION))
+(assert (COMBAT-MISSION INTERCEPTION))
+(assert (COMBAT-MISSION INTERDICTION))
+(assert (MISSION NON-COMBAT-MISSION))
+(assert (NON-COMBAT-MISSION RECONNAISSANCE))
+(assert (NON-COMBAT-MISSION SAR))
+(assert (COMBAT-MISSION SUPPRESSION-OF-ENEMY-AIR-DEFENSE))
+(assert (COMBAT-MISSION SPECIAL-OPERATIONS))
+(assert (COMBAT-MISSION STRATEGIC-BOMBING))
+(assert (COMBAT-MISSION STRIKE))
+(assert (NON-COMBAT-MISSION SURVEILLANCE))
+(assert (NON-COMBAT-MISSION TRANSPORTING))
+
+
+(ASSERT (fleet-size CANADIAN-AF CF-18 86))
+(ASSERT (fleet-size US-ANG A-10 84))
+(ASSERT (fleet-size US-ANG C-130 173))
+(ASSERT (fleet-size US-ANG C-141 16))
+(ASSERT (fleet-size US-ANG C-21 4))
+(ASSERT (fleet-size US-ANG C-22 4))
+(ASSERT (fleet-size US-ANG C-5 11))
+(ASSERT (fleet-size US-ANG F-15 126))
+(ASSERT (fleet-size US-ANG F-16 634))
+(ASSERT (fleet-size USAF A-10 72))
+(ASSERT (fleet-size USAF B-1 94))
+(ASSERT (fleet-size USAF B-2 20))
+(ASSERT (fleet-size USAF B-52 84))
+(ASSERT (fleet-size USAF C-130 98))
+(ASSERT (fleet-size USAF C-141 241))
+(ASSERT (fleet-size USAF C-20 10))
+(ASSERT (fleet-size USAF C-21 70))
+(ASSERT (fleet-size USAF C-5 70))
+(ASSERT (fleet-size USAF C-9 10))
+(ASSERT (fleet-size USAF E-3 29))
+(ASSERT (fleet-size USAF EF-111 40))
+(ASSERT (fleet-size USAF F-111 225))
+(ASSERT (fleet-size USAF F-117 56))
+(ASSERT (fleet-size USAF F-15 403))
+(ASSERT (fleet-size USAF F-16 804))
+(ASSERT (fleet-size USAF HH-1 25))
+(ASSERT (fleet-size USAF HH-3E 12))
+(ASSERT (fleet-size USAF MH-53J 41))
+(ASSERT (fleet-size USAF-RESERVE A-10 87))
+(ASSERT (fleet-size USAF-RESERVE C-130 606))
+(ASSERT (fleet-size USAF-RESERVE C-141 12))
+(ASSERT (fleet-size USAF-RESERVE C-5 28))
+(ASSERT (fleet-size USAF-RESERVE F-16 150))
+
+(assert (image-url AIM-9M "images/weapons/AIM-9-msl.GIF"))
+(assert (image-url AGM-88 "images/weapons/AGM-88-msl.GIF"))
+(assert (image-url C-130 "images/aircraft/C-130-ac.GIF"))
+(assert (image-url C-141 "images/aircraft/C-141-ac.GIF"))
+(assert (image-url C-5 "images/aircraft/C-5-ac.GIF"))
+(assert (image-url F-15 "images/aircraft/F-15-ac.GIF"))
+(assert (image-url F-111 "images/aircraft/F-111F-ac.jpg"))
+(assert (image-url EF-111 "images/aircraft/EF-111-ac.GIF"))
+(assert (image-url F-16 "images/aircraft/F-16-ac.GIF"))
+(assert (image-url F-16 "images/aircraft/F-16x-ac.GIF"))
+(assert (image-url CF-18 "images/aircraft/FA-18-ac.gif"))
+(assert (image-url F-117 "images/aircraft/F-117-ac.GIF"))
+(assert (image-url C-17 "images/aircraft/C-17-ac.GIF"))
+(assert (image-url MH-53 "images/aircraft/MH-53J-ac.GIF"))
+(assert (image-url E-3 "images/aircraft/E-3-ac.GIF"))
+(assert (image-url B-52 "images/aircraft/B-52-ac.GIF"))
+(assert (image-url B-1 "images/aircraft/B-1-ac.GIF"))
+(assert (image-url B-2 "images/aircraft/B-2-ac.GIF"))
+(assert (image-url A-10 "images/aircraft/A-10-ac.GIF"))
+(assert (image-url A-6 "images/aircraft/A-6-ac.GIF"))
+(assert (image-url AIRCRAFT-KB "images/aircraft/F-16-shoot-ac.GIF"))
+
+
+#|
+;; These are handled in defobject for now:
+(assert (DOCUMENTATION MH-53J
+            "The MH-53J's mission is to perform low-level, 
+long-range, undetected penetration into denied areas, day or night, in
+adverse weather, for infiltration, exfiltration and resupply of special 
+operations forces.  The MH-53J heavy-lift helicopter is the largest and 
+most powerful helicopter in the Air Force inventory, and the most 
+technologically advanced helicopter in the world."))
+(assert (DOCUMENTATION HH-3E
+            "The HH-3E, the Jolly Green Giant, is a twin-engine, 
+heavy-lift helicopter. It is used for search and recovery of personnel and 
+aerospace hardware in support of global air and space operations. 
+It is also used for combat and special operations. "))
+(assert (DOCUMENTATION HH-1
+            "The HH-1H is a light-lift Air Force helicopter used 
+for distinguished visitor transport, and support of missile sites and ranges.  
+It is the single-engine version of the Huey helicopters first flown in 1956."))
+(assert (DOCUMENTATION F-16
+            "The F-16 Fighting Falcon is a compact, multirole 
+fighter aircraft. It is highly maneuverable and has proven itself in air-to-air
+combat and air-to-surface attack. It provides a relatively low-cost, 
+high-performance weapon system for the air forces of the United States and 
+allied nations."))
+(assert (DOCUMENTATION F-15
+            "The F-15 Eagle is an all-weather, extremely 
+maneuverable, tactical fighter designed to gain and maintain air superiority 
+in aerial combat."))
+(assert (DOCUMENTATION F-117
+            "The F-117A Nighthawk is the world's first operational 
+aircraft designed to exploit low-observable stealth technology."))
+(assert (DOCUMENTATION F-111
+            "The F-111 is a multipurpose tactical fighter bomber 
+capable of supersonic speeds. It can operate from tree-top level to
+altitudes above 60,000 feet.  The F-111 has variable-sweep wings that allow 
+the pilot to fly from slow approach speeds to supersonic velocity at sea level
+and more than twice the speed of sound at higher altitudes.  The F-111 
+can carry conventional as well as nuclear weapons."))
+(assert (DOCUMENTATION EF-111
+            "The EF-111A Raven is designed to provide electronic 
+countermeasures support for tactical air forces. The EF-111A can
+detect, sort, identify and nullify different enemy radars.  Jamming subsystem 
+receivers scan across frequency bands under computer or manual control. When
+threats are identified, appropriate countermeasures are initiated either 
+automatically by computer or with the electronic warfare officer's assistance."))
+(assert (DOCUMENTATION E-3
+            "The E-3 Sentry is an airborne warning and control 
+system (AWACS) aircraft that provides all-weather surveillance, command, 
+control and communications needed by commanders of U.S. and NATO air defense 
+forces. As proven in Desert Storm, it is the premier air battle command and 
+control aircraft in the world today."))
+(assert (DOCUMENTATION CF-18
+            "The CF-18 is a twin engine supersonic jet tactical fighter. The
+four CF-18 fighter squadrons (15 aircraft each) are assigned
+the air defence role in North America. They maintain limited
+air-to-surface capability to provide support to maritime
+operations, as well as support to land operations in defence of
+Canada."))
+(assert (DOCUMENTATION C-9
+            "The C-9 is a twin-engine, T-tailed, medium-range, 
+swept-wing jet aircraft used primarily for Air Mobility Command's aeromedical 
+evacuation mission.  The Nightingale is a modified version of the McDonnell 
+Douglas Aircraft Corporation's DC-9. It is the only aircraft in the
+inventory specifically designed for the movement of litter and 
+ambulatory patients."))
+(assert (DOCUMENTATION C-5
+            "The C-5 Galaxy is a heavy-cargo transport designed 
+to provide massive strategic airlift, for deployment and supply of combat and 
+support forces.  The C-5 can carry unusually large and heavy cargo for 
+intercontinental ranges at jet speeds. The plane can take off and land
+in relatively short distances and taxi on substandard surfaces during 
+emergency operations. "))
+(assert (DOCUMENTATION C-22
+            "The C-22B, a Boeing 727-100, is the primary 
+medium-range aircraft used by the Air National Guard and National Guard
+Bureau to airlift personnel."))
+(assert (DOCUMENTATION C-21
+            "The C-21A provides cargo and passenger airlift 
+and can transport litters during medical evacuations."))
+(assert (DOCUMENTATION C-20
+            "The C-20 Gulfstream III is a twin-engine, turbofan 
+aircraft acquired to fill the airlift mission for high-ranking government
+and Defense Department officials."))
+(assert (DOCUMENTATION C-17
+            "The C-17 is capable of rapid strategic delivery of 
+troops and all types of cargo to main operating bases or directly to forward
+bases in the deployment area. The aircraft is also able to perform theater 
+airlift missions when required. The inherent flexibility and performance 
+characteristics of the C-17 force improves the ability of the total airlift 
+system to fulfill the worldwide air mobility requirements of the United States."))
+(assert (DOCUMENTATION C-141
+            "The C-141 Starlifter is the workhorse of the Air 
+Mobility Command. The Starlifter fulfills the vast spectrum of airlift
+requirements through its ability to airlift combat forces over long distances, 
+inject those forces and their equipment either by airland or airdrop, re-supply 
+employed forces, and extract the sick and wounded from the hostile area to 
+advanced medical facilities."))
+(assert (DOCUMENTATION C-130
+            "The C-130 Hercules primarily performs the 
+intratheater portion of the airlift mission. The aircraft is capable of 
+operating from rough, dirt strips and is the prime transport for 
+paradropping troops and equipment into hostile areas."))
+(assert (DOCUMENTATION B-52
+            "Air Combat Command's B-52 is a long-range, heavy 
+bomber that can perform a variety of missions. It can carry nuclear or 
+conventional ordnance.  For more than 35 years B-52 Stratofortresses have 
+been the primary manned strategic bomber force for the United States.
+Updated with modern technology, the B-52 fleet will continue flying into 
+the 21st century."))
+(assert (DOCUMENTATION B-2
+            "The B-2 Spirit is a multi-role bomber capable of 
+delivering both conventional and nuclear munitions. A dramatic leap
+forward in technology, the bomber represents a major milestone in the U.S. 
+bomber modernization program. The B-2 brings massive firepower to bear, in
+a short time, anywhere on the globe through previously impenetrable defenses."))
+(assert (DOCUMENTATION B-1
+            "The B-1B is a multi-role, long-range bomber, capable
+of flying intercontinental missions without refueling, then penetrating present
+and predicted sophisticated enemy defenses. It can perform a variety of missions,
+including that of a conventional weapons carrier for theater operations."))
+(assert (DOCUMENTATION AIM-9M
+            "The AIM-9 Sidewinder is a supersonic, heat-seeking, 
+air-to-air missile carried by fighter aircraft. It has a high-explosive
+warhead and an active infrared guidance system."))
+(assert (DOCUMENTATION AIM-7M
+            "The AIM-7 Sparrow is a radar-guided, air-to-air 
+missile with a high-explosive warhead. The versatile Sparrow has
+all-weather, all-altitude operational capability and can attack 
+high-performance aircraft and missiles from any direction."))
+(assert (DOCUMENTATION AIM-120
+            "The AIM-120 advanced medium-range air-to-air 
+missile (AMRAAM) is a new generation air-to-air missile. It has an
+all-weather, beyond-visual-range capability and is scheduled to be 
+operational beyond 2000."))
+(assert (DOCUMENTATION AGM-88
+            "The AGM-88 HARM (high-speed antiradiation missile) 
+is an air-to-surface tactical missile designed to seek and destroy
+enemy radar-equipped air defense systems. "))
+(assert (DOCUMENTATION AGM-84
+            "The AGM-84D Harpoon is an all-weather, over-the-horizon,
+anti-ship missile system.  The Harpoon's active radar guidance, warhead design, and low-level, sea-
+skimming cruise trajectory assure high survivability and effectiveness. The
+missile is capable of being launched from surface ships, submarines, or
+(without the booster) from aircraft."))
+(assert (DOCUMENTATION AGM-65 ""))
+(assert (DOCUMENTATION AGM-62 ""))
+(assert (DOCUMENTATION AGM-130 
+            "The AGM-130A is a powered air-to-surface missile 
+designed for high- and low-altitude strikes at standoff ranges against a
+variety of targets.  The AGM-130A is equipped with either a television or 
+an imaging infrared seeker and data link. The seeker provides the
+launch aircraft a visual presentation of the target as seen from the weapon. 
+During free flight this presentation is transmitted
+by a data-link system to the aircraft cockpit monitor."))
+(assert (DOCUMENTATION A-6
+            "The A-6E is an all-weather, two-seat, subsonic, carrier-based
+attack aircraft.   The crew, sitting side by side,
+can see in all directions through a broad canopy. The aircraft is equipped
+with a micro-miniaturized digital computer, a solid state weapons release
+system, and a single integrated track and search radar. The Intruder is
+armed with laser-guided weapons and equipped with a chin turret containing a
+forward-looking infra-red (FLIR) system and laser designator and receiver."))
+(assert (DOCUMENTATION A-10
+            "The A-10 and OA-10 Thunderbolt IIs are the first
+Air Force aircraft specially designed for close air support of ground forces.  
+They are simple, effective and survivable twin-engine jet aircraft that can
+be used against all ground targets, including tanks and other armored vehicles."))
+|#
+
+
+

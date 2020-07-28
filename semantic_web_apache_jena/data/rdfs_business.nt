@@ -1,0 +1,34 @@
+  <http://knowledgebooks.com/test#Amazon>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://knowledgebooks.com/test#Business> .
+ 
+  <http://knowledgebooks.com/test#Business>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+  
+  <http://knowledgebooks.com/test#Business>     <http://www.w3.org/2000/01/rdf-schema#label> "Business" .
+  
+  <http://knowledgebooks.com/test#Business>     <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://knowledgebooks.com/test#Organization> .
+  
+  <http://knowledgebooks.com/test#Customer>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+  
+  <http://knowledgebooks.com/test#Customer>     <http://www.w3.org/2000/01/rdf-schema#label> "Customer" .
+  
+  <http://knowledgebooks.com/test#Customer>     <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://knowledgebooks.com/test#Business> .
+  
+  <http://knowledgebooks.com/test#FreshVeggies>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://knowledgebooks.com/test#Business> .
+  
+  <http://knowledgebooks.com/test#HanksHardware>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://knowledgebooks.com/test#Business> .
+  
+  <http://knowledgebooks.com/test#MarkWatsonSoftware>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://knowledgebooks.com/test#Business> .
+  
+  <http://knowledgebooks.com/test#MarkWatsonSoftware>     <http://knowledgebooks.com/test#Customer> <http://knowledgebooks.com/test#Amazon> .
+  
+  <http://knowledgebooks.com/test#Organization>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+  
+  <http://knowledgebooks.com/test#Organization>     <http://www.w3.org/2000/01/rdf-schema#label> "Organization" .
+  
+  <http://knowledgebooks.com/test#organizationName>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+  
+  <http://knowledgebooks.com/test#organizationName>     <http://www.w3.org/2000/01/rdf-schema#domain> <http://knowledgebooks.com/test#Organization> .
+  
+  <http://knowledgebooks.com/test#organizationName>     <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#stringstring> .
+  
+  <http://www.w3.org/2001/XMLSchema#stringstring>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+  

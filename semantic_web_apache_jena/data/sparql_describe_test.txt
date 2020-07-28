@@ -1,0 +1,7 @@
+PREFIX kb:<http://knowledgebooks.com/>
+DESCRIBE ?article_uri
+WHERE { ?article_uri kb:title "Trout Season Starts" }
+
+PREFIX kb:<http://knowledgebooks.com/>
+DESCRIBE ?article_uri ?predicate
+WHERE { ?article_uri ?predicate "Trout Season Starts" }

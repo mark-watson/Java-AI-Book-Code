@@ -1,0 +1,29 @@
+<http://xmlns.com/foaf/0.1/Agent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<http://xmlns.com/foaf/0.1/Agent> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Resource> .
+<http://xmlns.com/foaf/0.1/Person> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<http://xmlns.com/foaf/0.1/Person> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://xmlns.com/foaf/0.1/Agent> .
+<http://xmlns.com/foaf/0.1/Organization> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<http://xmlns.com/foaf/0.1/Organization> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://xmlns.com/foaf/0.1/Agent> .
+<http://example.org/stuff/HMSS> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Organization> .
+<http://example.org/stuff/HMSS> <http://xmlns.com/foaf/0.1/name> "Her Majesty's Secret Service" .
+<http://example.org/stuff/HMSS> <http://xmlns.com/foaf/0.1/nick> "HMSS" .
+<http://example.org/stuff/HMSS> <http://xmlns.com/foaf/0.1/member> <http://example.org/stuff/M> .
+<http://example.org/stuff/HMSS> <http://xmlns.com/foaf/0.1/member> <http://example.org/stuff/Q> .
+<http://example.org/stuff/HMSS> <http://xmlns.com/foaf/0.1/member> <http://example.org/stuff/Bond> .
+<http://example.org/stuff/HMSS> <http://xmlns.com/foaf/0.1/member> <http://example.org/stuff/Kerim> .
+<http://example.org/stuff/M> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
+<http://example.org/stuff/M> <http://xmlns.com/foaf/0.1/name> "M" .
+<http://example.org/stuff/M> <http://xmlns.com/foaf/0.1/knows> <http://example.org/stuff/Q> .
+<http://example.org/stuff/M> <http://xmlns.com/foaf/0.1/knows> <http://example.org/stuff/Bond> .
+<http://example.org/stuff/M> <http://xmlns.com/foaf/0.1/knows> <http://example.org/stuff/Kerim> .
+<http://example.org/stuff/Q> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
+<http://example.org/stuff/Q> <http://xmlns.com/foaf/0.1/name> "Q" .
+<http://example.org/stuff/Q> <http://xmlns.com/foaf/0.1/knows> <http://example.org/stuff/M> .
+<http://example.org/stuff/Q> <http://xmlns.com/foaf/0.1/knows> <http://example.org/stuff/Bond> .
+<http://example.org/stuff/Bond> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
+<http://example.org/stuff/Bond> <http://xmlns.com/foaf/0.1/name> "James Bond" .
+<http://example.org/stuff/Bond> <http://xmlns.com/foaf/0.1/knows> <http://example.org/stuff/M> .
+<http://example.org/stuff/Bond> <http://xmlns.com/foaf/0.1/knows> <http://example.org/stuff/Q> .
+<http://example.org/stuff/Kerim> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
+<http://example.org/stuff/Kerim> <http://xmlns.com/foaf/0.1/name> "Darko Kerim" .
+<http://example.org/stuff/Kerim> <http://xmlns.com/foaf/0.1/knows> <http://example.org/stuff/M> .

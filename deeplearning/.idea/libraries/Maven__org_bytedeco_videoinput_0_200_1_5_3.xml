@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.bytedeco:videoinput:0.200-1.5.3">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/bytedeco/videoinput/0.200-1.5.3/videoinput-0.200-1.5.3.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/bytedeco/videoinput/0.200-1.5.3/videoinput-0.200-1.5.3-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/bytedeco/videoinput/0.200-1.5.3/videoinput-0.200-1.5.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

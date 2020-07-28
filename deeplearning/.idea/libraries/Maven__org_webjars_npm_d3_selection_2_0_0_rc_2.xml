@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.webjars.npm:d3-selection:2.0.0-rc.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/npm/d3-selection/2.0.0-rc.2/d3-selection-2.0.0-rc.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/npm/d3-selection/2.0.0-rc.2/d3-selection-2.0.0-rc.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/npm/d3-selection/2.0.0-rc.2/d3-selection-2.0.0-rc.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

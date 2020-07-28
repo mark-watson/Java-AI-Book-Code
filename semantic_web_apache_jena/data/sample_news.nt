@@ -1,0 +1,13 @@
+<http://kbsportal.com/oak_creek_flooding/> <http://knowledgebooks.com/ontology/#storyType> <http://knowledgebooks.com/ontology/#disaster> .
+
+<http://kbsportal.com/oak_creek_flooding/> <http://knowledgebooks.com/ontology/#summary> "Oak Creek flooded last week affecting 5 businesses" .
+
+<http://kbsportal.com/bear_mountain_fire/> <http://knowledgebooks.com/ontology/#storyType> <http://knowledgebooks.com/ontology/#disaster> .
+
+<http://kbsportal.com/bear_mountain_fire/> <http://knowledgebooks.com/ontology/#summary> "The fire on Bear Mountain was caused by lightening" .
+
+<http://kbsportal.com/trout_season/> <http://knowledgebooks.com/ontology/#storyType> <http://knowledgebooks.com/ontology/#sports> .
+
+<http://kbsportal.com/trout_season/> <http://knowledgebooks.com/ontology/#storyType> <http://knowledgebooks.com/ontology/#recreation> .
+
+<http://kbsportal.com/jc_basketball/> <http://knowledgebooks.com/ontology/#storyType> <http://knowledgebooks.com/ontology/#sports> .

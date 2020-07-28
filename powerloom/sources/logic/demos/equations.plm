@@ -1,0 +1,159 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: equations.plm,v 1.1 2006/05/08 23:54:58 hans Exp
+
+;;; Reasoning with simple equations and arithmetic constraints
+;;; ==========================================================
+
+;;; Demonstrates how PowerLoom can handle simple equational and
+;;; arithmetic constraint reasoning without needing multiple inversion
+;;; rules.
+
+
+;; Standard demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "PL-USER/EQUATIONS")
+
+(in-module "EQUATIONS")
+
+(clear-module "EQUATIONS")
+(reset-features)
+
+(in-dialect KIF)
+
+
+;;; Example with velocity equation
+
+;;; This shows how PowerLoom can invert the equation in various ways
+;;; without requiring specific rules for each inversion.  Note that we
+;;; need to be a bit more explicit and introduce an event object to
+;;; connect the various attributes to (this is usally implicit in the
+;;; context in which an equation is in):
+
+(defconcept movement-event (?ev)
+  :documentation "The class of movement events.  The time of each event
+depends on the movement speed and distance covered as expressed by the
+defining rule."
+  :=> (= (* (time ?ev) (speed ?ev)) (distance ?ev)))
+
+;;; define slots on movement events:
+
+(deffunction time ((?ev movement-event) ?time))
+(deffunction speed ((?ev movement-event) ?speed))
+(deffunction distance ((?ev movement-event) ?distance))
+
+#|
+;;; the definition above is simple syntactic sugar for the following:
+
+(defconcept movement-event)
+
+(assert
+  (forall ?ev
+    (=> (movement-event ?ev)
+        (= (* (time ?ev) (speed ?ev)) (distance ?ev)))))
+
+|#
+
+;;; Let us define two events with different quantities filled in:
+
+(definstance ev1 :movement-event true :speed 10 :time 20)
+
+(definstance ev2 :movement-event true :speed 10 :distance 50)
+
+;;; Now lets compute distance of the first event and time of
+;;; the second both using the single rule defined above:
+
+(retrieve all (distance ev1 ?x))
+
+(retrieve all (time ev2 ?x))
+
+
+;;; Another example with a line equation
+
+;;; This shows how PowerLoom can invert the line equation in all
+;;; possible ways without requiring specific rules for each inversion.
+;;; Note that we need to be a bit more explicit and introduce actual
+;;; line and point objects which are usually implicitly assumed by the
+;;; context the equation is in.
+
+;;; the class of lines:
+
+(defconcept line)
+
+;;; relation associating a particular point with a line:
+
+(defrelation point-of (?l ?p))
+
+;;; X and Y coordinates of a point:
+
+(deffunction xcoord (?x ?y))
+(deffunction ycoord (?x ?y))
+
+;;; slope and offset of a line:
+
+(deffunction slope (?x ?y))
+(deffunction offset (?x ?y))
+
+;;; the line equation: note that the way this is modeled here is that
+;;; for each point ?p on some line ?l, the y-coordinate of ?p equals
+;;; its x-coordinate times the slope of the line plus the line's offset:
+
+(assert
+  (=> (and (line ?l)
+           (point-of ?l ?p))
+      (= (ycoord ?p) (+ (* (xcoord ?p) (slope ?l)) (offset ?l)))))
+
+;;; Case 1: everything but the y-coordinate of line `ln1' is given
+;;; (could also use `definstance' here similar to previous example):
+
+(assert
+ (and (line ln1)
+      (point-of ln1 pt1)
+      (slope ln1 2)
+      (offset ln1 1)
+      (xcoord pt1 3)))
+
+;;; compute the y-coordinate from the given information:
+
+(retrieve all (ycoord pt1 ?x))
+
+;;; Case 2: everything but the x-coordinate of line `ln2' is given:
+
+(assert
+ (and (line ln2)
+      (point-of ln2 pt2)
+      (slope ln2 2)
+      (offset ln2 1)
+      (ycoord pt2 7)))
+
+;;; compute the x-coordinate from the given information:
+
+(retrieve all (xcoord pt2 ?x))
+
+;;; Case 3: everything but the offset of line `ln3' is given:
+
+(assert
+ (and (line ln3)
+      (point-of ln3 pt3)
+      (slope ln3 2)
+      (xcoord pt3 3)
+      (ycoord pt3 7)))
+
+;;; compute the offset from the given information:
+
+(retrieve all (offset ln3 ?x))
+
+;;; Case 4: everything but the slope of line `ln4' is given:
+
+(assert
+ (and (line ln4)
+      (point-of ln4 pt4)
+      (offset ln4 1)
+      (xcoord pt4 3)
+      (ycoord pt4 7)))
+
+;;; compute the slope from the given information:
+
+(retrieve all (slope ln4 ?x))
