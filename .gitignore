@@ -5,3 +5,5 @@ out
 *.ipr
 *.iws
 *.class
+target
+
