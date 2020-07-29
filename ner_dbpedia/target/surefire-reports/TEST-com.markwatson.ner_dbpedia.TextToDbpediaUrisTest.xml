@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="1" failures="0" name="com.markwatson.ner_dbpedia.TextToDbpediaUrisTest" time="0.338" errors="0" skipped="0">
+<testsuite tests="1" failures="0" name="com.markwatson.ner_dbpedia.TextToDbpediaUrisTest" time="0.292" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="13.0.2+8"/>
     <property name="sun.boot.library.path" value="/usr/local/Cellar/openjdk/13.0.2+8_2/libexec/openjdk.jdk/Contents/Home/lib"/>
-    <property name="maven.multiModuleProjectDirectory" value="/Users/markw/GITHUB/javaai-new-code/ner_dbpedia"/>
+    <property name="maven.multiModuleProjectDirectory" value="/Users/markw/GITHUB/Java-AI-Book-Code/ner_dbpedia"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
     <property name="java.vendor.url" value="https://openjdk.java.net/"/>
     <property name="path.separator" value=":"/>
@@ -13,7 +13,7 @@
     <property name="user.country" value="US"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="user.dir" value="/Users/markw/GITHUB/javaai-new-code/ner_dbpedia"/>
+    <property name="user.dir" value="/Users/markw/GITHUB/Java-AI-Book-Code/ner_dbpedia"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="java.runtime.version" value="13.0.2+8"/>
     <property name="os.arch" value="x86_64"/>
@@ -54,5 +54,5 @@
     <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
     <property name="sun.cpu.endian" value="little"/>
   </properties>
-  <testcase classname="com.markwatson.ner_dbpedia.TextToDbpediaUrisTest" name="test1" time="0.338"/>
+  <testcase classname="com.markwatson.ner_dbpedia.TextToDbpediaUrisTest" name="test1" time="0.292"/>
 </testsuite>
