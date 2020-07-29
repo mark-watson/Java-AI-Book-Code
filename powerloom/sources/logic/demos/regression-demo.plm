@@ -1,0 +1,94 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: regression-demo.plm,v 1.4 2006/05/09 00:49:38 hans Exp
+
+
+;;; Function learning
+;;; =================
+
+;;; This file demonstrates how PowerLoom can learn to predict floating
+;;; point functions from examples.
+
+;;; The best way to view this file is by calling `(demo)' and
+;;; selecting it from the menu of example demos.  This demo assumes
+;;; familiarity with some basic PowerLoom concepts which are described
+;;; in the introductory de
+
+
+;; Standard demo preamble:
+
+(in-package "STELLA")
+
+(reset-features)
+
+(in-dialect KIF)
+
+
+;; First, we will load a simple knowlegde base of people and their
+;; relations to each other (e.g., parent, friend, spouse).  Feel free
+;; to browse this knowledge base.  Our task will be to predict a
+;; person's age by comparing that person to other people in our
+;; knowledge base.  
+
+;; If PowerLoom cannot find this file, the demo will not work.  Until
+;; we can handle logical pathnames everywhere, this will only work in Lisp.
+
+(load "PL:sources;logic;demos;regression-kb.plm")
+
+;; Change into the FAMILY module
+
+(cc FAMILY)
+
+;; Next, we will set some parameters for the neural networks.  
+
+(set-error-print-cycle 1)
+(set-partial-match-mode :nn)
+(set-neural-network-training-method :BACKPROP)
+(set-learning-rate 0.2)
+(set-momentum-term 0.8)
+
+;; Now, we invoke PowerLoom's regression module which will learn to
+;; predict the age of a person based on a person's structural
+;; properties.  
+
+(structured-neural-network-regression person age 50)
+
+;; Now lets create a new person John and test our predictions
+
+(assert (person John))
+
+;; The commmand 'approximate' invokes the trained neural network to
+;; predict a function from a given instance.  With no other
+;; information about John, let's see how PowerLoom predicts John's age
+;; (the average age for the people in the KB is 52.85):
+
+(approximate John Age)
+
+;; Next, we assert that John has a son, Fred.
+
+(assert (person Fred))
+(assert (parent John Fred))
+
+;; Now, let's see how the prediction has changed given this new information.
+
+(approximate John Age)
+
+;; Notice that we have changed John's stucture by adding a link to his
+;; son.  John's structure now indicates that he is a father and our
+;; prediction of his age increases.
+
+;; Next, let's assert that Fred has a daughter, Mary.  Note that this
+;; also changes our information about John.  Specifically, we now know
+;; that John is a grandfather.  
+
+(assert (person Mary))
+(assert (parent Fred Mary))
+
+;; Notice that there are no direct assertions about the relationship
+;; between John and Mary.  The knowledge that John is a grandfather is
+;; implicit in our structured knowledge representation.
+
+;; Let's see how we predict John's age given that we know he's a grandfather
+
+(approximate John Age)
+

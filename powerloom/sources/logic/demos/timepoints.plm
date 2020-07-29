@@ -1,0 +1,212 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: timepoints.plm,v 1.2 2015/06/23 01:33:00 hans Exp
+
+;;; Simple temporal reasoning with time points and durations
+;;; ========================================================
+
+;;; Demonstrates how PowerLoom can represent time points and durations,
+;;; parse them, destructure them and perform some temporal arithmetic.
+;;; This requires PowerLoom's extensions system to be loaded/available.
+
+
+;; Standard demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "PL-USER/TIMEPOINTS"
+  ;; so we don't have to qualify names:
+  :includes ("TIMEPOINT-KB"))
+
+(in-module "TIMEPOINTS")
+
+(clear-module "TIMEPOINTS")
+(reset-features)
+
+(in-dialect KIF)
+
+
+;;; Time point and duration construction:
+
+(retrieve (timepoint-of "10:00 pm" ?t))
+(retrieve (duration-of "0 days; 3600000 ms" ?d))
+
+
+;;; Current time and date:
+
+(retrieve (current-time ?t))
+;; it changes:
+(retrieve (current-time ?t))
+
+(deffunction time-constant (?n ?c))
+
+(assert-from-query
+ (retrieve (current-time ?t))
+ :pattern (kappa ?t (time-constant n1 ?t)))
+
+(assert-from-query
+ (retrieve (current-time ?t))
+ :pattern (kappa ?t (time-constant n2 ?t)))
+
+(retrieve all (time-constant ?n ?x))
+
+
+;;; Formatting:
+
+(retrieve all (and (current-time ?tp)
+                   (timepoint-date ?tp "pdt" ?date)
+                   (timepoint-time ?tp "pst" ?time)
+                   (format-timepoint ?tp "local" "%A %B %d, %Y, %R" ?form)))
+
+
+;;; Time point comparison:
+
+(ask (< (timepoint-of "1/1/2002")
+	(timepoint-of "2/2/2002")))
+ ;; => TRUE
+(ask (< (timepoint-of "2/2/2002")
+	(timepoint-of "1/1/2002")))
+ ;; => FALSE
+(ask (> (timepoint-of "2/2/2002")
+	(timepoint-of "1/1/2002")))
+ ;; => TRUE
+
+;;; Duration comparison:
+
+(ask (< (duration-of "0 days") (duration-of "1 days")))
+(ask (> (duration-of "0 days") (duration-of "1 days")))
+
+;;; Arithmetic:
+
+(retrieve all (time- (timepoint-of "10:30") (timepoint-of "10:00") ?x))
+(retrieve all (time- (timepoint-of "10:00") (timepoint-of "10:30") ?x))
+(retrieve all (time- (timepoint-of "10:00") (duration-of "1 day") ?x))
+(retrieve all (time- (timepoint-of "10:00") (duration-of "1 days") ?x))
+(retrieve all (time- (duration-of "2 days") (duration-of "1 days") ?x))
+(retrieve all (time- (timepoint-of "10:00") ?x (duration-of "1 days")))
+
+;;; Time point and duration inversion:
+
+(retrieve (and (timepoint-of "10:00 pm" ?t1)         ;; 10 pm UTC today
+               (duration-of "0 days; 3600000 ms" ?d) ;; 1 hour
+               (time+ ?t1 ?d ?t2)                    ;; 10 pm + 1 hour
+               ;; we currently can't affect the zone here:
+               (timepoint-of ?t2s ?t2))              ;; 11 pm UTC to string
+          )
+
+(retrieve (and (timepoint-of "10:00 pm" ?t1)         ;; 10 pm UTC today
+               (timepoint-of "11:00 pm" ?t2)         ;; 11 pm UTC today
+               (time- ?t2 ?t1 ?d)                    ;; 11 pm - 10 pm = 1 hour
+               (duration-of ?ds ?d))                 ;; 1 hour duration to string
+          )
+
+(retrieve (and (timepoint-of "10:00 pm" ?t)
+               (timepoint-of* ?y ?m ?d ?h ?min ?sec ?z ?t)))
+
+(retrieve (and (timepoint-of "10:00 pm" ?t)
+               (timepoint-of* ?y ?m ?d ?h ?min ?sec ?z ?t)
+               ;; change the hour and other components by changing the time zone:
+               (timepoint-of* ?y2 ?m2 ?d2 ?h2 ?min ?sec (+ ?z 1) ?t)
+               (timepoint-date ?t (+ ?z 1) ?ds)
+               (timepoint-time ?t (+ ?z 1) ?ts)))
+
+;;; Function terms:
+
+(assert (= (time-constant t1) (timepoint-of "2/2/2002")))
+(assert (= (time-constant t2) (timepoint-of "2/2/2002")))
+(assert (= (time-constant t3) (timepoint-of "2/5/2002")))
+
+(ask (= (time-constant t1) (time-constant t2)))
+  ;; => TRUE
+(ask (= (time-constant t1) (time-constant t3)))
+  ;; => FALSE
+
+(ask (< (time-constant t1) (time-constant t3)))
+  ;; => TRUE
+(ask (< (time-constant t1) (time-constant t2)))
+  ;; => FALSE
+(ask (< (time-constant t3) (time-constant t1)))
+  ;; => FALSE
+(ask (< (time-constant t3) (time-constant t4)))
+  ;; => UNKNOWN
+
+(retrieve ?x (= (timepoint-of ?x) (timepoint-of "2/5/2002")))
+  ;; => "2002-FEB-05 8:00:00.000 UTC"
+(retrieve ?x (= (timepoint-of ?x)  (time-constant t1)))
+  ;; => "2002-FEB-02 8:00:00.000 UTC"
+(retrieve ?x (= (timepoint-of "2/5/2002")
+		(timepoint-of ?x)))
+  ;; => "2002-FEB-02 8:00:00.000 UTC"
+(retrieve ?x (= (timepoint-of ?x)  (time-constant t4)))
+  ;; No solutions.
+
+(assert (= (time-constant t5) (timepoint-of* 2002 2 10 11 30 15.33 "PST")))
+(retrieve (timepoint-of ?d (time-constant t5)))
+
+
+;;; Nested function terms:
+
+(assert (time-constant c1 (timepoint-of "10:00 am")))
+(assert (time-constant c2 (timepoint-of "10:30 am")))
+(assert (time-constant c3 (time- (time-constant c2) (time-constant c1))))
+(assert (time-constant c4 (time+ (time-constant c2) (time-constant c3))))
+
+(ask (< (time-constant c3) (duration-of "1 days; 0 ms")))
+(ask (< (time-constant c4) (time-constant c2)))
+(retrieve all (time-constant c1 ?t))
+(retrieve all (time-constant c2 ?t))
+(retrieve all (time-constant c3 ?t))
+(retrieve all (time-constant c4 ?t))
+
+;;; Time point component access:
+
+(retrieve all (timepoint-year (timepoint-of "2008-OCT-17 10:00:00.000 UTC") "PST" ?x))
+(retrieve all (timepoint-month (timepoint-of "2008-OCT-17 10:00:00.000 UTC") "PST" ?x))
+(retrieve all (timepoint-day (timepoint-of "2008-OCT-17 10:00:00.000 UTC") "PST" ?x))
+(retrieve all (timepoint-day-of-week (timepoint-of "2008-OCT-17 10:00:00.000 UTC") "PST" ?x))
+(retrieve all (timepoint-hour (timepoint-of "2008-OCT-17 10:00:00.000 UTC") "EST" ?x))
+(retrieve all (timepoint-hour (timepoint-of "2008-OCT-17 10:00:00.000 UTC") "PST" ?x))
+(retrieve all (timepoint-hour (timepoint-of "2008-OCT-17 10:00:00.000 UTC") 0 ?x))
+(retrieve all (timepoint-hour (timepoint-of "2008-OCT-17 10:00:00.000 UTC") 0.5 ?x))
+(retrieve all (timepoint-minute (timepoint-of "2008-OCT-17 10:30:00.000 UTC") "EST" ?x))
+(retrieve all (timepoint-minute (timepoint-of "2008-OCT-17 10:30:00.000 UTC") 0.25 ?x))
+(retrieve all (timepoint-second (timepoint-of "2008-OCT-17 10:30:20.000 UTC") 0 ?x))
+(retrieve all (timepoint-second (timepoint-of "2008-OCT-17 10:30:20.005 UTC") 0 ?x))
+(retrieve all (timepoint-date (timepoint-of "2008-OCT-17 10:30:20.005 UTC") 0 ?x))
+(retrieve all (timepoint-time (timepoint-of "2008-OCT-17 10:30:20.005 UTC") 0 ?x))
+
+(retrieve (= (timepoint-year (timepoint-of "2/5/2002 00:25:30 EST") "PST") ?y))
+   ;; => 2002
+(retrieve (= (timepoint-day (timepoint-of "2/5/2002 00:25:30 EST") "EST") ?d))
+   ;; => 5
+(retrieve (= (timepoint-day (timepoint-of "2/5/2002 00:25:30 EST") "PST") ?D))
+   ;; => 4
+(retrieve (timepoint-date (timepoint-of "2/5/2002 00:25:30 EST") "PST" ?y))
+   ;;  "2002-FEB-04"
+(retrieve (timepoint-time (timepoint-of "2/5/2002 00:25:30 EST") "EST" ?y))
+   ;;  "00:25:30.000 -5.0"
+(retrieve (= (timepoint-time (timepoint-of "2/5/2002 00:25:30 EST") -8.0) ?y))
+   ;;  "21:25:30.000 -8.0"
+
+(retrieve (= (timepoint-of* ?y ?m ?d ?hh ?mm ?ss -8.0)
+             (timepoint-of "2/5/2002 15:25:30 EST")))
+  ;; => ?Y=2002, ?M=2, ?D=5, ?HH=12, ?MM=25, ?SS=30.0
+
+(retrieve (= (timepoint-of* ?y ?m ?d ?hh ?mm ?ss "PST")
+             (timepoint-of "2/5/2002 15:25:30 EST")))
+  ;; =>?Y=2002, ?M=2, ?D=5, ?HH=12, ?MM=25, ?SS=30.0,
+
+(retrieve (= (timepoint-of* ?y ?m ?d ?hh ?mm ?ss "PST")
+             (timepoint-of "2/5/2002 00:25:30 EST")))
+  ;; => ?Y=2002, ?M=2, ?D=4, ?HH=21, ?MM=25, ?SS=30.0
+
+(retrieve (= (timepoint-of* ?y ?m ?d ?hh ?mm ?ss ?tz)
+             (timepoint-of "2/5/2002 00:25:30 EST")))
+  ;; => ?Y=2002, ?M=2, ?D=5, ?HH=5, ?MM=25, ?SS=30.0 ?TZ=0.0
+
+(retrieve (= (timepoint-of* 2003 12 10 18 35 45 "PST") ?tp))
+  ;; =>  ?TP="2003-DEC-11 2:35:45.000 UTC"
+(retrieve (= ?dow (timepoint-day-of-week
+                   (timepoint-of* 2003 12 10 18 35 45 "PST")
+                   "PST")))
+  ;; => ?DOW=WEDNESDAY

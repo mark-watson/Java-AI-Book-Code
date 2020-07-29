@@ -1,0 +1,35 @@
+#Processed by Id: cwm.py,v 1.197 2007/12/13 15:38:39 syosi Exp 
+        #    using base file:///Users/markw/Documents/WORK/ruby_scripting_book/src/part2/data/zzzzz.rdf
+        
+#  Notation3 generation by
+#       notation3.py,v 1.200 2007/12/11 21:18:08 syosi Exp
+
+#   Base was: file:///Users/markw/Documents/WORK/ruby_scripting_book/src/part2/data/zzzzz.rdf
+@prefix : <http://knowledgebooks.com/test#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdfs_sample_1: <file:/Users/markw/Documents/WORK/ruby_scripting_book/src/part2/data/rdfs_sample_1.owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<file:/Users/markw/Documents/WORK/ruby_scripting_book/src/part2/data/rdfs_sample_1.owl>     a owl:Ontology .
+
+rdfs_sample_1:FreshVeggies     a :Business .
+
+:Business     a owl:Class;
+     rdfs:label "Business";
+     rdfs:subClassOf :Organization .
+
+:Customer     a owl:Class;
+     rdfs:label "Customer";
+     rdfs:subClassOf :Business .
+
+:Organization     a owl:Class;
+     rdfs:label "Organization" .
+
+:organizationName     a owl:ObjectProperty;
+     rdfs:domain :Organization;
+     rdfs:range xsd:stringstring .
+
+xsd:stringstring     a owl:Class .
+    
+#ENDS

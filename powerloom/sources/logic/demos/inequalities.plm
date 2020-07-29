@@ -1,0 +1,71 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: inequalities.plm,v 1.8 2003/06/05 23:16:14 hans Exp
+
+;;; Reasoning with inequalities
+;;; ===========================
+
+;;; This file demonstrates some basic inequality reasoning capabilities.
+
+;;; The best way to view this file is by calling `(demo)' and
+;;; selecting it from the menu of example demos.  This demo assumes
+;;; familiarity with some basic PowerLoom concepts which are described
+;;; in the introductory demo (#1 on the demo menu) and other demos
+;;; preceding this one.
+
+
+;; Standard demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "PL-USER/INEQUALITIES")
+
+(in-module "INEQUALITIES")
+
+(clear-module "INEQUALITIES")
+(reset-features)
+
+(in-dialect KIF)
+
+
+;; The already familiar `Person' concept with its `age' function:
+
+(defconcept Person (?p)
+  :documentation "The class of human beings.")
+
+(deffunction age ((?p Person)) :-> (?a Integer)
+  :documentation "?a is ?p's age in years.")
+
+(assert (Person Fred))
+
+;; Let us assert that Fred is older than thirty using the built-in
+;; `>' predicate.  Other comparison predicates such as `>=', `=<', and
+;; `<' are also available.  Note the somewhat unusual spelling of `=<'
+;; to make it not conflict with the reverse implication sign `<='.
+
+(assert (> (age Fred) 30))
+
+;; Even though we don't know what Fred's age really is, we can now find
+;; out whether he is older than thirty, since we asserted that above:
+
+(ask (> (age Fred) 30))
+
+;; The built-in inequality reasoning specialists can also answer the
+;; following query by exploiting the transitivity of `>':
+
+(ask (> (age Fred) 25))
+
+;; If the arguments to `>' are known, the result can be computed directly
+;; without resorting to inequality inference, for example:
+
+(assert (Person Susi))
+(assert (= (age Susi) 16))
+
+;; Since Susi's age is known, PowerLoom can compute directly whether
+;; she is older than 12:
+
+(ask (> (age Susi) 12))
+
+;; And, even though we don't know Fred's age, he must be older than Susi:
+
+(ask (> (age Fred) (age Susi)))

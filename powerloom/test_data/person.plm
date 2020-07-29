@@ -1,0 +1,17 @@
+(defmodule "EXAMPLE1"
+  :documentation "A simple PowerLoom example"
+  :includes ("PL-USER"))
+
+(in-module "EXAMPLE1")
+
+;; clear any info from previous runs:
+(clear-module "EXAMPLE1")
+(reset-features)
+
+
+;;; Concepts:
+(defconcept person)
+(defconcept parent (?p person))
+
+;;; Relation:
+(defrelation parent-of ((?p1 parent) (?p2 person)))

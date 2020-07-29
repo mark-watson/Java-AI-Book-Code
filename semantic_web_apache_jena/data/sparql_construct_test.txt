@@ -1,0 +1,39 @@
+
+PREFIX kb:<http://knowledgebooks.com/>
+CONSTRUCT { ?story_type kb:subject_of ?article1 . }
+WHERE {
+  { ?article1 ?story_type kb:sports } UNION { ?article1 ?story_type kb:recreation } .
+}
+
+PREFIX kb:<http://knowledgebooks.com/>
+CONSTRUCT { ?story_type kb:subject_of ?article1 . }
+WHERE {
+  { ?article1 ?story_type kb:sports } UNION { ?article1 ?story_type kb:recreation } .
+  { ?article2 ?story_type kb:sports } UNION { ?article2 ?story_type kb:recreation } .
+  FILTER (?article1 != ?article2)
+}
+
+PREFIX kb:<http://knowledgebooks.com/>
+CONSTRUCT { ?story_type kb:subject_of ?article1 . }
+WHERE {
+  ?article1 ?story_type ?story_type_value .
+  ?article2 ?story_type ?story_type_value .
+  FILTER ((?article1 != ?article2) && ((?story_type_value = kb:sports) || (?story_type_value = kb:recreation)))
+}
+
+PREFIX kb:<http://knowledgebooks.com/>
+CONSTRUCT { ?story_type_value kb:subject_of ?article1 . }
+WHERE {
+  ?article1 ?story_type ?story_type_value .
+  ?article2 ?story_type ?story_type_value .
+  FILTER ((?article1 != ?article2) && ((?story_type_value = kb:sports) || (?story_type_value = kb:recreation)))
+}
+
+PREFIX kb:<http://knowledgebooks.com/>
+CONSTRUCT { ?story_type_value kb:subject_of ?article1 . 
+            ?article2 kb:same_topic ?article1 .}
+WHERE {
+  ?article1 ?story_type ?story_type_value .
+  ?article2 ?story_type ?story_type_value .
+  FILTER ((?article1 != ?article2) && ((?story_type_value = kb:sports) || (?story_type_value = kb:recreation)))
+}

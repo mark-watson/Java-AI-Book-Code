@@ -1,0 +1,7 @@
+dependency-reduced-pom.xml
+model_save.n3
+model_save.nt
+sparqlCache.db
+derby.log
+*.iml
+

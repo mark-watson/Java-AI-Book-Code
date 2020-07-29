@@ -1,0 +1,111 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: defaults.plm,v 1.1 2000/07/15 02:33:36 hans Exp
+
+;;; Reasoning with default information
+;;; ==================================
+
+;;; TO DO:
+;;; - handle default equalities, e.g., `(presume (= (salary Fred) 50000))'
+
+
+;; Demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "/PL-KERNEL/PL-USER/DEFAULTS")
+
+(in-module "DEFAULTS")
+
+(clear-module "DEFAULTS")
+(reset-features)
+
+(in-dialect :KIF)
+
+
+  ;;
+;;;;;; Birds and Penguins:
+  ;;
+
+(defconcept Bird (?x)
+  :documentation "The class of birds.")
+
+(defrelation flies ((?x Bird)))
+(defrelation dead ((?x Bird)))
+
+(defconcept Penguin (?x Bird)
+  :documentation "The class of penguins.")
+
+;; By default, birds fly.  The `presume' operator is used similar
+;; to `assert' to enter assertions that are only true by default:
+(presume (forall (?x Bird) (flies ?x)))
+
+;; Penguins don't fly:
+(assert (forall (?x Penguin) (not (flies ?x))))
+
+;; Dead birds can't fly:
+(assert (forall (?x Bird) (=> (dead ?x) (not (flies ?x)))))
+
+(assert (Bird Tweety))
+(assert (Penguin Opus))
+(assert (Bird Larry))
+(assert (dead Larry))
+
+;; Who flies and who doesn't:
+(retrieve all (?x Bird) (flies ?x))
+(retrieve all (?x Bird) (not (flies ?x)))
+
+
+  ;;
+;;;;;; Happy people:
+  ;;
+
+(defconcept Person (?x)
+  :documentation "The class of human beings.")
+
+(defrelation happy ((?x Person)))
+(deffunction age ((?x Person)) :-> (?a INTEGER))
+(defrelation sick ((?x Person)))
+
+;; Young people are generally happy:
+(presume
+ (forall (?x person)
+   (=> (=< (age ?x) 20) (happy ?x))))
+
+;; Sick people are usually unhappy:
+(presume
+ (forall (?x person)
+   (=> (sick ?x) (not (happy ?x)))))
+
+;; John is happy (standard default conclusion):
+(assert (person john))
+(assert (= (age john) 19))
+(ask (happy john))
+(ask (not (happy john)))
+
+;; Mary isn't happy despite her youth (default conclusion shadowed by
+;;    conflicting negative assertion):
+(assert (person mary))
+(assert (= (age mary) 19))
+(assert (not (happy mary)))
+(ask (happy mary))
+(ask (not (happy mary)))
+
+;; Frank is happy despite his sickness (positive assertion not shadowed
+;;    by conflicting negative default conclusion):
+(assert (person frank))
+(assert (sick frank))
+(assert (happy frank))
+(ask (happy frank))
+(ask (not (happy frank)))
+
+;; Sue is neither happy nor sad (conflicting default conclusions):
+(assert (person sue))
+(assert (= (age sue) 19))
+(assert (sick sue))
+(ask (happy sue))
+(ask (not (happy sue)))
+
+;; Who is or isn't happy:
+(retrieve all (?x person) (happy ?x))
+(retrieve all (?x person) (not (happy ?x)))

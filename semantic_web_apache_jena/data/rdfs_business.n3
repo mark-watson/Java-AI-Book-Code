@@ -1,0 +1,30 @@
+@prefix : <http://knowledgebooks.com/test#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdfs_sample_1: <file:/Users/markw/Documents/WORK/ruby_scripting_book/src/part2/data/rdfs_sample_1.owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<file:/Users/markw/Documents/WORK/ruby_scripting_book/src/part2/data/rdfs_sample_1.owl>     a owl:Ontology .
+
+:FreshVeggies     a :Business .
+:HanksHardware     a :Business .
+:MarkWatsonSoftware     a :Business .
+:Amazon     a :Business .
+:MarkWatsonSoftware :Customer :Amazon .
+
+:Business     a owl:Class;
+     rdfs:label "Business";
+     rdfs:subClassOf :Organization .
+
+:Customer     a owl:Class;
+     rdfs:label "Customer";
+     rdfs:subClassOf :Business .
+
+:Organization     a owl:Class;
+     rdfs:label "Organization" .
+
+:organizationName     a owl:ObjectProperty;
+     rdfs:domain :Organization;
+     rdfs:range xsd:stringstring .
+
+xsd:stringstring     a owl:Class .

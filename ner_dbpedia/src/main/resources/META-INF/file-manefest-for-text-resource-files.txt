@@ -1,0 +1,9 @@
+BroadcastNetworkNamesDbPedia.txt
+PeopleDbPedia.txt
+CityNamesDbpedia.txt
+PoliticalPartyNamesDbPedia.txt
+CompanyNamesDbPedia.txt
+TradeUnionNamesDbPedia.txt
+CountryNamesDbpedia.txt
+UniversityNamesDbPedia.txt
+MusicGroupNamesDbPedia.txt

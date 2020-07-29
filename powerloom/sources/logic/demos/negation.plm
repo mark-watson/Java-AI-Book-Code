@@ -1,0 +1,134 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: negation.plm,v 1.9 2002/04/19 03:04:19 hans Exp
+
+;;; Reasoning with negation
+;;; =======================
+
+;;; This file demonstrates some reasoning examples that involve
+;;; negation.  Some of the preceding demos did already use negation.
+;;; What's new in this demo is the use of negated rule heads.
+
+;;; The best way to view this file is by calling `(demo)' and
+;;; selecting it from the menu of example demos.  This demo assumes
+;;; familiarity with some basic PowerLoom concepts which are described
+;;; in the introductory demo (#1 on the demo menu) and other demos
+;;; preceding this one.
+
+
+;; Standard demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "/PL-KERNEL/PL-USER/NEGATION")
+
+(in-module "NEGATION")
+
+(clear-module "NEGATION")
+(reset-features)
+
+(in-dialect :KIF)
+
+
+;; The familiar `Person' class now with a slightly different set of
+;;    relations:
+
+(defconcept PERSON (?p)
+  :documentation "The class of human beings.")
+
+(defrelation happy ((?p PERSON)))
+(defrelation despondent ((?p PERSON)))
+(deffunction boss ((?p PERSON)) :-> (?b PERSON))
+
+;; Some people and their bosses:
+
+(assert (Person Fred))
+(assert (Person Edward))
+(assert (Person Carla))
+(assert (= (boss Fred) Edward))
+(assert (= (boss Edward) Carla))
+
+
+;; Fred's boss is not happy.  Note, that this assertion is treated
+;; extensionally, i.e., it is about `Edward', not the intensional
+;; individual representing Fred's boss.  Note also, that top-level
+;; negated proposition objects are printed with a `|P~|' prefix
+;; instead of an explicit `not', since such propositions use FALSE as
+;; their truth value:
+
+(assert (not (Happy (boss Fred))))
+
+;; An alternative way of asserting negated propositions is with help
+;; of `deny'.  Note, that the assertion below does not create a new
+;; proposition, since an identical proposition already exists:
+
+(deny (Happy (boss Fred)))
+
+;; Retrieve all people with an unhappy boss (this tests negated atomic
+;; formulas containing a function argument):
+
+(retrieve all (?x PERSON) (not (Happy (boss ?x))))
+
+;; Note, that the above query is basically a shorthand for this:
+
+(retrieve all (?x PERSON)
+          (exists (?y PERSON)
+            (and (= (boss ?x) ?y)
+                 (not (Happy ?y)))))
+
+
+;; Negation of a unary relation (or property):
+
+;; Below is the first rule with a negated head involving two unary
+;; relations defined as slots on the class `Person'.  Remember, that,
+;; currently, PowerLoom can only reason with rules that have simple
+;; heads (Horn rules).  A negated head is a simple head if its
+;; argument is a non-negated simple head (see the `append' demo for
+;; more description of simple heads).
+
+(assert (forall (?x PERSON)
+          (=> (despondent ?x)
+              (not (happy ?x)))))
+
+(assert (Person Greg))
+(assert (despondent Greg))
+
+;; Again, note that `ask' only looks for positive answers to the asked query,
+;; thus, we have to explicitly ask the negated query to get the result:
+
+(ask (happy Greg))
+(ask (not (happy Greg)))
+
+
+;; Negation of a binary relation:
+
+(defrelation has-friend ((?x PERSON) (?y PERSON))
+  :documentation "True, if `?x' has `?y' as a friend.")
+
+(defrelation has-enemy ((?x PERSON) (?y PERSON))
+  :documentation "True, if `?x' has `?y' as an enemy.")
+
+;; Another rule with a negated head that involves two binary relations:
+
+(assert (forall ((?x PERSON) (?y PERSON))
+          (=> (has-enemy ?x ?y)
+              (not (has-friend ?x ?y)))))
+
+(assert (Person Harry))
+(assert (has-enemy Greg Harry))
+(ask (has-friend Greg Harry))
+(ask (not (has-friend Greg Harry)))
+
+
+;; Negation of class membership:
+
+(defconcept MALE-PERSON (?p PERSON))
+(defconcept FEMALE-PERSON (?p PERSON))
+
+(assert (forall (?x MALE-PERSON)
+          (not (Female-Person ?x))))
+
+(assert (Person Ivan))
+(assert (Male-Person Ivan))
+(ask (Female-Person Ivan))
+(ask (not (Female-Person Ivan)))

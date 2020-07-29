@@ -1,0 +1,172 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: family.plm,v 1.3 2003/02/22 00:15:41 hans Exp
+
+;;; Subsumption reasoning within a family ontology
+;;; ==============================================
+
+;;; This (supposedly) is a standard example to demonstrate subsumption
+;;; capabilities of description logics.  The demo below is an adaptation
+;;; of the PowerLoom formulation of this example by Thorsten Liebig
+;;; (cite his thesis!).
+
+
+;;; Standard demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "ROYAL-FAMILY"
+    :includes ("/PL-KERNEL/PL-USER"))
+
+(in-module "ROYAL-FAMILY")
+
+(clear-module "ROYAL-FAMILY")
+(reset-features)
+
+(in-dialect KIF)
+
+
+(defconcept Human ()
+  :documentation "The class of human beings.")
+
+(defconcept Woman (Human)
+  :documentation "The class of female human beings.")
+
+(defconcept Man (Human)
+  :documentation "The class of male human beings.")
+
+(defrelation has-child ((?p Human) (?c Human))
+  :documentation "True if ?p is a parent of ?c."
+  :inverse has-parent)
+
+(defconcept Mother (?m Woman)
+  :documentation "The class of female humans with children."
+  :<=> (exists (?x Human) (has-child ?m ?x)))
+
+(defconcept Father (?f Man)
+  :documentation "The class of male humans with children."
+  :<=> (exists (?x Human) (has-child ?f ?x)))
+
+(defrelation has-parent ((?c Human) (?p Human))
+  :documentation "True if ?c is a child of ?p.  Inverse of `has-child'.")
+
+(defconcept Parent (?p Human)
+  :documentation "The class of humans who have children."
+  :<=> (or (Mother ?p) (Father ?p)))
+
+(defconcept Grandmother (?gm Woman)
+  :documentation "The class of female humans who have children with children."
+  :<=> (exists (?x Parent) (has-child ?gm ?x)))
+
+(ask (subset-of Grandmother Mother))
+
+(ask (subset-of Grandmother Parent))
+
+;;; The Royal Family
+
+(assert (Woman Elisabeth))
+
+(assert (Man Charles))
+
+(assert (has-child Elisabeth Charles))
+
+(ask (Mother Elisabeth))
+
+(ask (Grandmother Elisabeth))
+
+(assert (Man William))
+
+(assert (has-child Charles William))
+
+(ask (Grandmother Elisabeth))
+
+(defrelation married-to ((?x Human) (?y Human))
+  :documentation "True if ?x is married to ?y."
+  :axioms ((symmetric married-to)
+           (single-valued married-to) ;; in most places
+           ;; type constraints for a mixed-sex marriage:
+           (=> (and (married-to ?x ?y)
+                    (Man ?x))
+               (Woman ?y))
+           (=> (and (married-to ?x ?y)
+                    (Woman ?x))
+               (Man ?y))))
+
+(defconcept Wife (?w Woman)
+  :documentation "The class of married women."
+  :<=> (exists (?x Man) (married-to ?x ?w))
+  ;; IN THEORY, THIS SHOULD DO IT TO GET THE GENDER CONSTRAINT, BUT IN
+  ;;    PRACTICE WE NEED THE RULE ABOVE:
+  ;:<=> (range-cardinality married-to ?w 1)
+  )
+
+(defconcept Mother-In-Law (?m Woman)
+  :documentation "The class of mothers of spouses."
+  :<=> (exists (?x ?y)
+         (and (has-child ?m ?x)
+              (married-to ?x ?y))))
+
+(defconcept Mother-In-Law-Of-Wife (?m Woman)
+  :documentation "The class of mothers of female spouses."
+  :<=> (exists (?x ?y)
+         (and (has-child ?m ?x)
+              (married-to ?x ?y)
+              (Wife ?y))))
+
+(ask (subset-of Mother-In-Law-Of-Wife Mother-In-Law))
+
+(defrelation has-son ((?x Human) (?y Human))
+  :documentation "True if ?y is a son of ?x."
+  :<=> (and (has-child ?x ?y) (Man ?y)))
+
+(defrelation has-daughter ((?x Human) (?y Human))
+  :documentation "True if ?y is a daughter of ?x."
+  :<=> (and (has-child ?x ?y) (Woman ?y)))
+
+(ask (has-son Elisabeth Charles))
+
+;;; THIS IS POSSIBLY A CANDIDATE FOR A GLOBAL REWRITE RULE:
+;(defconcept Mother-With-At-Least-One-Son (?m Mother)
+;  :<=> (>= (range-cardinality has-son ?m) 1))
+(defconcept Mother-With-At-Least-One-Son (?m Mother)
+  :<=> (range-cardinality-lower-bound has-son ?m 1))
+
+;;; THIS WORKS, BUT IT NEEDS `*accelerate-frame-computations?*' TURNED
+;;;    OFF, AND MAXIMUM INFERENCE DEPTH SET TO 40:
+(ask (subset-of Mother-In-Law-Of-Wife Mother-With-At-Least-One-Son))
+
+;;; DOMAIN BUG: NOT TRUE ANYMORE
+(assert (and (Woman Diana) (married-to Charles Diana)))
+
+(ask (Mother-In-Law Elisabeth))
+
+(ask (Wife Diana))
+
+(ask (Mother-In-Law-Of-Wife Elisabeth))
+
+(deffunction mother-in-law-of ((?x Human)) :-> (?m Woman)
+  :<=> (exists (?y Human)
+         (and (married-to ?y ?x)
+              (has-child ?m ?y))))
+
+(retrieve all ?x (= (mother-in-law-of Diana) ?x))
+
+;(defconcept Mother-With-More-Sons-Than-Daughters (?m Mother)
+;  :<=> (> (range-cardinality has-son ?m)
+;          (range-cardinality has-daughter ?m)))
+
+(defconcept Mother-With-More-Sons-Than-Daughters (?m Mother)
+  :<=> (exists (?x ?y)
+         (and (range-cardinality-lower-bound has-son ?m ?x)
+              (range-cardinality-upper-bound has-daughter ?m ?y)
+              (> ?x ?y))))
+
+;;; BUG: THIS IS ONLY TRUE WITH THE SECOND INCANTATION OF THE ABOVE:
+(ask (subset-of Mother-With-More-Sons-Than-Daughters
+                Mother-With-At-Least-One-Son))
+
+(assert (closed has-son))
+(assert (closed has-daughter))
+
+;;; BUG: THIS SHOULD BE TRUE
+(ask (Mother-With-More-Sons-Than-Daughters Elisabeth))

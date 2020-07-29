@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.webjars:bootstrap-glyphicons:bdd2cbfba0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/bootstrap-glyphicons/bdd2cbfba0/bootstrap-glyphicons-bdd2cbfba0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/bootstrap-glyphicons/bdd2cbfba0/bootstrap-glyphicons-bdd2cbfba0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/bootstrap-glyphicons/bdd2cbfba0/bootstrap-glyphicons-bdd2cbfba0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

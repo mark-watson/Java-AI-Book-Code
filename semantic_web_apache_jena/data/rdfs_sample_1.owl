@@ -1,0 +1,27 @@
+
+<!-- Processed by Id: cwm.py,v 1.197 2007/12/13 15:38:39 syosi Exp -->
+<!--     using base file:///Users/markw/Documents/WORK/ruby_scripting_book/src/part2/data/rdfs_sample_1.n3-->
+
+
+<rdf:RDF xmlns="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+    <Class rdf:about="http://knowledgebooks.com/test#Business">
+        <label>Business</label>
+        <subClassOf rdf:resource="http://knowledgebooks.com/test#Organization"/>
+    </Class>
+
+    <Class rdf:about="http://knowledgebooks.com/test#Customer">
+        <label>Customer</label>
+        <subClassOf rdf:resource="http://knowledgebooks.com/test#Business"/>
+    </Class>
+
+    <Class rdf:about="http://knowledgebooks.com/test#Organization">
+        <label>Organization</label>
+    </Class>
+
+    <rdf:Property rdf:about="http://knowledgebooks.com/test#organizationName">
+        <domain rdf:resource="http://knowledgebooks.com/test#Organization"/>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#stringstring"/>
+    </rdf:Property>
+</rdf:RDF>

@@ -1,0 +1,145 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: constraints.plm,v 1.9 2000/07/15 02:33:02 hans Exp
+
+;;; Constraint propagation
+;;; ======================
+
+;;; This file demonstrates PowerLoom's constraint propagation facility
+;;; which provides simple propositional forward inference and
+;;; propagation of equality constraints.  Truth-maintenance of
+;;; constraint propagation inferences is still under construction,
+;;; which means that the constraint propagation interface will most
+;;; probably change in future versions of PowerLoom.
+
+;;; The best way to view this file is by calling `(demo)' and
+;;; selecting it from the menu of example demos.  This demo assumes
+;;; familiarity with some basic PowerLoom concepts which are described
+;;; in the introductory demo (#1 on the demo menu) and other demos
+;;; preceding this one.
+
+
+;; Standard demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "/PL-KERNEL/PL-USER/CONSTRAINTS")
+
+(in-module "CONSTRAINTS")
+
+(clear-module "CONSTRAINTS")
+(reset-features)
+
+(in-dialect :KIF)
+
+
+;; The already familiar `Person' class:
+
+(defconcept PERSON (?p)
+  :documentation "The class of human beings.")
+
+(defrelation happy ((?p PERSON)))
+
+(deffunction age ((?p PERSON)) :-> (?a INTEGER))
+
+(assert (Person Fred))
+
+;; In PowerLoom forward constraint propagation is performed on a 
+;; per-instance basis.  By default, it is turned on.
+;; So that we can get a feel for what it does, let us disable it
+;; unsetting the feature `:just-in-time-inference':
+
+(unset-feature :just-in-time-inference)
+
+;; We start by asserting the following disjunction:
+
+(assert (or (happy Fred) (= (age Fred) 40)))
+
+;; When we ask for one of the disjuncts, we do not get an answer,
+;; since nothing is known about the individual disjuncts:
+
+(ask (= (age Fred) 40))
+
+;; Now we assert the negation of the first disjunct.  If just-in-time
+;; inference were enabled, the falsity of the first disjunct would
+;; cause the second disjunct to be asserted to be true.  But, its not:
+
+(assert (not (happy Fred)))
+
+(ask (= (age Fred) 40))
+
+;; Now we reenable just-in-time inference, and try the same question
+;; again:
+
+(set-feature :just-in-time-inference)
+
+(ask (= (age Fred) 40))
+
+;; To show that no inference is necessary to answer this question,
+;; we turn on goal-tracing of the inference engine:
+
+(set-feature trace-subgoals)
+
+;; Now the query below returns true.  The goal trace shows that no
+;; inference needs to be performed to get the answer, since the asked
+;; proposition is available directly, just like a regular assertion:
+
+(ask (= (age Fred) 40))
+(unset-feature trace-subgoals)
+
+;; Forward constraint propagation picks up certain inferences much
+;; more efficiently than the backward chainer.  Note that, currently,
+;; PowerLoom would have not been able to make the above inference
+;; without having constraint propagation turned on.  
+
+;; The system caches the results of just-in-time forward propagation
+;; in a special context.  To insure soundness, this context gets blown
+;; away if a retraction occurs.  That means that after the following
+;; retraction, constraint propagation has to be recomputed when the
+;; question is repeated:
+
+(retract (not (happy Fred)))
+(ask (= (age Fred) 40))
+
+;; Below, we run a variation of the previous example that makes use of
+;; the violation of an equality constraint:
+
+(assert (Person Fritz))
+(assert (= (age Fritz) 25))
+
+;; So far, we don't know whether Fritz is happy:
+
+(ask (happy Fritz))
+
+;; Now we assert a similar disjunction as used in the example above.
+;; Since the second disjunct clashes with the age asserted above,
+;; constraint propagation asserts the first disjunct to be true:
+
+(assert (or (happy Fritz) (= (age Fritz) 40)))
+
+;; Now this query succeeds without any inference:
+
+(ask (happy Fritz))
+
+
+;; Propagation of equality constraints:
+
+(assert (Person John))
+(assert (Person Mary))
+
+;; John is the same age as Mary:
+
+(assert (= (age John) (age Mary)))
+
+;; We don't yet know Mary's age:
+
+(ask (= (age Mary) 25))
+
+;; Now we set John's age to be 25:
+
+(assert (= (age John) 25))
+
+;; This assertion got propagated through the previously asserted
+;; equality, thus, now we also know that Mary's age is 25:
+
+(ask (= (age Mary) 25))

@@ -1,0 +1,149 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: append.plm,v 1.14 2003/06/05 23:13:43 hans Exp
+
+;;; Prolog-style `append' using implication rules
+;;; =============================================
+
+;;; This file demonstrates a Prolog-style definition of an `append'
+;;; function using implication rules.  It also shows how to define
+;;; and use total functions in PowerLoom.
+
+;;; The best way to view this file is by calling `(demo)' and
+;;; selecting it from the menu of example demos.  This demo assumes
+;;; familiarity with some basic PowerLoom concepts which are described
+;;; in the introductory demo (#1 on the demo menu) and other demos
+;;; preceding this one.
+
+
+;; Demo preamble:
+
+(in-package "STELLA")
+
+;; The module definition below is slightly different from the ones
+;; seen previously, since it uses the `:shadow' keyword to shadow the
+;; name `cons'.  This is necessary, since a STELLA class with the same
+;; name is inherited from the STELLA module (PowerLoom's top-level
+;; PL-KERNEL module currently :uses the STELLA module which causes
+;; some name space pollution that will be eliminated in future
+;; versions).  Without the shadowing declaration PowerLoom still would
+;; have noticed the name conflict and asked the user whether to shadow
+;; the name automatically.
+
+(defmodule "PL-USER/PROLOG-APPEND"
+  :shadow (cons))
+
+(in-module "PROLOG-APPEND")
+
+(clear-module "PROLOG-APPEND")
+(reset-features)
+
+(in-dialect KIF)
+
+
+;; We start by defining a logic concept to represent a Lisp-style cons
+;; cell.  The concept is different from its Lisp analogue, since it
+;; does not have any internal structure such as a `car' or `cdr' slot.
+;; Instead, the semantics of constructing and appending cons-lists is
+;; defined completely declaratively by the functions below and their
+;; associated rules.
+
+(defconcept Cons-Cell)
+
+
+;; Next we define a function `cons' that takes an arbitrary ?head
+;; element and some pre-existing cons list ?tail and returns a new
+;; cons list with ?head prepended to ?tail.
+
+;; In a programming language such as Lisp or STELLA `cons' is a
+;; constructor, i.e., for any set of legal input arguments, a new cons
+;; cell gets allocated on the memory heap.  To reflect this
+;; characteristic in PowerLoom, we have to define `cons' as a total
+;; function.  This will allow PowerLoom to infer that for any legal
+;; inputs ?h and ?t it follows that `(exists ?c (= (cons ?h ?t) ?c))'.
+;; By default PowerLoom functions are not total (this is different
+;; from Prolog) and the above inference is not warranted.  To specify
+;; that `cons' is total we use the keyword axiom syntax `:total TRUE'
+;; which simply expands to `(assert (total cons))'.  To specify a
+;; keyword axiom for a unary relation such as `total' a value of TRUE
+;; or FALSE must be specified.
+
+(deffunction cons (?head (?tail Cons-Cell)) :-> (?cons Cons-Cell)
+  :documentation "Add `?head' to the front of the cons-list `?tail'."
+  :total TRUE)
+
+;; Next, we define the function `append'.  This function is not
+;; specified as total, since it will be "computed" via a set of
+;; implication rules:
+
+(deffunction append ((?list1 Cons-Cell) (?list2 Cons-Cell)) :-> (?r Cons-Cell)
+  :documentation "Append the cons-lists `?list1' and `?list2'.")
+
+
+;; Let's start with creating the empty list:
+
+(assert (Cons-Cell NIL))
+
+;; Now we specify the rules that specify the semantics of `append'.
+;; Each rule is a universally quantified KIF implication.  Top-level
+;; free variables such as ?list1 and ?list2 are implicitly universally
+;; quantified.
+
+;; The first rule states that appending anything to the empty list NIL
+;; simply returns the second list (similar to Prolog formulations, we
+;; use `?result' as a kind of "output" variable):
+
+(assert (=> (and (= ?list1 NIL)
+                 (= ?list2 ?result))
+            (= (append ?list1 ?list2) ?result)))
+
+;; The second rule handles the inductive case, where we split off a
+;; head element of the first list and reduce the problem to appending
+;; the shortened first list to the second:
+
+(assert (=> (exists (?head ?tail ?rest)
+              (and (= ?list1 (cons ?head ?tail))
+                   (= ?rest (append ?tail ?list2))
+  ;;;;;;;;;;;;;;;;;;;;;;;;; KLUDGE - MIGHT BE FIXED BY OPTIMIZER IMPROVEMENT.
+                   ;(bound-variables ?w)
+                   (= ?result (cons ?head ?rest))))
+            (= (append ?list1 ?list2) ?result)))
+
+;; Various queries:
+
+(retrieve all ?z
+          (= ?z (append NIL NIL)))
+
+;; The queries below generate actual cons-like structure with the help
+;; of anonymous skolem individuals.  The generation of these skolems
+;; is sanctioned, since `cons' was declared to be a total function:
+
+(retrieve all ?z
+          (= ?z (append (cons red NIL) NIL)))
+(retrieve all ?z
+          (= ?z (append NIL (cons red NIL))))
+(retrieve all ?z
+          (= ?z (append (cons red NIL) (cons blue NIL))))
+(retrieve all ?z
+          (= ?z (append
+                 (cons yellow (cons green NIL))
+                 (append (cons red NIL) (cons blue NIL)))))
+
+
+;; Let's name a cons-cell (note, that our logic cons cells are different
+;; from their programming languages analogues, since they are structure-
+;; shared, i.e., whenever we mention `(cons green NIL)' we refer to the
+;; same function term, while in the programming language there could be
+;; multiple copies with identical structure):
+
+(assert (= (cons green NIL) green-cons))
+
+;; Accessing the head element of green-cons:
+
+(retrieve all ?m
+          (exists (?t) (= (cons ?m ?t) green-cons)))
+
+;; Accessing both elements of green-cons: 
+
+(retrieve all (?m ?t)
+          (= (cons ?m ?t) green-cons))

@@ -1,0 +1,105 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: partial-match.plm,v 1.5 1999/08/16 21:45:05 moriarty Exp
+
+
+;;; Partial match queries
+;;; =====================
+
+;;; This file demonstrates how the partial matcher can be used to generate
+;;; solutions that partially satisfy a given query.
+
+;;; The best way to view this file is by calling `(demo)' and
+;;; selecting it from the menu of example demos.  This demo assumes
+;;; familiarity with some basic PowerLoom concepts which are described
+;;; in the introductory demo (#1 on the demo menu) and other demos
+;;; preceding this one.
+
+
+;; Standard demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "/PL-KERNEL/PL-USER/PARTIAL-MATCH")
+
+(in-module "/PL-KERNEL/PL-USER/PARTIAL-MATCH")
+
+(reset-features)
+
+(in-dialect KIF)
+
+;; For now, we'll use the partial matcher in its basic mode.  See the
+;; demo on learning probabilities to see other modes.
+
+(set-partial-match-mode :basic)
+
+;; A simple person concept:
+
+(defconcept person (?p thing))
+
+;; Some relations on people
+
+(defrelation happy ((?p person)))
+(defrelation married ((?p person)))
+
+;; Here are some people:
+
+(assert (person fred))
+(assert (person mary))
+(assert (person clyde))
+(assert (person alice))
+
+;; Some properties of the people:
+
+(assert (happy fred))
+(assert (happy mary))
+
+(assert (married mary))
+(assert (married clyde))
+
+;; First, let's return all happily married people using the normal retrieve:
+
+(retrieve all (?x person) (and (happy ?x) (married ?x)))
+
+;; Mary is the only matching solution. Now suppose that we also want
+;; to see who partially matched our query.  We invoke the partial
+;; matcher using `retrieve-partial' with the same syntax as the normal
+;; `retrieve'.
+
+(retrieve-partial all (?x person) (and (happy ?x) (married ?x)))
+
+;; Fred and Clyde have now joined Mary as solutions.  Fred partially
+;; matched because he is happy and Clyde matched because he is
+;; married.  Alice was not returned because she did not match either
+;; clause in our query.  Notice the number to the right of each name.
+;; This is the match score, which indicates how well the solution
+;; matched the query.  The current version of the partial matcher
+;; combines scores in an AND proposition by averaging them.
+
+;; Here is the same query but with the answers sorted.  Note the
+;; keyword `best' in place of `all'.
+
+(retrieve-partial best (?x person) (and (happy ?x) (married ?x)))
+
+;; With OR propositions, the partial matcher returns the maximum score
+;; of the disjuncts:
+
+(retrieve-partial best (?x person) (or (happy ?x) (married ?x)))
+
+;; The partial matcher can also propagate scores across rules.  Let's
+;; define a new relation called `happily-married':
+
+(defrelation happily-married ((?p person)))
+
+;; Next we define a rule to infer `happily-married':
+
+(assert (forall (?x person)
+	  (=> (and (happy ?x)
+		   (married ?x))
+	      (happily-married ?x))))
+
+;; In the next query, PowerLoom will backward chain on the above rule
+;; and the partial matcher will propagate weights as it did before:
+
+(retrieve-partial best (?x person) (happily-married ?x))
+

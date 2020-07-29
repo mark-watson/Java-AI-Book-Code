@@ -1,0 +1,107 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: rule-induction-demo.plm,v 1.3 2006/05/09 00:49:39 hans Exp
+
+;;; Rule Induction
+;;; ==============
+
+;;; This file demonstrates how PowerLoom can induce rules that infer
+;;; general relations.
+
+;;; The best way to view this file is by calling `(demo)' and
+;;; selecting it from the menu of example demos.  This demo assumes
+;;; familiarity with some basic PowerLoom concepts which are described
+;;; in the introductory de
+
+
+;; Standard demo preamble:
+
+(in-package "STELLA")
+
+(reset-features)
+
+(in-dialect KIF)
+
+
+;; We will use a kinship knowledge base for this demo.  This knowledge
+;; base has family tree relationships between 24 people.  Our task
+;; will be to learn the definition of an uncle from the examples of
+;; uncles an non-uncles in the knowledge base.
+
+;; If PowerLoom cannot find this file, the demo will not work.  Until
+;; we can handle logical pathnames everywhere, this will only work in Lisp.
+
+(load "PL:sources;logic;demos;kinship.plm")
+
+;; Change into the KINSHIP module
+
+(cc KINSHIP)
+
+;; We want to learn some general rules that will tell us if someone is
+;; or is not an uncle.  We will use our current set of people as
+;; our training examples.  To invoke PowerLoom's rule inducer, use the
+;; command induce-inference-rules.  Here we will tell PowerLoom to
+;; induce inference rules for the relation uncle? over the class
+;; person.  In other words, we want rules that will infer whether a
+;; person is an uncle or not.
+
+(induce-inference-rules uncle? person)
+
+;; PowerLoom has induced a general rule that is consistent with the
+;; current knowledge base.  Note that while these rules may or may not
+;; be the correct definition, they will be consistent with the KB.  If
+;; the rules are not to your liking, you can get different rules by
+;; modifying the KB (e.g., adding new instances or new assertions on
+;; the existing instances) and then rerunning the rule inducer.  
+
+;; Let's add a new person who is an uncle but does not fit the above
+;; definition.  Specifically, we'll add an uncle who is not married.
+;; Note that all of the uncles in the kinship.ste KB are married which
+;; is why PowerLoom came up with the above rule.
+
+(assert (person fred))
+(assert (uncle? fred))
+(assert (sister fred christine))
+
+;; Now, let's rerun the rule inducer and see what happens.
+
+(induce-inference-rules uncle? person)
+
+;; Notice that the same original rule came back, but it wasn't
+;; sufficient to cover our new example.  PowerLoom thus had to induce
+;; a new rule to cover this example.  In this case, PowerLoom kept the
+;; original rule but in other situations it may find a single more
+;; general rule to cover the additional examples.
+
+;; At this point, the rules have not been asserted.  PowerLoom has
+;; just printed and saved the rules.  If you are happy with the rules,
+;; you can have PowerLoom assert them into the KB using,
+;; assert-induced-rules.
+
+(assert-induced-rules)
+
+;; Now, let's see how these rules do on our list of people.  First
+;; let's ask if Arthur is an uncle.
+
+(ask (uncle? Arthur))
+
+;; Since all uncles have been asserted (remember the kinship.ste file
+;; was our set of training examples), the system has just done a
+;; direct lookup.  To test our rule, let's retract this fact and ask
+;; again.  This time, PowerLoom will have to use our learned rule to
+;; infer whether he is an uncle or not.
+
+(retract (uncle? Arthur))
+
+;; To confirm that PowerLoom is using our rules, let's turn goal
+;; tracing on.
+
+(set-feature :trace-subgoals)
+
+(ask (uncle? Arthur))
+
+;; As you see, Arthur has been inferred to be an uncle based on our
+;; general rules.  
+
+(reset-features)
+

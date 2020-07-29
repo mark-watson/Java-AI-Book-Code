@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.bytedeco:tesseract:linux-armhf:4.1.0-1.5.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/bytedeco/tesseract/4.1.0-1.5.2/tesseract-4.1.0-1.5.2-linux-armhf.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/bytedeco/tesseract/4.1.0-1.5.2/tesseract-4.1.0-1.5.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/bytedeco/tesseract/4.1.0-1.5.2/tesseract-4.1.0-1.5.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

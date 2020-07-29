@@ -1,0 +1,50 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: subsumption.plm,v 1.8 2001/08/22 20:01:03 hans Exp
+
+;;; Testing Subsumption
+;;; ===================
+
+;;; Under construction.
+
+(in-package "STELLA")
+
+(defmodule "/PL-KERNEL/KIF-FRAME-ONTOLOGY/SUBSUMPTION")
+
+(in-module "SUBSUMPTION")
+
+(clear-module "SUBSUMPTION")
+(reset-features)
+
+(in-dialect :KIF)
+
+(defconcept PERSON (?p))
+(deffunction friends-of (?p) :-> (?f SET))
+(defrelation has-parent ((?x PERSON) (?y PERSON)))
+(defrelation male ((?p PERSON)))
+(defrelation has-father ((?p PERSON) (?f PERSON))
+  :<=> (and (has-parent ?p ?f) (male ?p)))
+
+(ask (subset-of has-father has-parent))
+
+;;; Harder problems for the subsumption test:
+
+(assert (forall ((?x NUMBER) (?y NUMBER)) (<= (>= ?x ?y) (> ?x ?y))))
+
+(defconcept Person-with-Friends (?p)
+  :<=> (>= (cardinality (friends-of ?p)) 1))
+
+(defconcept Person-with-Atleast-2-Friends (?p)
+  :<=> (>= (cardinality (friends-of ?p)) 2))
+
+(defconcept Person-with-Exactly-2-Friends (?p)
+  :<=> (= (cardinality (friends-of ?p)) 2))
+
+(defconcept Person-with-More-Than-2-Friends (?p)
+  :<=> (> (cardinality (friends-of ?p)) 2))
+
+(ask (subset-of Person-with-Exactly-2-Friends Person-with-Atleast-2-Friends))
+(ask (subset-of Person-with-Atleast-2-Friends Person-with-Exactly-2-Friends))
+(ask (subset-of Person-with-More-Than-2-Friends Person-with-Atleast-2-Friends))
+(ask (subset-of Person-with-Atleast-2-Friends Person-with-More-Than-2-Friends))
+(ask (subset-of Person-with-Atleast-2-Friends Person-with-Friends))

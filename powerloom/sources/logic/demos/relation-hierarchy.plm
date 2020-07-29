@@ -1,0 +1,115 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: relation-hierarchy.plm,v 1.2 2000/08/07 21:05:00 hans Exp
+
+;;; Finding sub, super and equivalent concepts and relations
+;;; ========================================================
+
+;;; This file demonstrates PowerLoom's facilities for retrieving
+;;; sub, super and equivalent concepts and relations in the relation
+;;; hierarchy.
+
+;;; The best way to view this file is by calling `(demo)' and
+;;; selecting it from the menu of example demos.  This demo assumes
+;;; familiarity with some basic PowerLoom concepts which are described
+;;; in the introductory demo (#1 on the demo menu) and other demos
+;;; preceding this one.
+
+
+;;; Standard demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "PL-USER/RELATION-HIERARCHY")
+
+(in-module "RELATION-HIERARCHY")
+
+(clear-module "RELATION-HIERARCHY")
+(reset-features)
+
+(in-dialect :KIF)
+
+
+;;; Below we define a simple binary concept tree of depth 2, and we
+;;; additionally associate each node with an equivalent concept to
+;;; demonstrate PowerLoom's handling of equivalent relations:
+
+(defconcept A (?x) :<=> (A-EQUIV ?x))
+(defconcept A-EQUIV)
+(defconcept B (?x A) :<=> (B-EQUIV ?x))
+(defconcept B-EQUIV)
+(defconcept C (?x A) :<=> (C-EQUIV ?x))
+(defconcept C-EQUIV)
+(defconcept D (?x B) :<=> (D-EQUIV ?x))
+(defconcept D-EQUIV)
+(defconcept E (?x B) :<=> (E-EQUIV ?x))
+(defconcept E-EQUIV)
+(defconcept F (?x C) :<=> (F-EQUIV ?x))
+(defconcept F-EQUIV)
+(defconcept G (?x C) :<=> (G-EQUIV ?x))
+(defconcept G-EQUIV)
+
+;;; All the built-in relation hierarchy relations demonstrated below
+;;; can be applied to concepts as well as relations.  To test for direct
+;;; subs or supers of a relation, the following relations can be used
+;;; (note that the direct subs and supers will always be proper):
+
+(ask (direct-subrelation B D))
+(ask (direct-subrelation A D))
+(ask (direct-subrelation B B))
+(ask (direct-subrelation B B-EQUIV))
+(ask (direct-superrelation B A))
+(ask (direct-superrelation B B))
+(ask (direct-superrelation B B-EQUIV))
+
+;;; To test for all subs and supers in the transitive closure of the relation
+;;; hierarchy, use these relations (note, that they are reflexive and include
+;;; equivalents):
+
+(ask (subrelation A D))
+(ask (subrelation A A))
+(ask (subrelation A A-EQUIV))
+(ask (subrelation B C))
+(ask (superrelation D A))
+(ask (superrelation D D))
+(ask (superrelation D D-EQUIV))
+(ask (superrelation B C))
+
+;;; To exclude equivalents, use the `proper-' versions of the relations
+;;; described above:
+
+(ask (proper-subrelation A D))
+(ask (proper-subrelation A A))
+(ask (proper-subrelation A A-EQUIV))
+(ask (proper-superrelation D A))
+(ask (proper-superrelation D D))
+(ask (proper-superrelation D D-EQUIV))
+
+;;; Finally, to find the equivalent relations of a relation you can use this:
+
+(ask (equivalent-relation B B))
+(ask (equivalent-relation B-EQUIV B))
+(ask (equivalent-relation B C))
+
+;;; All the relations described above can also be called with one unbound
+;;; argument to retrieve a set of subs or supers:
+
+(retrieve all ?r (direct-subrelation A ?r))
+(retrieve all ?r (direct-subrelation ?r D))
+(retrieve all ?r (direct-superrelation D ?r))
+(retrieve all ?r (direct-superrelation ?r A))
+(retrieve all ?r (subrelation A ?r))
+(retrieve all ?r (subrelation ?r D))
+(retrieve all ?r (superrelation D ?r))
+(retrieve all ?r (superrelation ?r A))
+(retrieve all ?r (proper-subrelation A ?r))
+(retrieve all ?r (proper-subrelation ?r D))
+(retrieve all ?r (proper-superrelation D ?r))
+(retrieve all ?r (proper-superrelation ?r A))
+(retrieve all ?r (equivalent-relation ?r B))
+(retrieve all ?r (equivalent-relation B ?r))
+
+;;; At least one argument has to be bound; the following does NOT generate
+;;; the cross-product of all relations and their associated subrelations:
+
+(retrieve all (?sup ?sub) (subrelation ?sup ?sub))

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.bytedeco:openblas:ios-arm64:0.3.7-1.5.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/bytedeco/openblas/0.3.7-1.5.2/openblas-0.3.7-1.5.2-ios-arm64.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/bytedeco/openblas/0.3.7-1.5.2/openblas-0.3.7-1.5.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/bytedeco/openblas/0.3.7-1.5.2/openblas-0.3.7-1.5.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

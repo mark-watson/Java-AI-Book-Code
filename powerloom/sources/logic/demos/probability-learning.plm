@@ -1,0 +1,159 @@
+;;; -*- Mode: Lisp; Package: STELLA; Syntax: COMMON-LISP; Base: 10 -*-
+
+;;; Version: probability-learning.plm,v 1.2 2000/07/15 02:35:01 hans Exp
+
+;;; Learning to answer probabilistic queries
+;;; ========================================
+
+;;; This file demonstrates how PowerLoom can answer probabilistic
+;;; queries and how it can learn probabilistic influences from
+;;; training examples.
+
+;;; The best way to view this file is by calling `(demo)' and
+;;; selecting it from the menu of example demos.  This demo assumes
+;;; familiarity with some basic PowerLoom concepts which are described
+;;; in the introductory demo (#1 on the demo menu) and other demos
+;;; preceding this one.
+
+
+;; Standard demo preamble:
+
+(in-package "STELLA")
+
+(defmodule "/PL-KERNEL/PL-USER/LEARNING")
+
+(in-module "/PL-KERNEL/PL-USER/LEARNING")
+
+(reset-features)
+
+(in-dialect KIF)
+
+(set-partial-match-mode :basic)
+
+
+;; Some basic concepts and relations
+
+(defconcept person (?p thing))
+
+(defconcept gene (?g thing))
+
+; ?x is ?y's parent
+(defrelation parent ((?x person) (?y person)))
+; ?x has gene ?g
+(defrelation genotype ((?x person) (?y gene)))
+
+;; Assert some people
+
+(assert (person mary))
+(assert (person joe))
+(assert (person fred))
+(assert (person martha))
+
+;; Create the red-hair gene
+
+(assert (gene red-hair))
+
+;; Mary is Joe, Fred, and Martha's parent
+
+(assert (parent mary joe))
+(assert (parent mary fred))
+(assert (parent mary martha))
+
+;; Mary has red hair
+
+(assert (genotype mary red-hair))
+
+;; Define a rule that infers that a child has a gene if his/her parents
+;; have the gene.
+
+(assert (forall ((?x person) (?y person) (?g gene))
+	   (=> (and (parent ?x ?y) (genotype ?x ?g))
+	       (genotype ?y ?g))))
+
+;; Now, query whether joe and fred have red hair
+
+(ask-partial (genotype joe red-hair))
+
+;; Notice that using the rule above, we completely match and the output is 1.0
+
+;; Now, suppose that we wanted to interpret the number as a
+;; probability of somebody having red hair.  Suppose further, that we
+;; know that the above rule doesn't give complete evidence that
+;; somebody inherits a gene.  Maybe it holds 33% of the time.  We can
+;; tell PowerLoom this by specifying training examples.
+
+(add-training-example (genotype joe red-hair) 0.33)
+
+;; We can specify as many training examples as we like, but for this
+;; case one suffices to learn the influence of that rule.  
+
+;; The next step is to change the partial match mode from :basic mode
+;; into neural network mode, :nn.  In neural network mode, a neural
+;; network is generated to combine evidence within and between rules.
+
+(set-partial-match-mode :nn)
+
+;; Now, we can train the neural network over any training examples
+;; that we have generated.  The parameters below are the number of
+;; epochs to train and the number of training examples to use.
+
+(train-neural-network 100 1)
+
+;; Notice the decreasing error as the neural network learns.  
+
+;; Now, when we re-ask whether Joe has red-hair we get our desired answer
+
+(ask-partial (genotype joe red-hair))
+
+;; This property has been learned with respect to the general rule
+;; that we defined not just for Joe.  If we ask if Fred has red hair
+;; we get the same answer.
+
+(ask-partial (genotype fred red-hair))
+
+;; Let's try a different way to infer the above probability.  First,
+;; we need to clear our existing training examples and the neural
+;; networks that we built.
+
+(clear-training-examples)
+(clear-all-neural-networks)
+
+;; Now, asking if joe has red hair gives us a random value because we
+;; randomized the weights of our neural networks.
+
+(ask-partial (genotype joe red-hair))
+
+;; Before, we gave PowerLoom a training example that specified exactly
+;; what the probability should be of someone having a gene if their
+;; parents have that gene.  A more likely scenario is that we want to
+;; learn this probability from examples of existing people.  We can do
+;; this by adding several training examples denoting who does and who
+;; doesn't have red hair.
+
+;; Let's assume that Fred has red hair, but Joe and Martha do not.
+;; Remember they are all Mary's children.  We can assert this data
+;; through training examples.
+
+(add-training-example (genotype joe red-hair) 0.0)
+(add-training-example (genotype fred red-hair) 1.0)
+(add-training-example (genotype martha red-hair) 0.0)
+
+;; And, invoke the learning algorithm
+
+(train-neural-network 100 3)
+
+;; Notice this time that the error did not get close to 0.  The reason
+;; is that the network cannot get all of the training examples
+;; correct.  The best it can do is settle at a point with the smallest
+;; error which happens to be our desired probability.
+
+;; Suppose, Mary has a new child.
+
+(assert (person sue))
+(assert (parent mary sue))
+
+;; What is the probability that she will have red hair?
+
+(ask-partial (genotype sue red-hair))
+
+

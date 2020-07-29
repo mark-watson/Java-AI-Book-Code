@@ -1,0 +1,20 @@
+# triples to add to a new repository:
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix kb: <http://knowledgebooks.com/> .
+@prefix person: <http://knowledgebooks.com/person/> .
+
+kb:Sibling rdfs:subClassOf rdfs:Class .
+
+kb:Brother rdfs:subClassOf kb:Sibling .
+
+person:mark rdf:type kb:Brother .
+
+# sample queries to demonstrate inferencing:
+
+SELECT DISTINCT ?s 
+WHERE { ?s rdf:type kb:Brother }
+
+SELECT DISTINCT ?s
+WHERE { ?s rdf:type kb:Sibling }

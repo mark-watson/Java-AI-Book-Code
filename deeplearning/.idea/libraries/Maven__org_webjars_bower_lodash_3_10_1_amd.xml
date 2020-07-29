@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.webjars.bower:lodash:3.10.1-amd">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/bower/lodash/3.10.1-amd/lodash-3.10.1-amd.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/bower/lodash/3.10.1-amd/lodash-3.10.1-amd-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/webjars/bower/lodash/3.10.1-amd/lodash-3.10.1-amd-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

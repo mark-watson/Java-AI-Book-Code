@@ -1,0 +1,7 @@
+PREFIX kb:<http://knowledgebooks.com/>
+ASK
+WHERE { ?article_uri ?predicate "Trout Season Starts" }
+
+PREFIX kb:<http://knowledgebooks.com/>
+ASK
+WHERE { ?article_uri kb:copyright ?copyright_value }
