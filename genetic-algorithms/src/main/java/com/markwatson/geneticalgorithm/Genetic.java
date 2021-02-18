@@ -43,13 +43,21 @@ abstract public class Genetic {
 		sort();
 		// define the roulette wheel:
 		rouletteWheelSize = 0;
-		for (int i = 0; i < numGenesPerChromosome; i++) {
+		// for (int i = 0; i < numGenesPerChromosome; i++) {  ERROR ?
+		// For example, a bit string of 10 and a population of 20 will only produce a roulette wheel with a highest 
+		// index of 9
+		for (int i = 0; i < numChromosomes; i++) { // Fix
 			rouletteWheelSize += i + 1;
 		}
 		System.out.println("count of slots in roulette wheel="
 				+ rouletteWheelSize);
 		rouletteWheel = new int[rouletteWheelSize];
-		int num_trials = numGenesPerChromosome;
+		
+		// For example, a bit string of 10 and a population of 20 will only produce a roulette wheel with a highest 
+		// index of 9. Using numChromosomes below for the num_trials makes sense because each chromosome should be
+		// representation on the roulette wheel.
+		// int num_trials = numGenesPerChromosome; Stephen Sheridan: Should be based on numChromosomes
+		int num_trials = numChromosomes;  // Fix
 		int index = 0;
         //for (int i = 0; i < numGenesPerChromosome; i++) { // !ERROR
         for (int i = 0; i < numChromosomes; i++) { // bug fixed 3/31/2009
