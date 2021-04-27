@@ -13,3 +13,6 @@ all_examples: 1H 2H 2H_momentum
 	mvn install -DskipTests
 	mvn test -Dtest=NeuralNetwork_2H_momentum_Test
 
+
+install:
+	mvn install -DskipTest -Dmaven.test.skip=true

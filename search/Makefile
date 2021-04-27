@@ -14,3 +14,6 @@ maze:
 	mvn install
 	mvn exec:java -Dexec.mainClass="search.maze.MazeBreadthFirstSearch"
 
+
+install:
+	mvn install -DskipTest -Dmaven.test.skip=true

@@ -24,7 +24,7 @@
     <dependency>
       <groupId>com.markwatson</groupId>
       <artifactId>nerdbpedia</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
