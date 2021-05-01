@@ -58,7 +58,7 @@ public class WisconsinAnomalyDetection {
     double [] mean_values = detector.muValues();
     double [] sigma_squared = detector.sigmaSquared();
 
-    // to use this model, us the method AnomalyDetection.isAnamoly(double []):
+    // to use this model, use the method AnomalyDetection.isAnamoly(double []):
 
     double [] test_malignant = new double[] {0.5,1,1,0.8,0.5,0.5,0.7,1,0.1};
     double [] test_benign = new double[] {0.5,0.4,0.5,0.1,0.8,0.1,0.3,0.6,0.1};

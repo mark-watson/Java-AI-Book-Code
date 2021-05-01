@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="940a3bd4-8143-4eca-9b1c-afbbde72e56f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../genetic-algorithms/src/main/java/com/markwatson/geneticalgorithm/Genetic.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../genetic-algorithms/src/main/java/com/markwatson/geneticalgorithm/TestGenetic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../genetic-algorithms/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../genetic-algorithms/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../genetic-algorithms/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../genetic-algorithms/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../genetic-algorithms/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../genetic-algorithms/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../genetic-algorithms/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../genetic-algorithms/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../genetic-algorithms/src/main/java/geneticalgorithm/Genetic.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../genetic-algorithms/src/main/java/geneticalgorithm/TestGenetic.java" beforeDir="false" />
-    </list>
+    <list default="true" id="940a3bd4-8143-4eca-9b1c-afbbde72e56f" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,15 +34,6 @@
       <module />
       <method />
     </configuration>
-    <configuration name="&lt;template&gt;" type="TestNG" default="true" selected="false">
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-    </configuration>
-    <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
-      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
-    </configuration>
     <configuration name="WisconsinAnomalyDetection" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.markwatson.anomaly_detection.WisconsinAnomalyDetection" />
       <module name="anomaly_detection" />
@@ -63,6 +48,29 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="ClojureREPL" factoryName="Local" activateToolWindowBeforeRun="false">
+      <setting name="displayName" value="" />
+      <setting name="replType" value="NREPL" />
+      <setting name="execution" value="LEININGEN" />
+      <setting name="jvmArgs" value="" />
+      <setting name="parameters" value="" />
+      <setting name="workingDir" value="" />
+      <setting name="profiles" value="" />
+      <setting name="aliases" value="" />
+      <setting name="fixLineNumbers" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="ClojureREPL" factoryName="Remote" activateToolWindowBeforeRun="false">
+      <setting name="displayName" value="" />
+      <setting name="host" value="" />
+      <setting name="port" value="0" />
+      <setting name="replType" value="SOCKET" />
+      <setting name="configType" value="SPECIFY" />
+      <setting name="replPortFileType" value="STANDARD" />
+      <setting name="customPortFile" value="" />
+      <setting name="fixLineNumbers" value="false" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <option name="TEST_OBJECT" value="class" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
@@ -70,7 +78,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file enabled="true" id="idea.log" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="940a3bd4-8143-4eca-9b1c-afbbde72e56f" name="Default Changelist" comment="" />

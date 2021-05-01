@@ -6,4 +6,7 @@ out
 *.iws
 *.class
 target
-
+.DS_Store
+*/.DS_Store
+.settings
+.idea
