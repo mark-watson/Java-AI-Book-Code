@@ -299,6 +299,7 @@ public class WebService {
 	private static Element connectAndParse(String url)
 			throws GeoNamesException, IOException, JDOMException {
 		SAXBuilder parser = new SAXBuilder();
+		parser.setExpandEntities(false);
 		Document doc = parser.build(connect(url));
 		try {
 			Element root = rootAndCheckException(doc);
