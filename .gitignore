@@ -5,6 +5,7 @@ out
 *.ipr
 *.iws
 *.class
+.DS_Store
 target
 .DS_Store
 */.DS_Store
