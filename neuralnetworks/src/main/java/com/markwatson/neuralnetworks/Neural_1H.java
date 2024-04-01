@@ -35,8 +35,8 @@ public class Neural_1H implements Serializable {
 
   public float learningRate = 0.5f;
 
-  transient protected Vector inputTraining = new Vector();
-  transient protected Vector outputTraining = new Vector();
+  transient protected Vector<float[]> inputTraining = new Vector<>();
+  transient protected Vector<float[]> outputTraining = new Vector<>();
 
 
   public Neural_1H(int num_in, int num_hidden, int num_output) {
@@ -65,39 +65,6 @@ public class Neural_1H implements Serializable {
 
   public void setLearningRate(float f) {
     learningRate = f;
-  }
-
-  public static Neural_1H Factory(String serialized_file_name) {
-    Neural_1H nn = null;
-    try {
-      InputStream ins = new FileInputStream(serialized_file_name);
-      if (ins == null) {
-        System.out.println("Failed to open '" + serialized_file_name + "' model save file.");
-        System.exit(1);
-      } else {
-        ObjectInputStream p = new ObjectInputStream(ins);
-        nn = (Neural_1H) p.readObject();
-        nn.inputTraining = new Vector();
-        nn.outputTraining = new Vector();
-        ins.close();
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
-    }
-    return nn;
-  }
-
-  public void save(String file_name) {
-    try {
-      FileOutputStream ostream = new FileOutputStream(file_name);
-      ObjectOutputStream p = new ObjectOutputStream(ostream);
-      p.writeObject(this);
-      p.flush();
-      ostream.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
   }
 
   public void randomizeWeights() {
@@ -175,7 +142,7 @@ public class Neural_1H implements Serializable {
   private int current_example = 0;
   private int count_control_randomize_weights = 0;
 
-  public float train(Vector v_ins, Vector v_outs) {
+  public float train(Vector<float[]> v_ins, Vector<float[]> v_outs) {
     int i, h, o;
     float error = 0.0f;
     int num_cases = v_ins.size();

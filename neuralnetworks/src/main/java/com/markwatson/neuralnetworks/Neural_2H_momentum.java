@@ -42,8 +42,8 @@ import java.io.*;
     protected float hidden1_errors[];
     protected float hidden2_errors[];
 
-    transient protected ArrayList inputTraining = new ArrayList();
-    transient protected ArrayList outputTraining = new ArrayList();
+    transient protected ArrayList<float[]> inputTraining = new ArrayList<>();
+    transient protected ArrayList<float[]> outputTraining = new ArrayList<>();
 
     public float TRAINING_RATE = 0.5f;
     private float alpha = 0f;  // momentum scaling term that is applied to last delta weight
@@ -88,50 +88,10 @@ import java.io.*;
         outputTraining.add(outputs);
     }
 
-  /**
-   * Load a trained network from a serialized file
-   *
-   * @param serialized_file_name
-   * @return
-   */
-    public static Neural_2H_momentum Factory(String serialized_file_name) {
-        Neural_2H_momentum nn = null;
-        try {
-            InputStream ins = ClassLoader.getSystemResourceAsStream(serialized_file_name);
-            if (ins == null) {
-                System.out.println("CachedExamples(): failed to open 'cache.dat' in JAR file");
-                System.exit(1);
-            } else {
-                ObjectInputStream p = new ObjectInputStream(ins);
-                nn = (Neural_2H_momentum) p.readObject();
-                nn.inputTraining = new ArrayList();
-                nn.outputTraining = new ArrayList();
-                ins.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return nn;
+    public void setLearningRate(float f) {
+        TRAINING_RATE = f;
     }
-
-  /**
-   * Save a trained network to a serialized file for re-use without re-training
-   *
-   * @param file_name
-   */
-    public void save(String file_name) {
-        try {
-            FileOutputStream ostream = new FileOutputStream(file_name);
-            ObjectOutputStream p = new ObjectOutputStream(ostream);
-            p.writeObject(this);
-            p.flush();
-            ostream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    
     public void randomizeWeights() {
         // Randomize weights here:
         for (int ii = 0; ii < numInputs; ii++)

@@ -62,6 +62,7 @@ public class NeuralNetwork_2H_momentum_Test extends TestCase {
         error = 0;
       }
     }
+    System.out.println("Test results should rotate inputs:");
     test_recall(nn, test1);
     test_recall(nn, test2);
     test_recall(nn, test3);

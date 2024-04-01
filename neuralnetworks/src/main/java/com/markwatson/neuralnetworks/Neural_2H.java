@@ -38,8 +38,8 @@ public class Neural_2H implements Serializable {
   protected float hidden1_errors[];
   protected float hidden2_errors[];
 
-  transient protected ArrayList inputTraining = new ArrayList();
-  transient protected ArrayList outputTraining = new ArrayList();
+  transient protected ArrayList<float[]> inputTraining = new ArrayList<>();
+  transient protected ArrayList<float[]> outputTraining = new ArrayList<>();
 
   public float TRAINING_RATE = 0.5f;
 
@@ -70,39 +70,6 @@ public class Neural_2H implements Serializable {
     }
     inputTraining.add(inputs);
     outputTraining.add(outputs);
-  }
-
-  public static Neural_2H Factory(String serialized_file_name) {
-    Neural_2H nn = null;
-    try {
-      InputStream ins = new FileInputStream(serialized_file_name);
-      if (ins == null) {
-        System.out.println("CachedExamples(): failed to open 'cache.dat' in JAR file");
-        System.exit(1);
-      } else {
-        ObjectInputStream p = new ObjectInputStream(ins);
-        nn = (Neural_2H) p.readObject();
-        nn.inputTraining = new ArrayList();
-        nn.outputTraining = new ArrayList();
-        ins.close();
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
-    }
-    return nn;
-  }
-
-  public void save(String file_name) {
-    try {
-      FileOutputStream ostream = new FileOutputStream(file_name);
-      ObjectOutputStream p = new ObjectOutputStream(ostream);
-      p.writeObject(this);
-      p.flush();
-      ostream.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
   }
 
   public void randomizeWeights() {

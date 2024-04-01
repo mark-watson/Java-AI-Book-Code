@@ -62,30 +62,10 @@ public class NeuralNetwork_2H_Test extends TestCase {
                 error = 0;
             }
         }
+        System.out.println("Test results should rotate inputs:");
         test_recall(nn, test1);
         test_recall(nn, test2);
         test_recall(nn, test3);
-
-        System.out.println("Reload a previously trained NN from disk and re-test:");
-        nn.save("test.neural");
-        Neural_2H nn2 = Neural_2H.Factory("test.neural");
-        // NN is already trained, so just test:
-        test_recall(nn2, test1);
-        test_recall(nn2, test2);
-        test_recall(nn2, test3);
-    }
-
-    /**
-     * Test that is just for side effect printouts:
-     */
-    public void testRecall() throws Exception {
-        Neural_2H nn = Neural_2H.Factory("test.neural");
-        float[] results = nn.recall(test1);
-        System.out.print("Test case: ");
-        for (int i = 0; i < test1.length; i++) System.out.print(pp(test1[i]) + " ");
-        System.out.print(" results: ");
-        for (int i = 0; i < results.length; i++) System.out.print(pp(results[i]) + " ");
-        System.out.println();
     }
 
     public static String pp(float x) {
