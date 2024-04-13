@@ -1,5 +1,0 @@
-(in-module "EXAMPLE1")
-
-(assert (person Ken))
-(assert (person Mark))
-(assert (parent-of Ken Mark))
