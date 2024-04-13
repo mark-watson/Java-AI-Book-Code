@@ -45,7 +45,7 @@ import java.io.*;
     transient protected ArrayList<float[]> inputTraining = new ArrayList<>();
     transient protected ArrayList<float[]> outputTraining = new ArrayList<>();
 
-    public float TRAINING_RATE = 0.5f;
+    public float TRAINING_RATE = 0.2f;
     private float alpha = 0f;  // momentum scaling term that is applied to last delta weight
 
     // use a reasonable default momentum term (alpha):

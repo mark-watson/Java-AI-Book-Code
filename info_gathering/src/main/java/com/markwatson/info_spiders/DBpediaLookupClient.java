@@ -28,11 +28,11 @@ import java.util.*;
 public class DBpediaLookupClient extends DefaultHandler {
   public DBpediaLookupClient(String query) throws Exception {
     this.query = query;
-    //System.out.println("\n query: " + query);
+    System.out.println("\n query: " + query);
     CloseableHttpClient client = HttpClients.createDefault();
 
     String query2 = query.replaceAll(" ", "+"); // URLEncoder.encode(query, "utf-8");
-    //System.out.println("\n query2: " + query2);
+    System.out.println("\n query2: " + query2);
 /*
     HttpGet request = new HttpGet("http://lookup.dbpedia.org/api/search.asmx/KeywordSearch?QueryString=" +
         query2);

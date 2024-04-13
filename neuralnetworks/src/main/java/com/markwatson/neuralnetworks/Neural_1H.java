@@ -33,7 +33,7 @@ public class Neural_1H implements Serializable {
   protected float output_errors[];
   protected float hidden_errors[];
 
-  public float learningRate = 0.5f;
+  public float learningRate = 0.2f;
 
   transient protected Vector<float[]> inputTraining = new Vector<>();
   transient protected Vector<float[]> outputTraining = new Vector<>();

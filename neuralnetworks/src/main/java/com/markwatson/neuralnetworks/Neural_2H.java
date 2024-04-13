@@ -41,7 +41,7 @@ public class Neural_2H implements Serializable {
   transient protected ArrayList<float[]> inputTraining = new ArrayList<>();
   transient protected ArrayList<float[]> outputTraining = new ArrayList<>();
 
-  public float TRAINING_RATE = 0.5f;
+  public float TRAINING_RATE = 0.2f;
 
   public Neural_2H(int num_in, int num_hidden1, int num_hidden2, int num_output) {
 
