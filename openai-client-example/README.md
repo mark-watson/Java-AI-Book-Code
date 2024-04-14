@@ -2,5 +2,6 @@
 
 **Under construction - don't use yet**
 
-Using library: https://github.com/TheoKanning/openai-java
+Note: this is a simple library. For more complex interaction with the
+OpenAI APIs consider using the 'official' third party library: https://github.com/TheoKanning/openai-java
 
