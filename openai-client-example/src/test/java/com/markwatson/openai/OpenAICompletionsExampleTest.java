@@ -30,9 +30,12 @@ public class OpenAICompletionsExampleTest
 
     /**
      * Rigourous Test :-)
+     * @throws Exception 
      */
-    public void testApp()
+    public void testApp() throws Exception
     {
+        String r = OpenAICompletionsExample.getCompletion("Translate the following English text to French: 'Hello, how are you?'");
+        System.out.println("completion: " + r);
         assertTrue( true );
     }
 }

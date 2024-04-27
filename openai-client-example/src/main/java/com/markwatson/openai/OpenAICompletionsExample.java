@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,6 +20,7 @@ public class OpenAICompletionsExample {
     }
 
     public static String getCompletion(String prompt) throws Exception {
+        System.out.println("prompt: " + prompt);
         String apiKey = System.getenv("OPENAI_API_KEY");
         String model = "gpt-3.5-turbo"; // Replace with the desired model
 
@@ -30,22 +34,10 @@ public class OpenAICompletionsExample {
 
         JSONObject jsonBody = new JSONObject();
         jsonBody.put("model", model);
-        jsonBody.put("messages", messages);
-        jsonBody.put("max_tokens", 60);
+        URI uri = new URI("https://api.openai.com/v1/chat/completions");
+        URL url = uri.toURL();
 
-
-        // Set up the URL and open a connection
-        HttpURLConnection connection;
-        StringBuilder response;
-            URL url = new URL("https://api.openai.com/v1/chat/completions");
-            connection = (HttpURLConnection) url.openConnection();
-
-            // Set up the request properties
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Authorization", "Bearer " + apiKey);
-            connection.setDoOutput(true);
-
+            URLConnection connection = url.openConnection();
             // Send the JSON payload
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonBody.toString().getBytes("utf-8");
@@ -53,6 +45,7 @@ public class OpenAICompletionsExample {
             }
 
 
+        StringBuilder response;
         // Read the response from the server
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(connection.getInputStream(), "utf-8"))) {
@@ -64,7 +57,7 @@ public class OpenAICompletionsExample {
             System.out.println(response.toString());
         }
 
-        connection.disconnect();
+        ((HttpURLConnection) connection).disconnect();
         JSONObject jsonObject = new JSONObject(response.toString());
         JSONArray choices = jsonObject.getJSONArray("choices");
         JSONObject messageObject = choices.getJSONObject(0).getJSONObject("message");
