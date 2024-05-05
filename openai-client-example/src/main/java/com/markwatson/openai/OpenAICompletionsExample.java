@@ -31,13 +31,17 @@ public class OpenAICompletionsExample {
 
         JSONArray messages = new JSONArray();
         messages.put(message);
-
+        System.out.println("messages: " + messages.toString());
         JSONObject jsonBody = new JSONObject();
+        jsonBody.put("messages", messages);
         jsonBody.put("model", model);
         URI uri = new URI("https://api.openai.com/v1/chat/completions");
         URL url = uri.toURL();
-
+        System.out.println("jsonBody: " + jsonBody);
             URLConnection connection = url.openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer " + apiKey);
             // Send the JSON payload
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonBody.toString().getBytes("utf-8");
