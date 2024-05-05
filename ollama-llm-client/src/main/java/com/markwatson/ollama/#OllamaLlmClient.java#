@@ -1,0 +1,102 @@
+package com.markwatson.openai;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+public class OllamaLlmClient {
+
+    public static void main(String[] args) throws Exception {
+        String prompt = "Translate the following English text to French: 'Hello, how are you?'";
+        String completion = getCompletion(prompt);
+        System.out.println("completion: " + completion);
+    }
+
+    public static String getCompletion(String prompt, String modelName) throws Exception {
+        System.out.println("prompt: " + prompt + ", modelName: " + modelName);
+        // New JSON message format
+        JSONObject message = new JSONObject();
+        message.put("role", "user");
+        message.put("content", prompt);
+	System.out.// Set the endpoint URL and headers for the request
+String url = "https://api.openai.com/v1/chat/assistant";
+HashMap<String, String> headers = new HashMap<>();
+headers.put("Authorization", "Bearer YOUR_API_KEY");
+headers.put("Content-Type", "application/json");
+
+// Create a new HTTP connection and send the request
+URL obj = new URL(url);
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("POST");
+con.setRequestProperty("User-Agent", "OllamaLLMClient/1.0");
+con.setDoOutput(true);
+con.setRequestProperty("Content-Length", String.valueOf(message.toString().length()));
+for (Map.Entry<String, String> entry : headers.entrySet()) {
+    con.setRequestProperty(entry.getKey(), entry.getValue());
+}
+
+// Send the message and read the response
+OutputStream os = con.getOutputStream();
+os.write(message.toString().getBytes());
+os.close();
+int responseCode = con.getResponseCode();
+BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream())));
+String output;
+StringBuilder sb = new StringBuilder();
+while ((output = br.readLine()) != null) {
+    sb.append(output);
+}
+JSONObject response = new JSONObject(sb.toString());
+// Extract the completion from the JSON response
+return response.getJSONArray("choices").getJSONObject(0).getString("text");
+
+        JSONArray messages = new JSONArray();
+        messages.put(message);
+        //System.out.println("messages: " + messages.toString());
+        JSONObject jsonBody = new JSONObject();
+        jsonBody.put("prompt", messages);
+        jsonBody.put("model", model);
+        URI uri = new URI("https://api.openai.com/v1/chat/completions");
+        URL url = uri.toURL();
+        //System.out.println("jsonBody: " + jsonBody);
+        URLConnection connection = url.openConnection();
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Authorization", "Bearer " + apiKey);
+        // Send the JSON payload
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonBody.toString().getBytes("utf-8");
+             os.write(input, 0, input.length);
+        }
+
+        StringBuilder response;
+        // Read the response from the server
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+            response = new StringBuilder();
+            String responseLine;
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+            System.out.println(response.toString());
+        }
+
+        ((HttpURLConnection) connection).disconnect();
+        JSONObject jsonObject = new JSONObject(response.toString());
+        JSONArray choices = jsonObject.getJSONArray("choices");
+        JSONObject messageObject = choices.getJSONObject(0).getJSONObject("message");
+        String content = messageObject.getString("content");
+        //System.out.println("content: " + content);
+        return content;
+    }
+
+}
+
+
