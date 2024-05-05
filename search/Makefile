@@ -1,19 +1,19 @@
 chess:
-	mvn install
-	mvn exec:java -Dexec.mainClass="search.game.Chess"
+	mvn install -q
+	mvn exec:java -Dexec.mainClass="search.game.Chess" -q
 
 tictactoe:
-	mvn install
-	mvn exec:java -Dexec.mainClass="search.game.TicTacToe"
+	mvn install -q
+	mvn exec:java -Dexec.mainClass="search.game.TicTacToe" -q
 
 graph:
-	mvn install
-	mvn exec:java -Dexec.mainClass="search.graph.GraphDepthFirstSearch"
+	mvn install -q
+	mvn exec:java -Dexec.mainClass="search.graph.GraphDepthFirstSearch" -q
 
 maze:
-	mvn install
-	mvn exec:java -Dexec.mainClass="search.maze.MazeBreadthFirstSearch"
+	mvn install -q
+	mvn exec:java -Dexec.mainClass="search.maze.MazeBreadthFirstSearch" -q
 
 
 install:
-	mvn install -DskipTest -Dmaven.test.skip=true
+	mvn install -DskipTest -Dmaven.test.skip=true -q
