@@ -1,7 +1,5 @@
 # OpenAI API Example
 
-**Under construction - don't use yet**
+run test using default Makefile target:
 
-Note: this is a simple library. For more complex interaction with the
-OpenAI APIs consider using the 'official' third party library: https://github.com/TheoKanning/openai-java
-
+    make
