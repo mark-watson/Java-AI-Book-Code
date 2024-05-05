@@ -23,10 +23,10 @@ public class TestGenetic {
         for (Chromosome ll  : genetic_experiment.chromosomes) {
           System.out.println(ll.chromosome + " : " + genetic_experiment.geneToFloat(geneIndex++));
         }
-        int NUM_CYCLES = 500;
+        int NUM_CYCLES = 15000;
         for (int i=0; i<NUM_CYCLES; i++) {
             genetic_experiment.evolve();
-            if ((i%(NUM_CYCLES/5))==0 || i==(NUM_CYCLES-1)) {
+            if ((i%(NUM_CYCLES/100))==0 || i==(NUM_CYCLES-1)) {
                 System.out.println("Generation " + i);
                 genetic_experiment.calcFitness(); // suggested by Rick Hall
                 genetic_experiment.sort();        // suggested by Rick Hall
