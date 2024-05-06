@@ -32,10 +32,19 @@ public class OpenAICompletionsExampleTest
      * Rigourous Test :-)
      * @throws Exception 
      */
-    public void testApp() throws Exception
+    public void testCompletion() throws Exception
     {
         String r = OpenAICompletionsExample.getCompletion("Translate the following English text to French: 'Hello, how are you?'");
         System.out.println("completion: " + r);
         assertTrue( true );
+    }
+    public void testSummarization() throws Exception {
+        // read template file and test text summarization
+        assertTrue( false );
+    }
+    public void testExtraction() throws Exception {
+        // read template file and test extracting information
+        // from CSV files and conveting to JSON
+        assertTrue( false );
     }
 }
