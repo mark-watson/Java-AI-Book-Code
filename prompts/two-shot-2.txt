@@ -1,4 +1,4 @@
-Given the two examples below, extract the names, addresses, and email addresses of individuals mentioned later as Process Text. Format the extracted information in JSON, with keys for "name", "address", and "email". If any information is missing, use "null" for that field. Be concise in your output by providing only the output JSON.
+Given the two examples below, extract the names, addresses, and email addresses of individuals mentioned later as Process Text. Format the extracted information in JSON, with keys for "name", "address", and "email". If any information is missing, use "null" for that field. Be very concise in your output by providing only the output JSON.
 
 Example 1:
 Text: "John Doe lives at 1234 Maple Street, Springfield. His email is johndoe@example.com."

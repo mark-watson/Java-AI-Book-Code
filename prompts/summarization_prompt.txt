@@ -1,0 +1,2 @@
+Summarize the following text: "{input_text}"
+Output:
