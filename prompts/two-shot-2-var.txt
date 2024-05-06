@@ -1,0 +1,22 @@
+Given the two examples below, extract the names, addresses, and email addresses of individuals mentioned later as Process Text. Format the extracted information in JSON, with keys for "name", "address", and "email". If any information is missing, use "null" for that field. Be concise in your output by providing only the output JSON.
+
+Example 1:
+Text: "John Doe lives at 1234 Maple Street, Springfield. His email is johndoe@example.com."
+Output: 
+{
+  "name": "John Doe",
+  "address": "1234 Maple Street, Springfield",
+  "email": "johndoe@example.com"
+}
+
+Example 2:
+Text: "Jane Smith has recently moved to 5678 Oak Avenue, Anytown. She hasn't updated her email yet."
+Output: 
+{
+  "name": "Jane Smith",
+  "address": "5678 Oak Avenue, Anytown",
+  "email": null
+}
+
+Process Text: "{input_text}"
+Output:
