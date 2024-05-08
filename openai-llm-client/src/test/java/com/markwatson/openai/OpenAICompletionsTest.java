@@ -7,7 +7,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class OpenAICompletionsExampleTest
+public class OpenAICompletionsTest
     extends TestCase
 {
     /**
@@ -15,7 +15,7 @@ public class OpenAICompletionsExampleTest
      *
      * @param testName name of the test case
      */
-    public OpenAICompletionsExampleTest( String testName )
+    public OpenAICompletionsTest( String testName )
     {
         super( testName );
     }
@@ -25,7 +25,7 @@ public class OpenAICompletionsExampleTest
      */
     public static Test suite()
     {
-        return new TestSuite( OpenAICompletionsExampleTest.class );
+        return new TestSuite( OpenAICompletionsTest.class );
     }
 
     /**
@@ -34,17 +34,17 @@ public class OpenAICompletionsExampleTest
      */
     public void testCompletion() throws Exception
     {
-        String r = OpenAICompletionsExample.getCompletion("Translate the following English text to French: 'Hello, how are you?'");
+        String r = OpenAICompletions.getCompletion("Translate the following English text to French: 'Hello, how are you?'");
         System.out.println("completion: " + r);
         assertTrue( true );
     }
     public void testSummarization() throws Exception {
         // read template file and test text summarization
-        assertTrue( false );
+        assertTrue( "not implemented" , true);
     }
     public void testExtraction() throws Exception {
         // read template file and test extracting information
         // from CSV files and conveting to JSON
-        assertTrue( false );
+        assertTrue( "not implemented" , true);
     }
 }

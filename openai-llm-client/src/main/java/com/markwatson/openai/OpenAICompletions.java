@@ -11,7 +11,7 @@ import java.net.URLConnection;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class OpenAICompletionsExample {
+public class OpenAICompletions {
 
     public static void main(String[] args) throws Exception {
         String prompt = "Translate the following English text to French: 'Hello, how are you?'";
