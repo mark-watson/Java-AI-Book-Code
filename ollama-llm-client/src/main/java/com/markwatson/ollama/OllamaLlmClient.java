@@ -62,7 +62,7 @@ public class OllamaLlmClient {
     }
 
     /***
-     * Utilities for using the OpenAI API
+     * Utilities for using the Ollama LLM APIs
      */
 
     // read the contents of a file path into a Java string

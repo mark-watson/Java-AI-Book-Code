@@ -1,12 +1,16 @@
 package com.markwatson.openai;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -69,4 +73,22 @@ public class OpenAICompletions {
         return content;
     }
 
+
+    /***
+     * Utilities for using the OpenAI API
+     */
+
+    // read the contents of a file path into a Java string
+    public static String readFileToString(String filePath) throws IOException {
+        Path path = Paths.get(filePath);
+        return new String(Files.readAllBytes(path));
+    }
+
+    public static String replaceSubstring(String originalString, String substringToReplace, String replacementString) {
+        return originalString.replace(substringToReplace, replacementString);
+    }
+    public static String promptVar(String prompt0, String varName, String varValue) {
+        String prompt = replaceSubstring(prompt0, varName, varValue);
+        return replaceSubstring(prompt, varName, varValue);
+    } 
 }

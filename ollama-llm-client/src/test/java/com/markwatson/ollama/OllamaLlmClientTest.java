@@ -62,9 +62,4 @@ public class OllamaLlmClientTest
         System.out.println("summarization completion: " + r);
         assertTrue( true );
     }
-    public void testExtraction() throws Exception {
-        // read template file and test extracting information
-        // from CSV files and conveting to JSON
-        assertTrue( true );
-    }
 }
