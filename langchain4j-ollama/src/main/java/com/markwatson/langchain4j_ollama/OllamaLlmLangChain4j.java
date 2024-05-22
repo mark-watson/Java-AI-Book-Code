@@ -1,5 +1,9 @@
 package com.markwatson.langchain4j_ollama;
 
+import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.openai.OpenAiChatModel;
+
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,42 +27,14 @@ public class OllamaLlmLangChain4j {
     }
 
     public static String getCompletion(String prompt, String modelName) throws Exception {
-        System.out.println("prompt: " + prompt + ", modelName: " + modelName);
- 
-        // New JSON message format
-        JSONObject message = new JSONObject();
-        message.put("prompt", prompt);
-        message.put("model", modelName);
-        message.put("stream", false);
-        URI uri = new URI("http://localhost:11434/api/generate");
-        URL url = uri.toURL();
-        //System.out.println("jsonBody: " + jsonBody);
-        URLConnection connection = url.openConnection();
-        connection.setDoOutput(true);
-        connection.setRequestProperty("Content-Type", "application/json");
-        // Send the JSON payload
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = message.toString().getBytes("utf-8");
-             os.write(input, 0, input.length);
-        }
+        System.out.println("\n\n**********\n\nprompt: " + prompt + ", modelName: " + modelName);
+        String api_key = System.getenv("OPENAI_API_KEY");
 
-        StringBuilder response;
-        // Read the response from the server
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(connection.getInputStream(), "utf-8"))) {
-            response = new StringBuilder();
-            String responseLine;
-            while ((responseLine = br.readLine()) != null) {
-                response.append(responseLine.trim());
-            }
-            System.out.println(response.toString());
-        }
+        ChatLanguageModel model = OpenAiChatModel.withApiKey(api_key);
+        String answer = model.generate(prompt);
 
-        ((HttpURLConnection) connection).disconnect();
-
-        JSONObject jsonObject = new JSONObject(response.toString());
-        String s = jsonObject.getString("response");
-        return s;
+        System.out.println(answer); // Hello! How can I assist you today?
+        return answer;
     }
 
     /***

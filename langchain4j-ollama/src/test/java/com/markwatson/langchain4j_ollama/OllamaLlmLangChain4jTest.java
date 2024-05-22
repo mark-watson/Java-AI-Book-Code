@@ -35,12 +35,12 @@ public class OllamaLlmLangChain4jTest
     public void testCompletion() throws Exception {
         String r =
         OllamaLlmLangChain4j.getCompletion("Translate the following English text to French: 'Hello, how are you?'", "llama3:instruct");
-        System.out.println("completion: " + r);
+        System.out.println("\n\n&&&&&&&&&&\n\ncompletion: " + r);
         assertTrue( true );
     }
 
     public void testTwoShotTemplate() throws Exception {
-        String input_text = "Mark Johnson enjoys living in Berkeley California at 102 Dunston Street and use mjess@foobar.com for contacting him.";
+        String input_text = "Mark Smith enjoys living in Berkeley California at 102 Dunston Street and use mjess@foobar.com for contacting him.";
         String prompt0 = OllamaLlmLangChain4j.readFileToString("../prompts/two-shot-2-var.txt");
         System.out.println("prompt0: " + prompt0);
         String prompt = OllamaLlmLangChain4j.promptVar(prompt0, "{input_text}", input_text);
