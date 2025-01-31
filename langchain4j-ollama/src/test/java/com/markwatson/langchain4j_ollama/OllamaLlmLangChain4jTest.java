@@ -34,7 +34,7 @@ public class OllamaLlmLangChain4jTest
      */
     public void testCompletion() throws Exception {
         String r =
-        OllamaLlmLangChain4j.getCompletion("Translate the following English text to French: 'Hello, how are you?'", "llama3:instruct");
+        OllamaLlmLangChain4j.getCompletion("Translate the following English text to French: 'Hello, how are you?'", "llama3.2:latest");
         System.out.println("\n\n&&&&&&&&&&\n\ncompletion: " + r);
         assertTrue( true );
     }
