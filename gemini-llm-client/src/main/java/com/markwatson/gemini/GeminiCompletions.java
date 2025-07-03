@@ -30,7 +30,6 @@ public class GeminiCompletions {
         String model = "gemini-2.5-flash";
         URI uri = new URI("https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey);
         URL url = uri.toURL();
-        System.out.println("\n\nurl:\n\n" + url + "\n\n");
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
