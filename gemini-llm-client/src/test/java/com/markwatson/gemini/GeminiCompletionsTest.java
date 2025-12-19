@@ -8,35 +8,33 @@ import junit.framework.TestSuite;
  * Unit test for simple App.
  */
 public class GeminiCompletionsTest
-    extends TestCase
-{
+        extends TestCase {
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public GeminiCompletionsTest( String testName )
-    {
-        super( testName );
+    public GeminiCompletionsTest(String testName) {
+        super(testName);
     }
 
     /**
      * @return the suite of tests being tested
      */
-    public static Test suite()
-    {
-        return new TestSuite( GeminiCompletionsTest.class );
+    public static Test suite() {
+        return new TestSuite(GeminiCompletionsTest.class);
     }
 
     /**
      * Rigourous Test :-)
-     * @throws Exception 
+     * 
+     * @throws Exception
      */
-    public void testCompletion() throws Exception
-    {
-        String r = GeminiCompletions.getCompletion("Translate the following English text to French: 'Hello, how are you?'");
+    public void testCompletion() throws Exception {
+        String r = GeminiCompletions
+                .getCompletion("Translate the following English text to French: 'Hello, how are you?'");
         System.out.println("completion: " + r);
-        assertTrue( true );
+        assertTrue(true);
     }
 
     public void testTwoShotTemplate() throws Exception {
@@ -45,10 +43,9 @@ public class GeminiCompletionsTest
         System.out.println("prompt0: " + prompt0);
         String prompt = GeminiCompletions.promptVar(prompt0, "{input_text}", input_text);
         System.out.println("prompt: " + prompt);
-        String r =
-        GeminiCompletions.getCompletion(prompt);
+        String r = GeminiCompletions.getCompletion(prompt);
         System.out.println("two shot extraction completion: " + r);
-        assertTrue( true );
+        assertTrue(true);
     }
 
     public void testSummarization() throws Exception {
@@ -57,9 +54,16 @@ public class GeminiCompletionsTest
         System.out.println("prompt0: " + prompt0);
         String prompt = GeminiCompletions.promptVar(prompt0, "{input_text}", input_text);
         System.out.println("prompt: " + prompt);
-        String r =
-        GeminiCompletions.getCompletion(prompt);
+        String r = GeminiCompletions.getCompletion(prompt);
         System.out.println("summarization completion: " + r);
-        assertTrue( true );
+        assertTrue(true);
+    }
+
+    public void testCompletionWithSearch() throws Exception {
+        String prompt = "What is the current stock price of Google?";
+        String r = GeminiCompletions.getCompletionWithSearch(prompt);
+        System.out.println("Search completion: " + r);
+        assertNotNull(r);
+        assertFalse(r.isEmpty());
     }
 }
