@@ -1,6 +1,12 @@
-# Code for the April 2024 edition of "Practical Artificial Intelligence With Java"
+# Code for the 2025 edition of "Practical Artificial Intelligence With Java"
 
-The new 2024 edition is largely a rewrite of older material with the addition of new material (mostly Large Language Models)
+# NOTE: this repository is no longer current: the source code is now stored in the repository for the book manuscript
+
+[https://github.com/mark-watson/Java-AI-Book](https://github.com/mark-watson/Java-AI-Book)
+
+## This edition
+
+The new 2025 edition is largely a rewrite of older material with the addition of new material (mostly Large Language Models)
 
 [Leanpub Link for latest edition](https://leanpub.com/javaai)
 
